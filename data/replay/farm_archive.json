@@ -1,0 +1,17 @@
+{
+  "entries": [
+    { "id": "e-01", "category": "land", "title_sys": "朝の霧と晴れ間", "quote": "朝は霧が下りてきて、昼まで晴れん", "source_ref": "p.01", "reason_quote": null, "reason_source_ref": null, "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": [] },
+    { "id": "e-02", "category": "person", "title_sys": "種の残し方を教わった人", "quote": "隣のばあちゃんに、種の残し方を教わった", "source_ref": "p.01", "reason_quote": null, "reason_source_ref": null, "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": [] },
+    { "id": "e-03", "category": "judgment", "title_sys": "水を止める目印", "quote": "葉の先が丸まったら、水を止める", "source_ref": "p.02", "reason_quote": null, "reason_source_ref": null, "missing_reason": true, "next_question_id": "q-01", "certainty": "stated", "tags": [] },
+    { "id": "e-04", "category": "craft", "title_sys": "種を落とす間隔", "quote": "種は指二本ぶん、間を空けて落とす", "source_ref": "p.02", "reason_quote": null, "reason_source_ref": null, "missing_reason": true, "next_question_id": "q-02", "certainty": "stated", "tags": [] },
+    { "id": "e-05", "category": "judgment", "title_sys": "抜く時期を決めるもの", "quote": "霜が降りるまで抜かん", "source_ref": "p.02", "reason_quote": "霜に当てると、甘かなる", "reason_source_ref": "p.02", "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": [] },
+    { "id": "e-06", "category": "craft", "title_sys": "生で食べるとき", "quote": "生なら、皮ごとかじる", "source_ref": "p.03", "reason_quote": null, "reason_source_ref": null, "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": ["食べ方"] },
+    { "id": "e-07", "category": "craft", "title_sys": "生の味ことば", "quote": "しゃっきりしとる", "source_ref": "p.03", "reason_quote": null, "reason_source_ref": null, "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": ["味ことば"] },
+    { "id": "e-08", "category": "craft", "title_sys": "火を通すとき", "quote": "火を通すなら、弱い火でゆっくり", "source_ref": "p.03", "reason_quote": null, "reason_source_ref": null, "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": ["食べ方"] },
+    { "id": "e-09", "category": "craft", "title_sys": "火を通したあとの味ことば", "quote": "あまか", "source_ref": "p.03", "reason_quote": null, "reason_source_ref": null, "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": ["味ことば"] }
+  ],
+  "next_questions": [
+    { "id": "q-01", "text": "葉の先が丸まったら水を止めるのは、どうしてですか？", "about_entry_id": "e-03" },
+    { "id": "q-02", "text": "指二本ぶん、という間は、どうやって決めましたか？", "about_entry_id": "e-04" }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["translations"],
+  "properties": {
+    "translations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["ref_id", "text", "reason_text", "title_text", "untranslated"],
+        "properties": {
+          "ref_id": { "type": "string", "description": "原文の項目 id" },
+          "text": { "type": "string", "description": "quote の英訳。方言の味ことばだけの項目は空文字" },
+          "reason_text": { "type": ["string", "null"], "description": "reason_quote の英訳。reason_quote が null なら必ず null" },
+          "title_text": { "type": "string", "description": "title_sys の英訳" },
+          "untranslated": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["ja", "romaji", "gloss_ja", "gloss_en"],
+              "properties": {
+                "ja": { "type": "string", "description": "訳さない方言の語。原文のまま" },
+                "romaji": { "type": "string" },
+                "gloss_ja": { "type": "string", "description": "近い感覚。≈ で始める" },
+                "gloss_en": { "type": "string", "description": "近い感覚。≈ で始める" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

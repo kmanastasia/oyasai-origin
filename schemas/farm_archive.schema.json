@@ -1,0 +1,41 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["entries", "next_questions"],
+  "properties": {
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "category", "title_sys", "quote", "source_ref", "reason_quote", "reason_source_ref", "missing_reason", "next_question_id", "certainty", "tags"],
+        "properties": {
+          "id": { "type": "string", "description": "e-01 から順に振る" },
+          "category": { "type": "string", "enum": ["craft", "judgment", "land", "person"], "description": "技・判断・土地・人" },
+          "title_sys": { "type": "string", "description": "システムの短い見出し。かぎ括弧なし" },
+          "quote": { "type": "string", "description": "作り手の発言に一字一句含まれる文字列" },
+          "source_ref": { "type": "string", "description": "quote のある段落番号。例 p.02" },
+          "reason_quote": { "type": ["string", "null"], "description": "語られた理由の原文そのまま。語られていなければ null" },
+          "reason_source_ref": { "type": ["string", "null"] },
+          "missing_reason": { "type": "boolean", "description": "判断や技の理由が語られていないとき true" },
+          "next_question_id": { "type": ["string", "null"] },
+          "certainty": { "type": "string", "enum": ["stated", "inferred"], "description": "分類に迷ったら inferred" },
+          "tags": { "type": "array", "items": { "type": "string", "enum": ["食べ方", "味ことば"] } }
+        }
+      }
+    },
+    "next_questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "text", "about_entry_id"],
+        "properties": {
+          "id": { "type": "string", "description": "q-01 から順に振る" },
+          "text": { "type": "string", "description": "短く、誘導しない質問を1つ" },
+          "about_entry_id": { "type": "string" }
+        }
+      }
+    }
+  }
+}

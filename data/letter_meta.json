@@ -1,0 +1,10 @@
+{
+  "no": "No.001",
+  "vegetable": { "ja": "にんじん", "en": "Carrot" },
+  "farmer": { "ja": "みなみ（架空）", "en": "Minami (fictional)", "name_ja": "みなみ" },
+  "town": { "ja": "【架空の町】", "en": "A fictional town" },
+  "is_fictional": true,
+  "is_sample": true,
+  "place_is_fictional": true,
+  "slots": ["No.002", "No.003"]
+}

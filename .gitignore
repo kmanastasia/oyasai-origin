@@ -1,0 +1,9 @@
+.env
+.env.*
+private/
+node_modules/
+.DS_Store
+*.mp4
+*.mov
+data/runtime/
+outputs/

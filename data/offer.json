@@ -1,0 +1,15 @@
+{
+  "is_sample": true,
+  "is_mock_purchase": true,
+  "is_mock_interest": true,
+  "sends": false,
+  "price_display": "5,480円（仮）",
+  "farmer_share_display": "作り手へ 2,600円（仮）",
+  "breakdown": [
+    { "key": "farmer", "label": "作り手", "yen": 2600, "percent": 47 },
+    { "key": "shipping", "label": "送料", "yen": 1300, "percent": 24 },
+    { "key": "operation", "label": "運営", "yen": 1150, "percent": 21 },
+    { "key": "other", "label": "その他", "yen": 430, "percent": 8 }
+  ],
+  "claude_cost_display": "Claude のコスト：1箱あたり約6円（試算・仮）"
+}

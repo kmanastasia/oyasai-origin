@@ -1,0 +1,20 @@
+{
+  "name": "oyasai-origin",
+  "version": "0.1.0",
+  "private": true,
+  "description": "日本のお野菜を世界へ。畑から、未来の人への手紙。",
+  "type": "module",
+  "engines": {
+    "node": ">=22.9"
+  },
+  "scripts": {
+    "dev": "node --env-file-if-exists=.env server/index.mjs",
+    "start": "node --env-file-if-exists=.env server/index.mjs",
+    "verify": "node scripts/verify.mjs",
+    "test": "node --test \"test/*.test.mjs\"",
+    "generate": "node --env-file-if-exists=.env scripts/generate.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.4.0"
+  }
+}

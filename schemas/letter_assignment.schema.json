@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["card_teaser_entry_id", "land_entry_ids", "chapters"],
+  "properties": {
+    "card_teaser_entry_id": { "type": ["string", "null"], "description": "一覧のカードに出す一言。disclosure が public の項目から1つ" },
+    "land_entry_ids": { "type": "array", "items": { "type": "string" }, "description": "書き出しに置く土地の項目。1〜2件" },
+    "chapters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "entry_ids"],
+        "properties": {
+          "kind": { "type": "string", "enum": ["raw", "cooked", "recommend"], "description": "便箋：生・火を通して・作り手のおすすめ" },
+          "entry_ids": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    }
+  }
+}
