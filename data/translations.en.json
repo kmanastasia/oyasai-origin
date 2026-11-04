@@ -5,13 +5,13 @@
   "is_translation": true,
   "translations": [
     { "ref_type": "entry", "ref_id": "e-01", "text": "In the morning the fog comes down, and it doesn't clear until noon.", "reason_text": null, "title_text": "Morning fog and clearing skies", "untranslated": [], "reviewed_by": null },
-    { "ref_type": "entry", "ref_id": "e-02", "text": "The old woman next door taught me how to save seed.", "reason_text": null, "title_text": "Who taught seed saving", "untranslated": [], "reviewed_by": null },
-    { "ref_type": "entry", "ref_id": "e-03", "text": "When the leaf tips curl, I stop the water.", "reason_text": null, "title_text": "The sign to stop watering", "untranslated": [], "reviewed_by": null },
-    { "ref_type": "entry", "ref_id": "e-04", "text": "I drop the seeds two fingers apart.", "reason_text": null, "title_text": "Spacing the seeds", "untranslated": [], "reviewed_by": null },
-    { "ref_type": "entry", "ref_id": "e-05", "text": "I don't pull them until the frost comes.", "reason_text": "Frost makes them sweet.", "title_text": "What decides the harvest", "untranslated": [], "reviewed_by": null },
-    { "ref_type": "entry", "ref_id": "e-06", "text": "Raw, I bite into it skin and all.", "reason_text": null, "title_text": "Eating it raw", "untranslated": [], "reviewed_by": null },
+    { "ref_type": "entry", "ref_id": "e-02", "text": "Learned how to save seed from the old woman next door.", "reason_text": null, "title_text": "Who taught seed saving", "untranslated": [], "reviewed_by": null },
+    { "ref_type": "entry", "ref_id": "e-03", "text": "When the leaf tips curl, stop the water.", "reason_text": null, "title_text": "The sign to stop watering", "untranslated": [], "reviewed_by": null },
+    { "ref_type": "entry", "ref_id": "e-04", "text": "Drop the seeds two fingers apart.", "reason_text": null, "title_text": "Spacing the seeds", "untranslated": [], "reviewed_by": null },
+    { "ref_type": "entry", "ref_id": "e-05", "text": "Don't pull them until the frost comes.", "reason_text": "Frost makes them sweet.", "title_text": "What decides the harvest", "untranslated": [], "reviewed_by": null },
+    { "ref_type": "entry", "ref_id": "e-06", "text": "Raw, bite into it skin and all.", "reason_text": null, "title_text": "Eating it raw", "untranslated": [], "reviewed_by": null },
     { "ref_type": "entry", "ref_id": "e-07", "text": "", "reason_text": null, "title_text": "A taste word, raw", "untranslated": [{ "ja": "しゃっきりしとる", "romaji": "shakkiri shitoru", "gloss_ja": "≈ 歯切れがよい・みずみずしい", "gloss_en": "≈ crisp, lively" }], "reviewed_by": null },
-    { "ref_type": "entry", "ref_id": "e-08", "text": "If you cook it, slowly, over a low flame.", "reason_text": null, "title_text": "Cooking it", "untranslated": [], "reviewed_by": null },
-    { "ref_type": "entry", "ref_id": "e-09", "text": "", "reason_text": null, "title_text": "A taste word, cooked", "untranslated": [{ "ja": "あまか", "romaji": "amaka", "gloss_ja": "≈ 甘い・ほっとする甘さ", "gloss_en": "≈ sweet, a comforting sweetness" }], "reviewed_by": null }
+    { "ref_type": "entry", "ref_id": "e-08", "text": "To cook it, slowly, over a low flame.", "reason_text": null, "title_text": "Cooking it", "untranslated": [], "reviewed_by": null },
+    { "ref_type": "entry", "ref_id": "e-09", "text": "", "reason_text": null, "title_text": "A taste word, cooked", "untranslated": [{ "ja": "あまか", "romaji": "amaka", "gloss_ja": "≈ 甘い", "gloss_en": "≈ sweet" }], "reviewed_by": null }
   ]
 }
