@@ -49,7 +49,10 @@ before(async () => {
   process.env.ANTHROPIC_API_KEY = 'test-key';
 });
 
-after(() => server.close());
+after(() => {
+  server.close();
+  if (runtimeDir) rmSync(runtimeDir, { recursive: true, force: true });
+});
 
 const { configure, createDraft, getLetter, isDemo, sealLetter, unsealLetter } = await import('../server/pipeline.mjs');
 
