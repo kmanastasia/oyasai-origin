@@ -89,6 +89,18 @@ test('上限で切れた出力は使わない', async () => {
   await assert.rejects(runFarmArchive(paragraphs), /上限で切れ/);
 });
 
+test('先頭が fallback のブロックでも、次の text を本文として読む', async () => {
+  replies = [{ body: message({ stop_reason: 'end_turn', content: [{ type: 'fallback' }, { type: 'text', text: '{"entries":[],"next_questions":[]}' }] }) }];
+  assert.deepEqual(await runFarmArchive(paragraphs), { entries: [], next_questions: [] });
+  assert.equal(requests.length, 1);
+});
+
+test('断られた理由の分類が null なら「理由不明」と出す', async () => {
+  replies = [{ body: message({ stop_reason: 'refusal', stop_details: { type: 'refusal', category: null }, content: [] }) }];
+  await assert.rejects(runFarmArchive(paragraphs), /断りました（理由不明）/);
+  assert.equal(requests.length, 1);
+});
+
 test('API キーがなければ通信しない', async () => {
   const key = process.env.ANTHROPIC_API_KEY;
   delete process.env.ANTHROPIC_API_KEY;
