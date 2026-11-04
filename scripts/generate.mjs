@@ -10,6 +10,13 @@ const dataDir = fileURLToPath(new URL('../data/', import.meta.url));
 const save = (name, value) => writeFile(`${dataDir}${name}`, `${JSON.stringify(value, null, 2)}\n`);
 
 try {
+  // 確認済みの印を消さない。API を呼ぶ前に止める。
+  const saved = JSON.parse(await readFile(`${dataDir}translations.en.json`, 'utf8'));
+  const reviewed = saved.translations.filter((t) => t.reviewed_by);
+  if (reviewed.length > 0) {
+    console.error(`確認済みの英訳が ${reviewed.length} 件あるので、作り直さずに止めました（${reviewed.map((t) => t.ref_id).join('、')}）。\n確認後は作り直さない約束です。何も書き換えていません。`);
+    process.exit(1);
+  }
   const paragraphs = parseTranscript(await readFile(`${dataDir}transcript.md`, 'utf8'));
   console.log(`作り手の発言 ${paragraphs.length} 段落。分類しています…`);
   const archive = await runFarmArchive(paragraphs);
