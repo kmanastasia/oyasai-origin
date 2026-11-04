@@ -197,6 +197,8 @@ try {
 }
 report('private/・.env の追跡', gitProblems, gitDetail);
 
+const speakers = [...new Set(paragraphs.map((p) => p.speaker))];
+if (speakers.length > 1) warnings.push(`作り手として ${speakers.join('・')} の ${speakers.length} 人を読みました。聞き手の名前が混ざっていないか確かめてください（聞き手は「聞き手：」と書きます）。`);
 if (transcript.includes('【仮】')) warnings.push('data/transcript.md はまだ【仮】です。本番の文字起こしに差し替えて npm run generate を実行してください。');
 const unreviewed = translationFile.translations.filter((t) => !t.reviewed_by).length;
 if (unreviewed) warnings.push(`英語訳 ${unreviewed} 件は未確認です（画面には Not yet checked と出ます）。`);

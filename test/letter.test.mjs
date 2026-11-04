@@ -19,6 +19,27 @@ test('聞き手の発言には番号を振らない', () => {
   assert.deepEqual(parsed.map((p) => [p.id, p.text]), [['p.01', '霜が降りる。'], ['p.02', '甘かなる。']]);
 });
 
+test('Karen などの聞き手の名前は、書き方が違っても引用の対象にしない', () => {
+  for (const name of ['Karen', 'karen', 'KAREN', 'Ｋａｒｅｎ', 'カレン', 'Karen（聞き手）', '聞き手（Karen）', 'Q']) {
+    for (const colon of ['：', ':']) {
+      const parsed = parseTranscript(`${name}${colon}どうして水を止めるんですか。\nみなみ${colon}葉の先が丸まったら、水を止める。`);
+      assert.deepEqual(parsed.map((p) => [p.id, p.speaker, p.text]), [['p.01', 'みなみ', '葉の先が丸まったら、水を止める。']], name);
+    }
+  }
+});
+
+test('聞き手の続きの行も引用の対象にせず、聞き手の言葉の引用は照合で落ちる', () => {
+  const parsed = parseTranscript('Karen：どうして\n水を止めるんですか。\n\nみなみ：霜が降りる。');
+  assert.deepEqual(parsed.map((p) => p.text), ['霜が降りる。']);
+  const stolen = { ...archive.entries[0], id: 'x', quote: 'どうして', source_ref: 'p.01' };
+  assert.equal(verifyArchive({ entries: [stolen], next_questions: [] }, parsed).entries.length, 0);
+});
+
+test('名前の行のあとで改行した作り手の発言も、一字も変えずに読む', () => {
+  const parsed = parseTranscript('みなみ：\n霜が降りる。\n甘かなる。');
+  assert.deepEqual(parsed.map((p) => [p.id, p.text]), [['p.01', '霜が降りる。甘かなる。']]);
+});
+
 test('話し手の名前がなければ、次にすることを添えて止める', () => {
   assert.throws(() => parseTranscript('ただの文章です。'), (error) => error.next.includes('話し手の名前'));
 });
