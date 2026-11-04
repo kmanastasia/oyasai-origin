@@ -97,31 +97,32 @@ function renderVoice() {
 const itemsTag = (items) => translationTag(items.map((item) => letter.translations[item.id]));
 
 const appear = (section) => (entering.has(section) ? ' appear' : '');
+const appearOrder = (section, i) => (entering.has(section) ? `--i:${Math.min(i, 4)}` : null); // 項目ごとに少しずつ遅らせる。最大5つ
 
 // 動くのは本人の言葉だけ。出どころや翻訳の表示は最初から出しておく。
-function flavorItem(item, section) {
+function flavorItem(item, section, i) {
   const translation = letter.translations[item.id];
   const words = translation?.untranslated ?? [];
   return h('div', { class: 'item item--flavor', 'data-item-id': item.id },
-    h('div', { class: `word__head${appear(section)}` },
+    h('div', { class: `word__head${appear(section)}`, style: appearOrder(section, i) },
       h('blockquote', { class: 'word mincho', lang: 'ja', text: item.quote }),
       h('span', { class: 'word__source', text: t('letter.wordSource') })),
     words.length === 0 && en() ? h('p', { class: 'word__near mono', text: t('letter.noWord') }) : null,
     words.map((word) => [
-      en() ? h('p', { class: `word__romaji mono${appear(section)}`, lang: 'ja-Latn', text: word.romaji }) : null,
-      h('p', { class: `word__near${appear(section)}`, lang: 'ja', text: word.gloss_ja }),
-      h('p', { class: `word__near mono${appear(section)}`, lang: 'en', text: word.gloss_en }),
+      en() ? h('p', { class: `word__romaji mono${appear(section)}`, style: appearOrder(section, i), lang: 'ja-Latn', text: word.romaji }) : null,
+      h('p', { class: `word__near${appear(section)}`, style: appearOrder(section, i), lang: 'ja', text: word.gloss_ja }),
+      h('p', { class: `word__near mono${appear(section)}`, style: appearOrder(section, i), lang: 'en', text: word.gloss_en }),
     ]),
     words.length > 0 ? h('p', { class: 'word__by', text: t('letter.glossBy') }) : null,
     h('p', { class: 'item__foot' },
       h('span', { class: 'mono', text: t('letter.source', { ref: item.source_ref }) })));
 }
 
-function plainItem(item, section) {
+function plainItem(item, section, i) {
   const translation = letter.translations[item.id];
   const english = en() && translation?.text;
   const title = en() ? translation?.title_text ?? item.title_sys : item.title_sys;
-  return h('div', { class: `item${appear(section)}`, 'data-item-id': item.id },
+  return h('div', { class: `item${appear(section)}`, style: appearOrder(section, i), 'data-item-id': item.id },
     h('h3', { class: 'item__title', text: title }),
     english
       ? [
@@ -142,7 +143,7 @@ function plainItem(item, section) {
     h('p', { class: 'item__foot' }, h('span', { class: 'mono', text: t('letter.source', { ref: item.source_ref }) })));
 }
 
-const renderItem = (item, section) => (item.tags.includes('味ことば') ? flavorItem(item, section) : plainItem(item, section));
+const renderItem = (item, section, i) => (item.tags.includes('味ことば') ? flavorItem(item, section, i) : plainItem(item, section, i));
 
 function coverView() {
   const { meta, verified } = letter;
@@ -177,7 +178,7 @@ function landView() {
     h('p', { class: 'mono sheet__no', text: `LAND ${pad(1)}｜${pad(letter.land.length)}` }),
     h('h2', { class: 'sheet__title' }, t('letter.opening'), ' ', h('span', { class: 'tag-note', text: t('town.tag') })),
     itemsTag(letter.land),
-    letter.land.map((item) => renderItem(item, 'land')));
+    letter.land.map((item, i) => renderItem(item, 'land', i)));
 }
 
 function chapterView(chapter, index) {
@@ -186,7 +187,7 @@ function chapterView(chapter, index) {
     h('p', { class: 'mono sheet__no', text: `BITE ${pad(index + 1)}｜${pad(chapters.length)}` }),
     h('h2', { class: 'sheet__title', text: t(`bite.${chapter.kind}`) }),
     itemsTag(chapter.items),
-    chapter.items.map((item) => renderItem(item, `bite-${index}`)),
+    chapter.items.map((item, i) => renderItem(item, `bite-${index}`, i)),
     canSpeak && speakable(chapter).length > 0
       ? h('div', { class: 'sheet__voice' },
         h('button', {

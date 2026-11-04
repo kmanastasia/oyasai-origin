@@ -230,7 +230,7 @@ body:has(.voice-bar) .sheet, body:has(.voice-bar) #closing { scroll-margin-top: 
 .sheet__note { font-size: 14px; color: var(--haicha); margin-top: 8px; }
 
 /* 現れ終わりの指定を持たない。動かない環境でも本文は元の見た目のまま読める */
-.appear { animation: appear 0.3s ease-out backwards; }
+.appear { animation: appear 0.6s ease-out backwards; animation-delay: calc(var(--i, 0) * 0.12s); }
 
 @keyframes appear { from { opacity: 0; transform: translateY(8px); } }
 
