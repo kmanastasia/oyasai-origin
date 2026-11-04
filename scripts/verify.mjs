@@ -129,6 +129,10 @@ for (const [file, name] of [['public/choose.js', 'teaserView'], ['public/letter.
 for (const name of ['landView', 'chapterView']) {
   if (!functionBody(read('public/letter.js'), name).includes('itemsTag(')) labelProblems.push(`public/letter.js の ${name} に「Translated by Claude」と確認状態がありません。itemsTag を呼んでください。`);
 }
+// 結びの帯は、カードを開かなくても最初から出る
+for (const [name, key] of [['closingJp', 'close.jp.band'], ['closingEn', 'close.en.band']]) {
+  if (!functionBody(read('public/letter.js'), name).includes(`'${key}'`)) labelProblems.push(`public/letter.js の ${name} に結びの帯 ${key} がありません。先頭に条件なしで出してください。`);
+}
 report('架空・見本・合成音声・翻訳・仮の表示', labelProblems);
 
 // 6. 送信・決済・録音・外部音声のコードがない

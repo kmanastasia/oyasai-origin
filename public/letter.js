@@ -175,7 +175,6 @@ function chapterView(chapter, index) {
 function originCard() {
   const total = offer.breakdown.reduce((sum, part) => sum + part.yen, 0);
   return h('div', { class: 'offer' },
-    h('p', { class: 'band band--inline', role: 'note', text: t('close.jp.band') }),
     h('h3', { class: 'offer__name', text: t('close.jp.product') }),
     h('p', { class: 'offer__contents', text: t('close.jp.contents', { no: letter.meta.no }) }),
     h('p', { class: 'offer__price', text: offer.price_display }),
@@ -205,6 +204,7 @@ function originCard() {
 
 function closingJp() {
   return [
+    h('p', { class: 'band band--inline', role: 'note', text: t('close.jp.band') }),
     h('p', { class: 'mono sheet__no', lang: 'en', text: t('close.jp.eyebrow') }),
     h('p', { class: 'closing__line mincho', text: t('close.jp.line', { farmer: letter.meta.farmer.ja }) }),
     h('p', { class: 'closing__sub', text: t('close.jp.sub') }),
@@ -217,7 +217,6 @@ function closingJp() {
 
 function visitCard() {
   return h('div', { class: 'offer' },
-    h('p', { class: 'band band--inline', role: 'note', text: t('close.en.band') }),
     h('h3', { class: 'offer__name fraunces', text: t('close.en.title') }),
     h('p', { class: 'offer__contents', text: t('close.en.body') }),
     actionDone
@@ -235,6 +234,7 @@ function visitCard() {
 
 function closingEn() {
   return [
+    h('p', { class: 'band band--inline', role: 'note', text: t('close.en.band') }),
     h('p', { class: 'mono sheet__no', text: t('close.en.eyebrow') }),
     h('p', { class: 'closing__line fraunces', text: t('close.en.line') }),
     h('p', { class: 'closing__sub', text: t('close.en.sub') }),
