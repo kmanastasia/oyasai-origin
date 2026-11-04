@@ -238,8 +238,10 @@ button, a.btn { font-family: inherit; }
 .jp-sub { font-family: var(--mincho); font-size: 14px; color: var(--haicha); margin-top: 6px; line-height: 1.7; }
 .jp-sub__label { margin-right: 6px; }
 
-.word { font-size: 32px; line-height: 1.5; letter-spacing: 0.06em; margin-bottom: 8px; }
+.word__head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin-bottom: 8px; }
+.word { font-size: 32px; line-height: 1.5; letter-spacing: 0.06em; }
 .word__near { font-size: 13px; color: var(--haicha); text-transform: none; letter-spacing: 0; }
+.word__by { font-size: 13px; color: var(--haicha); margin-top: 4px; }
 .word__romaji { text-transform: none; margin-bottom: 4px; }
 .word__source { background: var(--kogecha); color: var(--shiro); font-size: 12px; padding: 0 8px; line-height: 20px; }
 

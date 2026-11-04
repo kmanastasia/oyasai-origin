@@ -75,15 +75,17 @@ function flavorItem(item) {
   const translation = letter.translations[item.id];
   const words = translation?.untranslated ?? [];
   return h('div', { class: 'item item--flavor' },
-    h('blockquote', { class: 'word mincho', lang: 'ja', text: item.quote }),
+    h('div', { class: 'word__head' },
+      h('blockquote', { class: 'word mincho', lang: 'ja', text: item.quote }),
+      h('span', { class: 'word__source', text: t('letter.wordSource') })),
     words.length === 0 && en() ? h('p', { class: 'word__near mono', text: t('letter.noWord') }) : null,
     words.map((word) => [
       en() ? h('p', { class: 'word__romaji mono', lang: 'ja-Latn', text: word.romaji }) : null,
       h('p', { class: 'word__near', lang: 'ja', text: word.gloss_ja }),
       h('p', { class: 'word__near mono', lang: 'en', text: word.gloss_en }),
     ]),
+    words.length > 0 ? h('p', { class: 'word__by', text: t('letter.glossBy') }) : null,
     h('p', { class: 'item__foot' },
-      h('span', { class: 'word__source', text: t('letter.wordSource') }),
       h('span', { class: 'mono', text: t('letter.source', { ref: item.source_ref }) })));
 }
 

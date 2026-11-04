@@ -129,6 +129,11 @@ for (const [file, name] of [['public/choose.js', 'teaserView'], ['public/letter.
 for (const name of ['landView', 'chapterView']) {
   if (!functionBody(read('public/letter.js'), name).includes('itemsTag(')) labelProblems.push(`public/letter.js の ${name} に「Translated by Claude」と確認状態がありません。itemsTag を呼んでください。`);
 }
+// ≈ の添え書きは Claude が書いたものと、JP でも EN でも分かる
+for (const label of ['≈ は Claude による添え書き', '≈ notes by Claude']) {
+  if (!strings.includes(label)) labelProblems.push(`「${label}」の表示が data/ui_strings.json から消えています。元に戻してください。`);
+}
+if (!functionBody(read('public/letter.js'), 'flavorItem').includes("'letter.glossBy'")) labelProblems.push('public/letter.js の flavorItem に添え書きの出どころの表示がありません。');
 // 結びの帯は、カードを開かなくても最初から出る
 for (const [name, key] of [['closingJp', 'close.jp.band'], ['closingEn', 'close.en.band']]) {
   if (!functionBody(read('public/letter.js'), name).includes(`'${key}'`)) labelProblems.push(`public/letter.js の ${name} に結びの帯 ${key} がありません。先頭に条件なしで出してください。`);
