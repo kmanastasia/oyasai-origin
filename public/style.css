@@ -246,6 +246,7 @@ button, a.btn { font-family: inherit; }
 .tr-tag { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 13px; }
 .tr-tag__by { border: 1px solid var(--ink); padding: 1px 8px; }
 .tr-tag__state { color: var(--haicha); }
+.card__teaser .tr-tag { line-height: 1.5; letter-spacing: 0; }
 .tr-pending { font-size: 13px; color: var(--haicha); margin-bottom: 4px; }
 
 #voice { position: sticky; top: var(--chrome-h); z-index: 25; }

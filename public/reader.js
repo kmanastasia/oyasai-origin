@@ -71,7 +71,12 @@ export async function startReader() {
   renderChrome();
 }
 
-// EN でも日本語の原文は消さない。
-export function checkState(translation) {
-  return translation?.reviewed_by ? t('letter.checked') : t('letter.notChecked');
+// EN で訳文を出すところには、必ず枠線タグと確認状態を一緒に出す。
+export function translationTag(translations) {
+  if (lang !== 'en') return null;
+  const shown = translations.filter(Boolean);
+  if (shown.length === 0) return null;
+  return h('p', { class: 'tr-tag' },
+    h('span', { class: 'tr-tag__by', lang: 'en', text: t('letter.translatedBy') }),
+    h('span', { class: 'tr-tag__state', text: shown.every((x) => x.reviewed_by) ? t('letter.checked') : t('letter.notChecked') }));
 }

@@ -1,5 +1,5 @@
 import { api, h } from './common.js';
-import { checkState, getLang, onLangChange, startReader, t } from './reader.js';
+import { getLang, onLangChange, startReader, t, translationTag } from './reader.js';
 
 const root = document.getElementById('root');
 const voiceRoot = document.getElementById('voice');
@@ -69,15 +69,7 @@ function renderVoice() {
 
 /* ---- 手紙の部品 ---- */
 
-function translationTag(items) {
-  if (!en()) return null;
-  const translated = items.map((item) => letter.translations[item.id]).filter(Boolean);
-  if (translated.length === 0) return null;
-  const allChecked = translated.every((x) => x.reviewed_by);
-  return h('p', { class: 'tr-tag' },
-    h('span', { class: 'tr-tag__by', lang: 'en', text: t('letter.translatedBy') }),
-    h('span', { class: 'tr-tag__state', text: allChecked ? t('letter.checked') : t('letter.notChecked') }));
-}
+const itemsTag = (items) => translationTag(items.map((item) => letter.translations[item.id]));
 
 function flavorItem(item) {
   const translation = letter.translations[item.id];
@@ -134,7 +126,7 @@ function coverView() {
     h('p', { class: 'card__who', text: `${pair(meta.farmer)}／${pair(meta.town)}` }),
     teaser
       ? en() && translated?.text
-        ? h('div', { class: 'card__teaser' }, h('p', { class: 'en-main', lang: 'en', text: `“${translated.text}”` }), h('p', { class: 'jp-sub', lang: 'ja', text: `「${teaser.quote}」` }))
+        ? h('div', { class: 'card__teaser' }, translationTag([translated]), h('p', { class: 'en-main', lang: 'en', text: `“${translated.text}”` }), h('p', { class: 'jp-sub', lang: 'ja', text: `「${teaser.quote}」` }))
         : h('blockquote', { class: 'card__teaser mincho', lang: 'ja', text: `「${teaser.quote}」` })
       : null,
     h('p', { class: 'card__small', text: t('check.done') }),
@@ -154,7 +146,7 @@ function landView() {
   return h('section', { class: 'sheet', 'data-section': 'land' },
     h('p', { class: 'mono sheet__no', text: `LAND ${pad(1)}｜${pad(letter.land.length)}` }),
     h('h2', { class: 'sheet__title' }, t('letter.opening'), ' ', h('span', { class: 'tag-note', text: t('town.tag') })),
-    translationTag(letter.land),
+    itemsTag(letter.land),
     letter.land.map(renderItem));
 }
 
@@ -163,7 +155,7 @@ function chapterView(chapter, index) {
   return h('section', { class: `sheet${index === revealed - 1 ? ' appear' : ''}`, 'data-section': `bite-${index}`, id: `bite-${index}` },
     h('p', { class: 'mono sheet__no', text: `BITE ${pad(index + 1)}｜${pad(chapters.length)}` }),
     h('h2', { class: 'sheet__title', text: t(`bite.${chapter.kind}`) }),
-    translationTag(chapter.items),
+    itemsTag(chapter.items),
     chapter.items.map(renderItem),
     canSpeak && speakable(chapter).length > 0
       ? h('div', { class: 'sheet__voice' },

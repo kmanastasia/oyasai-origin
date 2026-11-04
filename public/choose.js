@@ -1,5 +1,5 @@
 import { api, h } from './common.js';
-import { getLang, onLangChange, startReader, t } from './reader.js';
+import { getLang, onLangChange, startReader, t, translationTag } from './reader.js';
 
 const root = document.getElementById('root');
 let letter = null;
@@ -12,6 +12,7 @@ function teaserView() {
   const translation = letter.translations[letter.teaser.id];
   if (getLang() === 'en' && translation?.text) {
     return h('div', { class: 'card__teaser' },
+      translationTag([translation]),
       h('p', { class: 'en-main', lang: 'en', text: `“${translation.text}”` }),
       h('p', { class: 'jp-sub', lang: 'ja', text: `「${letter.teaser.quote}」` }));
   }
