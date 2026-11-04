@@ -130,3 +130,20 @@ test('訳の通信が落ちても、保存してある訳で封をする。原�
   assert.ok(letter.translations['e-01']);
   assert.equal(letter.translations['live-new'], undefined);
 });
+
+test('API キーがなければ、同梱の文字起こしは保存データで最後まで動き、別の文字起こしは次にすることを添えて止める', async () => {
+  configure({ runtimeDir });
+  const key = process.env.ANTHROPIC_API_KEY;
+  delete process.env.ANTHROPIC_API_KEY;
+  try {
+    const draft = await createDraft(transcript);
+    assert.equal(draft.source, 'replay');
+    assert.match(draft.notice, /ANTHROPIC_API_KEY/);
+    await sealLetter(allYes(draft));
+    assert.ok(Object.keys((await getLetter()).translations).length > 0);
+    await assert.rejects(createDraft('みなみ：別の話です。'), (error) => error.next.includes('ANTHROPIC_API_KEY'));
+  } finally {
+    process.env.ANTHROPIC_API_KEY = key;
+  }
+  assert.equal(requests.length, 0);
+});

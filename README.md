@@ -77,7 +77,7 @@ Claude がするのは、分類・段落番号の割り当て・英訳だけで�
 
 アプリの API 呼び出しはすべて `claude-opus-5-5`。effort は分類が `high`、割り当てと英訳が `medium`。`stop_reason` を確かめ、断られたときは server-side fallbacks に任せます。通信が落ちたら 1 回だけ再試行し、だめなら `data/replay/` の保存データを使います。
 
-`npm run verify` が確かめること：quote・reason_quote の一字一句一致／理由がない判断の質問／archive_only の流出 0 件（どの項目を残すだけにしても出ないことを、全項目で試す）／英語訳の漏れ 0 件／必須の表示／送信・決済・録音・外部音声のコードがないこと／`private/`・`.env` が git に追跡されていないこと。
+`npm run verify` が確かめること：quote・reason_quote の一字一句一致／理由がない判断の質問／archive_only の流出 0 件（どの項目を残すだけにしても出ないことを、全項目で試す）／英語訳の漏れ 0 件と、訳が指す原文のずれ／必須の表示（③カードと④表紙の Translated by Claude、結びの帯、≈ の出どころを含む）／送信・決済・録音・外部音声のコードがないこと／`private/`・`.env` が git に追跡されていないこと。
 
 ## ④ 試行錯誤の経緯
 
