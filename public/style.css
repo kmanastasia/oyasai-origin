@@ -138,11 +138,11 @@ button, a.btn { font-family: inherit; }
 }
 
 .stamp--big { width: 96px; height: 96px; font-size: 40px; }
-.stamp--press { animation: press 0.4s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.stamp--press { animation: press 0.4s cubic-bezier(0.2, 0.7, 0.2, 1); }
 .stamp--open { animation: unseal 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
 .stamp--gone { opacity: 0; }
 
-@keyframes press { from { transform: scale(1.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes press { from { transform: scale(1.4); } }
 @keyframes unseal { to { transform: scale(0.7); opacity: 0; } }
 
 /* ===== 受け取る側 ===== */

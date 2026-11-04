@@ -74,6 +74,7 @@ function showOpening() {
     h('p', { class: 'opening__sub', lang: getLang() === 'en' ? 'ja' : 'en', text: getLang() === 'en' ? '日本のお野菜を世界へ。' : 'Japanese vegetables, to the world.' }));
   document.body.append(overlay);
   overlay.addEventListener('animationend', () => overlay.remove());
+  setTimeout(() => overlay.remove(), 2700); // アニメーションが進まない環境でも手紙を隠したままにしない
 }
 
 await startReader();
