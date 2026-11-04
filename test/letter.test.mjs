@@ -93,6 +93,18 @@ test('味ことばは読み上げない', () => {
   assert.ok(sealed.entries.filter((e) => e.tags.includes('味ことば')).every((e) => e.skip_speech));
 });
 
+test('読み上げから外す項目は id で指定でき、原文は変わらない', () => {
+  const sealed = sealArchive(draft, allYes(), undefined, 1, ['e-03']);
+  const entry = sealed.entries.find((e) => e.id === 'e-03');
+  assert.equal(entry.skip_speech, true);
+  assert.equal(entry.quote, archive.entries.find((e) => e.id === 'e-03').quote);
+  assert.equal(sealed.entries.find((e) => e.id === 'e-04').skip_speech, false);
+  const letter = buildPublicLetter(sealed, assignment, translations, meta);
+  const shown = letter.chapters.flatMap((c) => c.items).find((i) => i.id === 'e-03');
+  assert.equal(shown.skip_speech, true);
+  assert.equal(shown.quote, '葉の先が丸まったら、水を止める');
+});
+
 test('Claude が使えないときの割り当てでも全項目が便箋に載る', () => {
   const sealed = sealArchive(draft, allYes());
   const letter = buildPublicLetter(sealed, assignByRule(sealed.entries), translations, meta);

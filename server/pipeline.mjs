@@ -113,7 +113,8 @@ export async function sealLetter(decisions) {
   }
   const previous = await readJsonIfExists(`${runtimeDir}published.json`);
   const version = (previous?.archive_version ?? 0) + 1;
-  const published = sealArchive(draft, decisions, undefined, version);
+  const { skip_speech_ids: skipSpeechIds } = await readJson(`${dataDir}speech.json`);
+  const published = sealArchive(draft, decisions, undefined, version, skipSpeechIds);
   const outward = published.entries.filter(isOutward);
   const sample = await isSampleTranscript(draft.paragraphs);
 

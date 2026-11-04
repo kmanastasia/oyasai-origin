@@ -103,6 +103,11 @@ for (const s of readJson('data/ui_strings.json')) {
 }
 report('英語訳の漏れ', enProblems, `${enProblems.length}件`);
 
+// 読み上げから外す項目の id は、実在するものだけ
+const skipIds = readJson('data/speech.json').skip_speech_ids;
+const unknownSkips = skipIds.filter((id) => !archive.entries.some((e) => e.id === id));
+report('読み上げから外す項目', unknownSkips.map((id) => `data/speech.json の ${id} は項目にありません。data/replay/farm_archive.json の id に合わせてください。`), `${skipIds.length}件`);
+
 // 5. 表示の約束：外せない文言が受け取る側のデータに残っている
 const strings = read('data/ui_strings.json');
 const labelProblems = ['架空', 'Fictional', '見本', 'Sample', '合成音声', 'Synthetic voice', 'Translated by Claude', '仮：', '架空の町', 'fictional narrator']

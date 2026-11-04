@@ -57,6 +57,8 @@ npm run verify
 npm run generate
 ```
 
+読み上げで目立つ読み違いがあれば、`data/speech.json` の `skip_speech_ids` に項目 id を書くと、その項目だけ読まなくなります（原文は変えません）。
+
 ## ③ Claude の機能の使い分け
 
 | 機能 | 何に使うか | 置き場所 |
