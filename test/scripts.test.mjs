@@ -41,3 +41,37 @@ test('generate は確認済みの英訳があれば、通信も書き換えも�
   assert.equal(readCopy('data/translations.en.json'), before);
   editJson('data/translations.en.json', (file) => ({ ...file, translations: file.translations.map((t) => ({ ...t, reviewed_by: null })) }));
 });
+
+test('verify --final は【仮】と未確認の英訳で止まり、通常の verify はそのまま通る', () => {
+  const plain = run('verify.mjs');
+  assert.equal(plain.status, 0, plain.stderr);
+  assert.match(plain.stdout, /△ .*【仮】/);
+  const final = run('verify.mjs', '--final');
+  assert.equal(final.status, 1);
+  assert.match(final.stderr, /まだ【仮】/);
+  assert.match(final.stderr, /項目の英訳 \d+ 件が未確認/);
+  assert.match(final.stderr, /画面の文言の英語 \d+ 件が未確認/);
+});
+
+test('verify --final は本番の文字起こしで全部確認済みなら通る', () => {
+  const transcript = readCopy('data/transcript.md');
+  const translations = readCopy('data/translations.en.json');
+  const strings = readCopy('data/ui_strings.json');
+  writeFileSync(join(copy, 'data/transcript.md'), transcript.replaceAll('【仮】', '【架空】'));
+  editJson('data/translations.en.json', (file) => ({ ...file, translations: file.translations.map((t) => ({ ...t, reviewed_by: 'karen' })) }));
+  editJson('data/ui_strings.json', (list) => list.map((s) => ({ ...s, en_reviewed_by: 'karen' })));
+  const final = run('verify.mjs', '--final');
+  assert.equal(final.status, 0, final.stderr);
+  writeFileSync(join(copy, 'data/transcript.md'), transcript);
+  writeFileSync(join(copy, 'data/translations.en.json'), translations);
+  writeFileSync(join(copy, 'data/ui_strings.json'), strings);
+});
+
+test('verify は③カードから Translated by Claude の部品が消えると止まる', () => {
+  const source = readCopy('public/choose.js');
+  writeFileSync(join(copy, 'public/choose.js'), source.replace('translationTag([translation]),', ''));
+  const result = run('verify.mjs');
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /teaserView に「Translated by Claude」/);
+  writeFileSync(join(copy, 'public/choose.js'), source);
+});

@@ -1,4 +1,5 @@
 // 約束を仕組みで守るための照合。npm run verify で走り、1つでも落ちると終了コード 1 で止まる。
+// npm run verify -- --final は、【仮】の文字起こしと未確認の英訳が残っていても止まる。
 import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
@@ -11,6 +12,7 @@ const root = fileURLToPath(new URL('..', import.meta.url));
 const read = (path) => readFileSync(join(root, path), 'utf8');
 const readJson = (path) => JSON.parse(read(path));
 
+const isFinal = process.argv.includes('--final');
 const failures = [];
 const warnings = [];
 const report = (name, problems, detail) => {
@@ -208,10 +210,20 @@ if (transcript.includes('【仮】')) warnings.push('data/transcript.md はま�
 const unreviewed = translationFile.translations.filter((t) => !t.reviewed_by).length;
 if (unreviewed) warnings.push(`英語訳 ${unreviewed} 件は未確認です（画面には Not yet checked と出ます）。`);
 
+if (isFinal) {
+  const finalProblems = [];
+  if (transcript.includes('【仮】')) finalProblems.push('data/transcript.md がまだ【仮】です。本番の文字起こしに差し替えて npm run generate を実行してください。');
+  const notChecked = translationFile.translations.filter((t) => !t.reviewed_by).map((t) => t.ref_id);
+  if (notChecked.length) finalProblems.push(`項目の英訳 ${notChecked.length} 件が未確認です（${notChecked.join('、')}）。確認して data/translations.en.json の reviewed_by を入れてください。`);
+  const uiNotChecked = readJson('data/ui_strings.json').filter((s) => s.en && s.en !== s.ja && !s.en_reviewed_by).map((s) => s.key);
+  if (uiNotChecked.length) finalProblems.push(`画面の文言の英語 ${uiNotChecked.length} 件が未確認です（${uiNotChecked.join('、')}）。確認して data/ui_strings.json の en_reviewed_by を入れてください。`);
+  report('最終確認（【仮】・未確認の英訳）', finalProblems);
+}
+
 for (const warning of warnings) console.log(`△ ${warning}`);
 if (failures.length) {
   console.error(`\n${failures.length} 件の問題があります：`);
   for (const failure of failures) console.error(`- ${failure}`);
   process.exit(1);
 }
-console.log('\nverify：すべて通りました。');
+console.log(`\nverify${isFinal ? ' --final' : ''}：すべて通りました。`);

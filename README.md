@@ -51,6 +51,8 @@ npm test
 npm run verify
 ```
 
+公開する前の最終確認は `npm run verify -- --final` です。【仮】の文字起こしや未確認の英訳が残っていると止まります（通常の `npm run verify` では注意だけ出ます）。
+
 本番の文字起こしに差し替えるときは、`data/transcript.md` を書き換えて、保存データを作り直します（API キーが必要）。
 
 ```bash
