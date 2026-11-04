@@ -8,6 +8,7 @@ let draft = null;
 let error = null;
 let working = false;
 let activeId = null;
+let demo = false;
 
 const steps = () => {
   const current = draft ? 2 : 1;
@@ -139,7 +140,7 @@ function inputView() {
       working = false;
       render();
     },
-    text: working ? 'Claude が分けています（1分ほどかかることがあります）…' : '手紙の下書きにする',
+    text: working ? (demo ? '保存データを読み込んでいます…' : 'Claude が分けています（1分ほどかかることがあります）…') : '手紙の下書きにする',
   });
   return [
     h('h1', { class: 'tool-h1', text: '話を預かる' }),
@@ -171,7 +172,7 @@ function render() {
 }
 
 try {
-  ({ draft } = await api('draft'));
+  ({ draft, demo } = await api('draft'));
 } catch (e) {
   error = e;
 }

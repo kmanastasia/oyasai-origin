@@ -15,6 +15,7 @@ let decisions = new Map();
 let phase = 'cards';
 let result = null;
 let error = null;
+let demo = false;
 
 const farmerName = () => draft.paragraphs[0]?.speaker ?? '作り手';
 
@@ -97,7 +98,7 @@ function reviewView() {
         }
         render();
       },
-      text: phase === 'sealing' ? '封をしています。英語の手紙も用意しています…' : '封をする',
+      text: phase === 'sealing' ? (demo ? '封をしています…' : '封をしています。英語の手紙も用意しています…') : '封をする',
     }),
     h('button', {
       class: 'seal-back',
@@ -155,7 +156,7 @@ function render() {
 }
 
 try {
-  ({ draft } = await api('draft'));
+  ({ draft, demo } = await api('draft'));
   if (draft?.entries.length === 0) {
     draft = null;
     error = { message: '照合を通った項目がありません。', next: '①残す で文字起こしを確かめて、下書きを作り直してください。' };

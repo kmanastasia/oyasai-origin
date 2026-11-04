@@ -3,12 +3,14 @@ import { readFile } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { UserError } from '../lib/ingest.mjs';
-import { createDraft, getDraft, getLetter, getOffer, getUiStrings, readSampleTranscript, resetAll, sealLetter, unsealLetter } from './pipeline.mjs';
+import { configure, createDraft, getDraft, getLetter, getOffer, getUiStrings, isDemo, readSampleTranscript, resetAll, sealLetter, unsealLetter } from './pipeline.mjs';
 
 const publicDir = fileURLToPath(new URL('../public/', import.meta.url));
 const PORT = Number(process.env.PORT ?? 3000);
 const HOST = process.env.HOST ?? '127.0.0.1';
 const MAX_BODY = 512 * 1024;
+
+if (process.argv.includes('--demo')) configure({ demo: true });
 
 const PAGES = { '/keep': 'keep.html', '/seal': 'seal.html', '/choose': 'choose.html', '/letter': 'letter.html' };
 const TYPES = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.svg': 'image/svg+xml' };
@@ -35,7 +37,7 @@ async function readBody(req) {
 
 const ROUTES = {
   'GET /api/sample': async () => ({ transcript: await readSampleTranscript() }),
-  'GET /api/draft': async () => ({ draft: await getDraft() }),
+  'GET /api/draft': async () => ({ draft: await getDraft(), demo: isDemo() }),
   'POST /api/draft': async (req) => ({ draft: await createDraft((await readBody(req)).transcript) }),
   'POST /api/seal': async (req) => {
     const { decisions } = await readBody(req);
@@ -111,7 +113,9 @@ server.on('error', (error) => {
 
 server.listen(PORT, HOST, () => {
   console.log(`OYASAI ORIGIN: http://localhost:${PORT}/keep`);
-  if (!process.env.ANTHROPIC_API_KEY) {
+  if (isDemo()) {
+    console.log('npm run demo：同梱の保存データだけで動きます。API キーがあっても Claude は呼びません。');
+  } else if (!process.env.ANTHROPIC_API_KEY) {
     console.log('API キーがないので、同梱の保存データで動きます（.env に ANTHROPIC_API_KEY を入れると Claude を呼びます）。');
   }
 });

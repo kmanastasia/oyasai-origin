@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "node --env-file-if-exists=.env server/index.mjs",
     "start": "node --env-file-if-exists=.env server/index.mjs",
+    "demo": "node server/index.mjs --demo",
     "verify": "node scripts/verify.mjs",
     "test": "node --test \"test/*.test.mjs\"",
     "generate": "node --env-file-if-exists=.env scripts/generate.mjs"

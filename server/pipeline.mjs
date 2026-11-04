@@ -6,7 +6,16 @@ import { assignByRule, buildPublicLetter, isOutward, sealArchive } from '../lib/
 import { NoApiKeyError, runAssignment, runFarmArchive, runTranslation } from './claude.mjs';
 
 const dataDir = fileURLToPath(new URL('../data/', import.meta.url));
-const runtimeDir = `${dataDir}runtime/`;
+let runtimeDir = `${dataDir}runtime/`;
+let demo = false;
+
+// demo は API を一度も呼ばず、同梱の保存データだけで動く。実行中のデータも通常の起動と分ける。
+export function configure(options) {
+  demo = Boolean(options.demo);
+  runtimeDir = options.runtimeDir ?? (demo ? `${dataDir}runtime/demo/` : `${dataDir}runtime/`);
+}
+
+export const isDemo = () => demo;
 
 const readJson = async (path) => JSON.parse(await readFile(path, 'utf8'));
 
@@ -33,6 +42,7 @@ async function isSampleTranscript(paragraphs) {
 }
 
 const REPLAY_NOTICE = {
+  demo: '保存データを表示中です（npm run demo で起動しているので、Claude は呼びません）。',
   no_key: '保存データを表示中です（.env に ANTHROPIC_API_KEY がないため）。',
   failed: '保存データを表示中です（Claude との通信に失敗したため）。',
 };
@@ -42,8 +52,18 @@ export async function createDraft(text) {
   let archive;
   let source = 'live';
   let notice = null;
+  if (demo && !(await isSampleTranscript(paragraphs))) {
+    throw new UserError(
+      'npm run demo では、同梱の文字起こしだけを使えます。',
+      '「聞き取りの見本を入れる」を押すか、自分の聞き取りを分けるなら npm run dev で起動し直してください。'
+    );
+  }
   try {
-    archive = await runFarmArchive(paragraphs);
+    archive = demo ? await readJson(`${dataDir}replay/farm_archive.json`) : await runFarmArchive(paragraphs);
+    if (demo) {
+      source = 'replay';
+      notice = REPLAY_NOTICE.demo;
+    }
   } catch (error) {
     const reason = error instanceof NoApiKeyError ? 'no_key' : 'failed';
     console.error(`[draft] ${reason}: ${error.message}`);
@@ -99,12 +119,12 @@ export async function sealLetter(decisions) {
 
   const assignment = await withReplayFallback(
     'assign',
-    () => runAssignment(outward),
+    () => (demo ? readJson(`${dataDir}replay/letter_assignment.json`) : runAssignment(outward)),
     async () => (sample ? readJson(`${dataDir}replay/letter_assignment.json`) : assignByRule(outward))
   );
   const translationFile = await withReplayFallback(
     'translate',
-    async () => ({
+    async () => (demo ? readJson(`${dataDir}translations.en.json`) : {
       archive_version: version,
       ...(await runTranslation(outward)),
     }),
