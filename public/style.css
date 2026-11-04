@@ -234,7 +234,23 @@ body:has(.voice-bar) .sheet, body:has(.voice-bar) #closing { scroll-margin-top: 
 
 @keyframes appear { from { opacity: 0; transform: translateY(8px); } }
 
-.item { padding: 16px 0 20px; border-top: 1px solid var(--momi); }
+.item { position: relative; padding: 16px 0 20px; border-top: 1px solid var(--momi); }
+
+/* 読み上げている項目が光る。文字は動かさず、下に敷いた色の濃さだけが変わる */
+.item::before {
+  content: '';
+  position: absolute;
+  inset: 0 -12px;
+  z-index: 0;
+  background: rgba(78, 107, 45, 0.12);
+  border-left: 3px solid var(--ha);
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
+  pointer-events: none;
+}
+.item.is-speaking::before { opacity: 1; }
+.item > * { position: relative; z-index: 1; }
+
 .item__title { font-size: 16px; font-weight: 500; color: var(--haicha); margin-bottom: 8px; }
 .item__foot { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
 .item__reason { margin-top: 12px; padding-left: 12px; border-left: 3px solid var(--kogecha); }

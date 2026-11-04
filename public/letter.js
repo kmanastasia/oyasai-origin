@@ -18,6 +18,8 @@ let justOpened = false;
 let entering = new Set(); // 今回の描画で現れる区画。ここの本文だけが静かに現れる
 let revealed = 0; // 開いている便箋の数。chapters.length + 1 で結びまで。
 let speaking = null; // 読み上げ中の便箋の番号
+let speakingItem = null; // 読み上げ中の項目の id
+let speechRun = 0; // 止めた読み上げの知らせを、次の読み上げと取り違えないための番号
 let closingOpen = false;
 let actionDone = false;
 
@@ -28,31 +30,50 @@ const atClosing = () => revealed > chapters.length;
 
 /* ---- 読み上げ：原文をそのまま、ブラウザ標準の機能で読むだけ ---- */
 
-function stopSpeech() {
+function cancelSpeech() {
+  speechRun += 1;
   if (canSpeak) speechSynthesis.cancel();
   speaking = null;
+  speakingItem = null;
+}
+
+function stopSpeech() {
+  cancelSpeech();
   renderVoice();
   renderBody();
 }
 
 const speakable = (chapter) => chapter.items.filter((item) => !item.skip_speech);
 
+// 読み上げている項目だけに印を付ける。語単位では追わない。
+function markSpeaking() {
+  for (const el of root.querySelectorAll('[data-item-id]')) el.classList.toggle('is-speaking', el.dataset.itemId === speakingItem);
+}
+
 function speak(index) {
-  speechSynthesis.cancel();
-  const lines = speakable(chapters[index]).flatMap((item) => [item.quote, item.reason_quote].filter(Boolean));
+  cancelSpeech();
+  const lines = speakable(chapters[index]).flatMap((item) => [item.quote, item.reason_quote].filter(Boolean).map((text) => ({ id: item.id, text })));
   if (lines.length === 0) return;
+  const run = speechRun;
   speaking = index;
+  const finish = () => {
+    if (run !== speechRun) return;
+    speaking = null;
+    speakingItem = null;
+    renderVoice();
+    renderBody();
+  };
   lines.forEach((line, i) => {
-    const utterance = new SpeechSynthesisUtterance(line);
+    const utterance = new SpeechSynthesisUtterance(line.text);
     utterance.lang = 'ja-JP';
+    utterance.onstart = () => {
+      if (run !== speechRun) return;
+      speakingItem = line.id;
+      markSpeaking();
+    };
     if (i === lines.length - 1) {
-      utterance.onend = () => {
-        if (speaking === index) {
-          speaking = null;
-          renderVoice();
-          renderBody();
-        }
-      };
+      utterance.onend = finish;
+      utterance.onerror = finish;
     }
     speechSynthesis.speak(utterance);
   });
@@ -271,6 +292,7 @@ function renderBody() {
   entering = new Set();
   root.replaceChildren(...sections.filter(Boolean));
   settleAppear();
+  markSpeaking();
   renderNext();
   updateShiori();
 }
@@ -303,8 +325,7 @@ function scrollToId(id) {
 function next() {
   if (!opened || atClosing()) return;
   if (speaking !== null) {
-    speechSynthesis.cancel();
-    speaking = null;
+    cancelSpeech();
     renderVoice();
   }
   revealed += 1;
