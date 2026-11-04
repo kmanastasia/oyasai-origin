@@ -117,7 +117,7 @@ button, a.btn { font-family: inherit; }
 }
 
 .btn:disabled { opacity: 0.55; cursor: default; }
-.btn--primary { background: var(--ha); border-color: var(--ha); color: #fff; }
+.btn--primary { background: var(--ha); border-color: var(--ha); color: var(--shiro); }
 .btn--ghost { background: transparent; }
 .btn--small { min-height: 44px; padding: 6px 12px; font-size: 14px; }
 .btn--tall { min-height: 64px; width: 100%; font-size: 17px; }
@@ -157,6 +157,8 @@ button, a.btn { font-family: inherit; }
   padding: 24px;
   margin-bottom: 24px;
 }
+
+.card { padding: 32px 24px; }
 
 .card__top { display: flex; align-items: center; justify-content: space-between; min-height: 40px; margin-bottom: 12px; }
 .card__veg { font-size: 28px; font-weight: 700; line-height: 1.4; letter-spacing: 0.04em; }
@@ -234,6 +236,8 @@ body:has(.voice-bar) .sheet, body:has(.voice-bar) #closing { scroll-margin-top: 
 
 @keyframes appear { from { opacity: 0; transform: translateY(8px); } }
 
+html[lang='en'] .sheet__title { font-family: var(--fraunces); font-weight: 600; letter-spacing: 0.04em; }
+
 .item { position: relative; padding: 16px 0 20px; border-top: 1px solid var(--momi); }
 
 /* 読み上げている項目が光る。文字は動かさず、下に敷いた色の濃さだけが変わる */
@@ -249,8 +253,11 @@ body:has(.voice-bar) .sheet, body:has(.voice-bar) #closing { scroll-margin-top: 
   pointer-events: none;
 }
 .item.is-speaking::before { opacity: 1; }
+.sheet__title + .item::before { top: -8px; }
 .item > * { position: relative; z-index: 1; }
 
+.sheet__title + .item { border-top: 0; padding-top: 0; }
+.quote, .card__teaser, .seal-quote, .word { text-spacing-trim: trim-start; }
 .item__title { font-size: 16px; font-weight: 500; color: var(--haicha); margin-bottom: 8px; }
 .item__foot { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
 .item__reason { margin-top: 12px; padding-left: 12px; border-left: 3px solid var(--kogecha); }
@@ -260,7 +267,7 @@ body:has(.voice-bar) .sheet, body:has(.voice-bar) #closing { scroll-margin-top: 
 .en-main { font-family: var(--fraunces); font-size: 18px; line-height: 1.6; }
 .en-main--small { font-size: 16px; }
 .jp-sub { font-family: var(--mincho); font-size: 14px; color: var(--haicha); margin-top: 6px; line-height: 1.7; }
-.jp-sub__label { margin-right: 6px; }
+.jp-sub__label { display: block; margin: 0 0 2px; }
 
 .word__head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin-bottom: 8px; }
 .word { font-size: 32px; line-height: 1.5; letter-spacing: 0.06em; }
@@ -316,7 +323,7 @@ body:has(.voice-bar) .sheet, body:has(.voice-bar) #closing { scroll-margin-top: 
   height: calc(72px + env(safe-area-inset-bottom));
   padding: 0 0 env(safe-area-inset-bottom);
   background: var(--ha);
-  color: #fff;
+  color: var(--shiro);
   border: 0;
   font-family: var(--gothic);
   font-size: 18px;
@@ -331,7 +338,7 @@ body:has(.next-bite) .column { padding-bottom: calc(104px + env(safe-area-inset-
 .closing__keep { font-size: 14px; color: var(--haicha); margin-top: 12px; }
 .closing__back { display: inline-block; margin-top: 24px; padding: 10px 0; font-size: 14px; }
 
-.offer { border: 1px solid var(--momi); padding: 16px 16px 20px; background: var(--kinari); }
+.offer { border: 0; padding: 16px 16px 20px; background: var(--kinari); }
 .offer__name { font-family: var(--mincho); font-size: 20px; font-weight: 700; letter-spacing: 0.04em; }
 .offer__name.fraunces { font-family: var(--fraunces); font-weight: 600; letter-spacing: 0; line-height: 1.35; }
 .offer__contents { font-size: 14px; margin: 4px 0 12px; }
@@ -440,6 +447,7 @@ body:has(.next-bite) .column { padding-bottom: calc(104px + env(safe-area-inset-
 .seal-quote { font-family: var(--mincho); font-size: 22px; line-height: 1.7; margin-bottom: 20px; }
 .seal-quote--reason { font-size: 20px; padding-left: 12px; border-left: 3px solid var(--kogecha); }
 .seal-title { font-size: 20px; }
+.seal-title .unit__cat { font-size: 16px; line-height: 28px; padding: 0 10px; }
 .seal-missing { margin-top: 12px; padding: 8px 12px; border: 1px dashed var(--kogecha); font-size: 18px; }
 
 .audience { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
