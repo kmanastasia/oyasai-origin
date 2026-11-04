@@ -7,12 +7,15 @@ const nextRoot = document.getElementById('next');
 const shiori = document.getElementById('shiori');
 const canSpeak = 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
 const calm = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+const noMotion = () => calm() || document.hidden;
+const APPEAR_MS = 1300; // 文字が現れ終わる時間より少し長く
 
 let letter = null;
 let offer = null;
 let chapters = [];
 let opened = false;
 let justOpened = false;
+let entering = new Set(); // 今回の描画で現れる区画。ここの本文だけが静かに現れる
 let revealed = 0; // 開いている便箋の数。chapters.length + 1 で結びまで。
 let speaking = null; // 読み上げ中の便箋の番号
 let closingOpen = false;
@@ -71,29 +74,32 @@ function renderVoice() {
 
 const itemsTag = (items) => translationTag(items.map((item) => letter.translations[item.id]));
 
-function flavorItem(item) {
+const appear = (section) => (entering.has(section) ? ' appear' : '');
+
+// 動くのは本人の言葉だけ。出どころや翻訳の表示は最初から出しておく。
+function flavorItem(item, section) {
   const translation = letter.translations[item.id];
   const words = translation?.untranslated ?? [];
-  return h('div', { class: 'item item--flavor' },
-    h('div', { class: 'word__head' },
+  return h('div', { class: 'item item--flavor', 'data-item-id': item.id },
+    h('div', { class: `word__head${appear(section)}` },
       h('blockquote', { class: 'word mincho', lang: 'ja', text: item.quote }),
       h('span', { class: 'word__source', text: t('letter.wordSource') })),
     words.length === 0 && en() ? h('p', { class: 'word__near mono', text: t('letter.noWord') }) : null,
     words.map((word) => [
-      en() ? h('p', { class: 'word__romaji mono', lang: 'ja-Latn', text: word.romaji }) : null,
-      h('p', { class: 'word__near', lang: 'ja', text: word.gloss_ja }),
-      h('p', { class: 'word__near mono', lang: 'en', text: word.gloss_en }),
+      en() ? h('p', { class: `word__romaji mono${appear(section)}`, lang: 'ja-Latn', text: word.romaji }) : null,
+      h('p', { class: `word__near${appear(section)}`, lang: 'ja', text: word.gloss_ja }),
+      h('p', { class: `word__near mono${appear(section)}`, lang: 'en', text: word.gloss_en }),
     ]),
     words.length > 0 ? h('p', { class: 'word__by', text: t('letter.glossBy') }) : null,
     h('p', { class: 'item__foot' },
       h('span', { class: 'mono', text: t('letter.source', { ref: item.source_ref }) })));
 }
 
-function plainItem(item) {
+function plainItem(item, section) {
   const translation = letter.translations[item.id];
   const english = en() && translation?.text;
   const title = en() ? translation?.title_text ?? item.title_sys : item.title_sys;
-  return h('div', { class: 'item' },
+  return h('div', { class: `item${appear(section)}`, 'data-item-id': item.id },
     h('h3', { class: 'item__title', text: title }),
     english
       ? [
@@ -114,7 +120,7 @@ function plainItem(item) {
     h('p', { class: 'item__foot' }, h('span', { class: 'mono', text: t('letter.source', { ref: item.source_ref }) })));
 }
 
-const renderItem = (item) => (item.tags.includes('味ことば') ? flavorItem(item) : plainItem(item));
+const renderItem = (item, section) => (item.tags.includes('味ことば') ? flavorItem(item, section) : plainItem(item, section));
 
 function coverView() {
   const { meta, verified } = letter;
@@ -149,16 +155,16 @@ function landView() {
     h('p', { class: 'mono sheet__no', text: `LAND ${pad(1)}｜${pad(letter.land.length)}` }),
     h('h2', { class: 'sheet__title' }, t('letter.opening'), ' ', h('span', { class: 'tag-note', text: t('town.tag') })),
     itemsTag(letter.land),
-    letter.land.map(renderItem));
+    letter.land.map((item) => renderItem(item, 'land')));
 }
 
 function chapterView(chapter, index) {
   const isSpeaking = speaking === index;
-  return h('section', { class: `sheet${index === revealed - 1 ? ' appear' : ''}`, 'data-section': `bite-${index}`, id: `bite-${index}` },
+  return h('section', { class: 'sheet', 'data-section': `bite-${index}`, id: `bite-${index}` },
     h('p', { class: 'mono sheet__no', text: `BITE ${pad(index + 1)}｜${pad(chapters.length)}` }),
     h('h2', { class: 'sheet__title', text: t(`bite.${chapter.kind}`) }),
     itemsTag(chapter.items),
-    chapter.items.map(renderItem),
+    chapter.items.map((item) => renderItem(item, `bite-${index}`)),
     canSpeak && speakable(chapter).length > 0
       ? h('div', { class: 'sheet__voice' },
         h('button', {
@@ -208,7 +214,7 @@ function closingJp() {
   return [
     h('p', { class: 'band band--inline', role: 'note', text: t('close.jp.band') }),
     h('p', { class: 'mono sheet__no', lang: 'en', text: t('close.jp.eyebrow') }),
-    h('p', { class: 'closing__line mincho', text: t('close.jp.line', { farmer: letter.meta.farmer.ja }) }),
+    h('p', { class: `closing__line mincho${appear('closing')}`, text: t('close.jp.line', { farmer: letter.meta.farmer.ja }) }),
     h('p', { class: 'closing__sub', text: t('close.jp.sub') }),
     closingOpen
       ? originCard()
@@ -238,7 +244,7 @@ function closingEn() {
   return [
     h('p', { class: 'band band--inline', role: 'note', text: t('close.en.band') }),
     h('p', { class: 'mono sheet__no', text: t('close.en.eyebrow') }),
-    h('p', { class: 'closing__line fraunces', text: t('close.en.line') }),
+    h('p', { class: `closing__line fraunces${appear('closing')}`, text: t('close.en.line') }),
     h('p', { class: 'closing__sub', text: t('close.en.sub') }),
     closingOpen
       ? visitCard()
@@ -248,7 +254,7 @@ function closingEn() {
 }
 
 function closingView() {
-  return h('section', { class: 'sheet sheet--closing appear', 'data-section': 'closing', id: 'closing' },
+  return h('section', { class: 'sheet sheet--closing', 'data-section': 'closing', id: 'closing' },
     en() ? closingEn() : closingJp(),
     h('a', { class: 'closing__back', href: '/choose', text: t('letter.backToList') }));
 }
@@ -262,11 +268,19 @@ function renderBody() {
     sections.push(landView(), ...chapters.slice(0, revealed).map(chapterView));
     if (atClosing()) sections.push(closingView());
   }
-  root.classList.toggle('no-appear', !justOpened && !root.dataset.animate);
-  delete root.dataset.animate;
+  entering = new Set();
   root.replaceChildren(...sections.filter(Boolean));
+  settleAppear();
   renderNext();
   updateShiori();
+}
+
+// アニメーションが進まない環境でも本文が消えたままにならないよう、時間が来たら必ず外す。
+const finishAppear = (els) => els.forEach((el) => el.classList.remove('appear'));
+
+function settleAppear() {
+  const moving = [...root.querySelectorAll('.appear')];
+  if (moving.length > 0) setTimeout(() => finishAppear(moving), APPEAR_MS);
 }
 
 function renderNext() {
@@ -294,7 +308,7 @@ function next() {
     renderVoice();
   }
   revealed += 1;
-  root.dataset.animate = '1';
+  if (!noMotion()) entering.add(atClosing() ? 'closing' : `bite-${revealed - 1}`);
   renderBody();
   scrollToId(atClosing() ? 'closing' : `bite-${revealed - 1}`);
 }
@@ -304,6 +318,7 @@ function openLetter(thenListen) {
   justOpened = true;
   revealed = Math.min(1, chapters.length);
   if (chapters.length === 0) revealed = 1;
+  if (!noMotion()) entering = new Set(['land', 'bite-0']);
   renderBody();
   justOpened = false;
   if (thenListen && canSpeak) speak(0);
@@ -311,11 +326,9 @@ function openLetter(thenListen) {
   target?.scrollIntoView({ behavior: calm() ? 'auto' : 'smooth', block: 'start' });
 }
 
+// 栞の長さは開いた便箋の数だけで決める。戻っても縮まない。
 function updateShiori() {
-  const max = document.documentElement.scrollHeight - innerHeight;
-  const ratio = max > 0 ? Math.min(1, scrollY / max) : 0;
-  const progress = chapters.length === 0 ? 0 : Math.min(1, revealed / (chapters.length + 1));
-  shiori.style.transform = `scaleY(${opened ? Math.max(ratio * progress, progress * 0.25) : 0})`;
+  shiori.style.transform = `scaleY(${opened ? Math.min(1, revealed / (chapters.length + 1)) : 0})`;
 }
 
 // 手が汚れていても進めるように、画面の下半分はどこを押しても次へ。
@@ -325,7 +338,9 @@ document.addEventListener('click', (event) => {
   if (getSelection()?.toString()) return;
   if (event.clientY > innerHeight / 2) next();
 });
-addEventListener('scroll', updateShiori, { passive: true });
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) finishAppear(root.querySelectorAll('.appear'));
+});
 addEventListener('pagehide', () => canSpeak && speechSynthesis.cancel());
 
 // 切り替えても、今いる位置と読み上げは保つ。
