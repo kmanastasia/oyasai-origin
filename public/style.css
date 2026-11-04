@@ -139,11 +139,11 @@ button, a.btn { font-family: inherit; }
 
 .stamp--big { width: 96px; height: 96px; font-size: 40px; }
 .stamp--press { animation: press 0.4s cubic-bezier(0.2, 0.7, 0.2, 1); }
-.stamp--open { animation: unseal 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.stamp--open { animation: unseal 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) forwards; }
 .stamp--gone { opacity: 0; }
 
 @keyframes press { from { transform: scale(1.4); } }
-@keyframes unseal { to { transform: scale(0.7); opacity: 0; } }
+@keyframes unseal { to { transform: scale(0.6); opacity: 0; } }
 
 /* ===== 受け取る側 ===== */
 .column { max-width: 480px; margin: 0 auto; padding: 32px 24px 56px; }

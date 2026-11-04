@@ -9,12 +9,13 @@ const canSpeak = 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in wi
 const calm = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 const noMotion = () => calm() || document.hidden;
 const APPEAR_MS = 1300; // 文字が現れ終わる時間より少し長く
+const SEAL_MS = 800; // 封がほどける時間。スクロールと文字はこのあとに始める
 
 let letter = null;
 let offer = null;
 let chapters = [];
 let opened = false;
-let justOpened = false;
+let unsealing = false; // 封がほどけている間
 let entering = new Set(); // 今回の描画で現れる区画。ここの本文だけが静かに現れる
 let revealed = 0; // 開いている便箋の数。chapters.length + 1 で結びまで。
 let speaking = null; // 読み上げ中の便箋の番号
@@ -150,7 +151,7 @@ function coverView() {
   return h('section', { class: 'sheet sheet--cover', 'data-section': 'cover' },
     h('div', { class: 'card__top' },
       h('span', { class: 'mono', text: meta.no }),
-      h('span', { class: `stamp${justOpened ? ' stamp--open' : ''}${opened && !justOpened ? ' stamp--gone' : ''}`, 'aria-hidden': 'true', text: '封' })),
+      h('span', { class: `stamp${unsealing ? ' stamp--open' : ''}${opened && !unsealing ? ' stamp--gone' : ''}`, 'aria-hidden': 'true', text: '封' })),
     h('h1', { class: 'card__veg' }, h('span', { class: 'mincho', lang: 'ja', text: meta.vegetable.ja }), ' ', h('span', { class: 'fraunces', lang: 'en', text: meta.vegetable.en })),
     h('p', { class: 'card__who', text: `${pair(meta.farmer)}／${pair(meta.town)}` }),
     teaser
@@ -283,9 +284,9 @@ function closingView() {
 /* ---- 進み方 ---- */
 
 function renderBody() {
-  if (!letter) return;
+  if (!letter || (unsealing && root.querySelector('.stamp--open'))) return; // 描き直すと封の動きが最初に戻る
   const sections = [coverView()];
-  if (opened) {
+  if (opened && !unsealing) {
     sections.push(landView(), ...chapters.slice(0, revealed).map(chapterView));
     if (atClosing()) sections.push(closingView());
   }
@@ -306,7 +307,7 @@ function settleAppear() {
 }
 
 function renderNext() {
-  if (!opened || atClosing()) {
+  if (!opened || unsealing || atClosing()) {
     nextRoot.replaceChildren();
     return;
   }
@@ -323,7 +324,7 @@ function scrollToId(id) {
 }
 
 function next() {
-  if (!opened || atClosing()) return;
+  if (!opened || unsealing || atClosing()) return;
   if (speaking !== null) {
     cancelSpeech();
     renderVoice();
@@ -334,17 +335,28 @@ function next() {
   scrollToId(atClosing() ? 'closing' : `bite-${revealed - 1}`);
 }
 
-function openLetter(thenListen) {
-  opened = true;
-  justOpened = true;
-  revealed = Math.min(1, chapters.length);
-  if (chapters.length === 0) revealed = 1;
+function showFirstSheets() {
+  unsealing = false;
   if (!noMotion()) entering = new Set(['land', 'bite-0']);
   renderBody();
-  justOpened = false;
-  if (thenListen && canSpeak) speak(0);
   const target = letter.land.length ? root.querySelector('[data-section="land"]') : document.getElementById('bite-0');
   target?.scrollIntoView({ behavior: calm() ? 'auto' : 'smooth', block: 'start' });
+}
+
+// 読み上げは押した瞬間に始める。遅らせるのはスクロールと文字だけ。
+function openLetter(thenListen) {
+  opened = true;
+  revealed = Math.min(1, chapters.length);
+  if (chapters.length === 0) revealed = 1;
+  if (noMotion()) {
+    if (thenListen && canSpeak) speak(0);
+    showFirstSheets();
+    return;
+  }
+  unsealing = true;
+  renderBody();
+  if (thenListen && canSpeak) speak(0);
+  setTimeout(showFirstSheets, SEAL_MS);
 }
 
 // 栞の長さは開いた便箋の数だけで決める。戻っても縮まない。
