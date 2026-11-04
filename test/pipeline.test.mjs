@@ -29,11 +29,19 @@ before(async () => {
     for await (const chunk of req) chunks.push(chunk);
     const body = JSON.parse(Buffer.concat(chunks).toString());
     requests.push(body);
+    let answer;
+    try {
+      answer = answerFor(body);
+    } catch {
+      res.writeHead(500, { 'content-type': 'application/json' });
+      res.end(JSON.stringify({ type: 'error', error: { type: 'api_error', message: 'down' } }));
+      return;
+    }
     res.writeHead(200, { 'content-type': 'application/json' });
     res.end(JSON.stringify({
       id: 'msg_test', type: 'message', role: 'assistant', model: 'claude-opus-5-5', stop_reason: 'end_turn',
       usage: { input_tokens: 1, output_tokens: 1 },
-      content: [{ type: 'text', text: JSON.stringify(answerFor(body)) }],
+      content: [{ type: 'text', text: JSON.stringify(answer) }],
     }));
   });
   await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
@@ -72,4 +80,53 @@ test('demo に別の文字起こしを貼ると、通信せず次にすること
   configure({ demo: true, runtimeDir });
   await assert.rejects(createDraft('みなみ：別の話です。'), (error) => error.next.includes('聞き取りの見本'));
   assert.equal(requests.length, 0);
+});
+
+const kinds = () => requests.map((body) => Object.keys(body.output_config.format.schema.properties).join());
+
+test('鍵があっても、原文が同じ訳は取り直さず、id が変わっても同じ英語が出る', async () => {
+  configure({ runtimeDir });
+  const saved = json('translations.en.json');
+  // ライブの下書きは id が保存データと違うことがある
+  liveArchive = { ...archive, entries: archive.entries.map((e) => ({ ...e, id: e.id.replace('e-', 'live-') })), next_questions: [] };
+  const draft = await createDraft(transcript);
+  await sealLetter(allYes(draft));
+  assert.ok(!kinds().includes('translations'));
+  const letter = await getLetter();
+  assert.equal(letter.translations['live-03'].text, saved.translations.find((t) => t.ref_id === 'e-03').text);
+});
+
+test('原文が違う項目だけ訳を頼み、頼んだ訳は封をし直しても取り直さない', async () => {
+  configure({ runtimeDir });
+  const changed = { ...archive.entries[2], id: 'live-new', quote: '葉の先が丸まったら' };
+  liveArchive = { entries: [archive.entries[0], changed], next_questions: [] };
+  liveTranslations = (list) => ({ translations: list.map((x) => ({ ref_id: x.id, text: `LIVE ${x.quote}`, reason_text: null, title_text: 't', untranslated: [] })) });
+  const draft = await createDraft(transcript);
+  await sealLetter(allYes(draft));
+  assert.equal(kinds().filter((k) => k === 'translations').length, 1);
+  const asked = requests.find((body) => body.output_config.format.schema.properties.translations);
+  assert.ok(!asked.messages[0].content.includes(archive.entries[0].quote));
+  const first = await getLetter();
+  assert.equal(first.translations['live-new'].text, 'LIVE 葉の先が丸まったら');
+  assert.equal(first.translations['e-01'].text, json('translations.en.json').translations[0].text);
+
+  await unsealLetter();
+  await sealLetter(allYes(draft));
+  assert.equal(kinds().filter((k) => k === 'translations').length, 1);
+  const second = await getLetter();
+  assert.equal(second.archive_version, 2);
+  assert.equal(second.translations['live-new'].text, first.translations['live-new'].text);
+});
+
+test('訳の通信が落ちても、保存してある訳で封をする。原文が違う項目には英語を出さない', async () => {
+  configure({ runtimeDir });
+  liveArchive = { entries: [archive.entries[0], { ...archive.entries[2], id: 'live-new', quote: '葉の先が丸まったら' }], next_questions: [] };
+  liveTranslations = () => {
+    throw new Error('down');
+  };
+  const draft = await createDraft(transcript);
+  await sealLetter(allYes(draft)).catch(() => assert.fail('封ができませんでした'));
+  const letter = await getLetter();
+  assert.ok(letter.translations['e-01']);
+  assert.equal(letter.translations['live-new'], undefined);
 });

@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { parseTranscript } from '../lib/ingest.mjs';
 import { verifyArchive } from '../lib/verbatim.mjs';
-import { assignByRule, buildPublicLetter, sealArchive } from '../lib/letter.mjs';
+import { assignByRule, buildPublicLetter, matchTranslations, sealArchive, withSource } from '../lib/letter.mjs';
 
 const json = (path) => JSON.parse(readFileSync(new URL(`../data/${path}`, import.meta.url), 'utf8'));
 const paragraphs = parseTranscript(readFileSync(new URL('../data/transcript.md', import.meta.url), 'utf8'));
@@ -110,4 +110,50 @@ test('Claude が使えないときの割り当てでも全項目が便箋に載�
   const letter = buildPublicLetter(sealed, assignByRule(sealed.entries), translations, meta);
   const placed = letter.land.length + letter.chapters.reduce((n, c) => n + c.items.length, 0);
   assert.equal(placed, draft.entries.length);
+});
+
+test('訳は、id が変わっても原文が同じなら確認済みの印ごと再利用する', () => {
+  const saved = [{ ref_id: 'e-05', source_quote: '霜が降りるまで抜かん', source_reason_quote: '霜に当てると、甘かなる', text: 'checked', reviewed_by: 'karen' }];
+  const entry = { id: 'z-99', quote: '霜が降りるまで抜かん', reason_quote: '霜に当てると、甘かなる' };
+  const { matched, missing } = matchTranslations([entry], saved);
+  assert.equal(missing.length, 0);
+  assert.equal(matched[0].ref_id, 'z-99');
+  assert.equal(matched[0].text, 'checked');
+  assert.equal(matched[0].reviewed_by, 'karen');
+});
+
+test('原文が違う訳は、id が同じでも一部が重なっていても流用しない', () => {
+  const saved = [{ ref_id: 'e-09', source_quote: 'あまか', source_reason_quote: null, text: 'x', reviewed_by: 'karen' }];
+  for (const entry of [
+    { id: 'e-09', quote: 'あまかった', reason_quote: null },
+    { id: 'e-09', quote: 'まか', reason_quote: null },
+    { id: 'e-09', quote: 'あまか', reason_quote: '霜に当てると、甘かなる' },
+  ]) {
+    const { matched, missing } = matchTranslations([entry], saved);
+    assert.equal(matched.length, 0, entry.quote);
+    assert.equal(missing.length, 1);
+  }
+});
+
+test('原文を持たない訳は、id が一致しても使わない', () => {
+  const { matched } = matchTranslations([{ id: 'e-01', quote: 'あ', reason_quote: null }], [{ ref_id: 'e-01', text: 'x', reviewed_by: 'karen' }]);
+  assert.equal(matched.length, 0);
+});
+
+test('確認済みの英訳は封をし直しても確認済みのまま', () => {
+  const reviewed = translations.translations.map((t) => ({ ...t, reviewed_by: 'karen' }));
+  const sealed = sealArchive(draft, allYes(), undefined, 2);
+  const { matched } = matchTranslations(sealed.entries, reviewed);
+  const letter = buildPublicLetter(sealed, assignment, { archive_version: 2, translations: matched }, meta);
+  assert.ok(Object.values(letter.translations).every((x) => x.reviewed_by === 'karen'));
+  assert.ok(!JSON.stringify(letter).includes('source_quote'));
+});
+
+test('Claude の訳に原文を持たせ、頼んでいない項目の訳と原文にない理由は捨てる', () => {
+  const entries = [{ id: 'a', quote: 'あ', reason_quote: null }];
+  const result = withSource(entries, [{ ref_id: 'a', text: 'A', reason_text: 'because', title_text: 't', untranslated: [] }, { ref_id: 'b', text: 'B', reason_text: null }]);
+  assert.equal(result.length, 1);
+  assert.equal(result[0].source_quote, 'あ');
+  assert.equal(result[0].reason_text, null);
+  assert.equal(result[0].reviewed_by, null);
 });

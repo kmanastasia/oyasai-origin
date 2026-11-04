@@ -61,6 +61,8 @@ npm run generate
 
 読み上げで目立つ読み違いがあれば、`data/speech.json` の `skip_speech_ids` に項目 id を書くと、その項目だけ読まなくなります（原文は変えません）。
 
+英語の確認が済んだ後は作り直しません。`npm run generate` は確認済みの英訳があれば止まります。どうしても作り直すときは `npm run generate -- --keep-reviewed` で、日本語の原文が同じ確認済みの英訳を残します。
+
 ## ③ Claude の機能の使い分け
 
 | 機能 | 何に使うか | 置き場所 |

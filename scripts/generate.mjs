@@ -3,7 +3,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { parseTranscript } from '../lib/ingest.mjs';
 import { verifyArchive } from '../lib/verbatim.mjs';
-import { defaultDisclosure } from '../lib/letter.mjs';
+import { defaultDisclosure, matchTranslations, withSource } from '../lib/letter.mjs';
 import { NoApiKeyError, runAssignment, runFarmArchive, runTranslation } from '../server/claude.mjs';
 
 const dataDir = fileURLToPath(new URL('../data/', import.meta.url));
@@ -13,8 +13,9 @@ try {
   // 確認済みの印を消さない。API を呼ぶ前に止める。
   const saved = JSON.parse(await readFile(`${dataDir}translations.en.json`, 'utf8'));
   const reviewed = saved.translations.filter((t) => t.reviewed_by);
-  if (reviewed.length > 0) {
-    console.error(`確認済みの英訳が ${reviewed.length} 件あるので、作り直さずに止めました（${reviewed.map((t) => t.ref_id).join('、')}）。\n確認後は作り直さない約束です。何も書き換えていません。`);
+  const keepReviewed = process.argv.includes('--keep-reviewed');
+  if (reviewed.length > 0 && !keepReviewed) {
+    console.error(`確認済みの英訳が ${reviewed.length} 件あるので、作り直さずに止めました（${reviewed.map((t) => t.ref_id).join('、')}）。何も書き換えていません。\nどうしても作り直すときは npm run generate -- --keep-reviewed で。日本語の原文が同じ確認済みの英訳は、そのまま残します。`);
     process.exit(1);
   }
   const paragraphs = parseTranscript(await readFile(`${dataDir}transcript.md`, 'utf8'));
@@ -28,7 +29,8 @@ try {
   console.log('便箋に割り当てています…');
   const assignment = await runAssignment(entries);
   console.log('英語に訳しています…');
-  const { translations } = await runTranslation(entries);
+  const { matched, missing } = matchTranslations(entries, reviewed);
+  const fresh = missing.length ? withSource(missing, (await runTranslation(missing)).translations) : [];
 
   await save('replay/farm_archive.json', { entries: checked.entries, next_questions: checked.next_questions });
   await save('replay/letter_assignment.json', assignment);
@@ -37,9 +39,9 @@ try {
     lang: 'en',
     translated_by: 'claude',
     is_translation: true,
-    translations: translations.map((t) => ({ ref_type: 'entry', ...t, reviewed_by: null })),
+    translations: [...matched, ...fresh],
   });
-  console.log('保存しました。npm run verify で確かめてください。');
+  console.log(`保存しました（確認済みの英訳を残した項目 ${matched.length} 件）。npm run verify で確かめてください。`);
 } catch (error) {
   if (error instanceof NoApiKeyError) {
     console.error('API キーがありません。.env に ANTHROPIC_API_KEY を入れて、もう一度実行してください。');

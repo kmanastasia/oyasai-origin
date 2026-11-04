@@ -4,14 +4,14 @@
   "translated_by": "claude",
   "is_translation": true,
   "translations": [
-    { "ref_type": "entry", "ref_id": "e-01", "text": "In the morning the fog comes down, and it doesn't clear until noon.", "reason_text": null, "title_text": "Morning fog and clearing skies", "untranslated": [], "reviewed_by": null },
-    { "ref_type": "entry", "ref_id": "e-02", "text": "Learned how to save seed from the old woman next door.", "reason_text": null, "title_text": "Who taught seed saving", "untranslated": [], "reviewed_by": null },
-    { "ref_type": "entry", "ref_id": "e-03", "text": "When the leaf tips curl, stop the water.", "reason_text": null, "title_text": "The sign to stop watering", "untranslated": [], "reviewed_by": null },
-    { "ref_type": "entry", "ref_id": "e-04", "text": "Drop the seeds two fingers apart.", "reason_text": null, "title_text": "Spacing the seeds", "untranslated": [], "reviewed_by": null },
-    { "ref_type": "entry", "ref_id": "e-05", "text": "Don't pull them until the frost comes.", "reason_text": "Frost makes them sweet.", "title_text": "What decides the harvest", "untranslated": [], "reviewed_by": null },
-    { "ref_type": "entry", "ref_id": "e-06", "text": "Raw, bite into it skin and all.", "reason_text": null, "title_text": "Eating it raw", "untranslated": [], "reviewed_by": null },
-    { "ref_type": "entry", "ref_id": "e-07", "text": "", "reason_text": null, "title_text": "A taste word, raw", "untranslated": [{ "ja": "しゃっきりしとる", "romaji": "shakkiri shitoru", "gloss_ja": "≈ 歯切れがよい・みずみずしい", "gloss_en": "≈ crisp, lively" }], "reviewed_by": null },
-    { "ref_type": "entry", "ref_id": "e-08", "text": "To cook it, slowly, over a low flame.", "reason_text": null, "title_text": "Cooking it", "untranslated": [], "reviewed_by": null },
-    { "ref_type": "entry", "ref_id": "e-09", "text": "", "reason_text": null, "title_text": "A taste word, cooked", "untranslated": [{ "ja": "あまか", "romaji": "amaka", "gloss_ja": "≈ 甘い", "gloss_en": "≈ sweet" }], "reviewed_by": null }
+    { "ref_type": "entry", "ref_id": "e-01", "source_quote": "朝は霧が下りてきて、昼まで晴れん", "source_reason_quote": null, "text": "In the morning the fog comes down, and it doesn't clear until noon.", "reason_text": null, "title_text": "Morning fog and clearing skies", "untranslated": [], "reviewed_by": null },
+    { "ref_type": "entry", "ref_id": "e-02", "source_quote": "隣のばあちゃんに、種の残し方を教わった", "source_reason_quote": null, "text": "Learned how to save seed from the old woman next door.", "reason_text": null, "title_text": "Who taught seed saving", "untranslated": [], "reviewed_by": null },
+    { "ref_type": "entry", "ref_id": "e-03", "source_quote": "葉の先が丸まったら、水を止める", "source_reason_quote": null, "text": "When the leaf tips curl, stop the water.", "reason_text": null, "title_text": "The sign to stop watering", "untranslated": [], "reviewed_by": null },
+    { "ref_type": "entry", "ref_id": "e-04", "source_quote": "種は指二本ぶん、間を空けて落とす", "source_reason_quote": null, "text": "Drop the seeds two fingers apart.", "reason_text": null, "title_text": "Spacing the seeds", "untranslated": [], "reviewed_by": null },
+    { "ref_type": "entry", "ref_id": "e-05", "source_quote": "霜が降りるまで抜かん", "source_reason_quote": "霜に当てると、甘かなる", "text": "Don't pull them until the frost comes.", "reason_text": "Frost makes them sweet.", "title_text": "What decides the harvest", "untranslated": [], "reviewed_by": null },
+    { "ref_type": "entry", "ref_id": "e-06", "source_quote": "生なら、皮ごとかじる", "source_reason_quote": null, "text": "Raw, bite into it skin and all.", "reason_text": null, "title_text": "Eating it raw", "untranslated": [], "reviewed_by": null },
+    { "ref_type": "entry", "ref_id": "e-07", "source_quote": "しゃっきりしとる", "source_reason_quote": null, "text": "", "reason_text": null, "title_text": "A taste word, raw", "untranslated": [{ "ja": "しゃっきりしとる", "romaji": "shakkiri shitoru", "gloss_ja": "≈ 歯切れがよい・みずみずしい", "gloss_en": "≈ crisp, lively" }], "reviewed_by": null },
+    { "ref_type": "entry", "ref_id": "e-08", "source_quote": "火を通すなら、弱い火でゆっくり", "source_reason_quote": null, "text": "To cook it, slowly, over a low flame.", "reason_text": null, "title_text": "Cooking it", "untranslated": [], "reviewed_by": null },
+    { "ref_type": "entry", "ref_id": "e-09", "source_quote": "あまか", "source_reason_quote": null, "text": "", "reason_text": null, "title_text": "A taste word, cooked", "untranslated": [{ "ja": "あまか", "romaji": "amaka", "gloss_ja": "≈ 甘い", "gloss_en": "≈ sweet" }], "reviewed_by": null }
   ]
 }

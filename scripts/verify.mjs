@@ -36,11 +36,13 @@ report(
 );
 
 // 実行中のデータがあれば、それも同じ物差しで確かめる
-const draftPath = 'data/runtime/draft.json';
-if (existsSync(join(root, draftPath))) {
+const RUNTIME_DIRS = [['data/runtime', '実行中'], ['data/runtime/demo', 'demo 実行中']];
+for (const [dir, label] of RUNTIME_DIRS) {
+  const draftPath = `${dir}/draft.json`;
+  if (!existsSync(join(root, draftPath))) continue;
   const draft = readJson(draftPath);
   const recheck = verifyArchive({ entries: draft.entries, next_questions: draft.next_questions }, draft.paragraphs);
-  report('実行中の下書きの照合', recheck.dropped.map((d) => `${d.id}：${d.reason}。/keep で下書きを作り直してください。`), `${recheck.entries.length}/${recheck.total}`);
+  report(`${label}の下書きの照合`, recheck.dropped.map((d) => `${d.id}：${d.reason}。/keep で下書きを作り直してください。`), `${recheck.entries.length}/${recheck.total}`);
 }
 
 // 2. 理由がない判断には質問がある。理由は補われていない
@@ -70,9 +72,10 @@ for (const target of checked.entries) {
     leakProblems.push(`${target.id} を残すだけにしても受け取る側に出ます。lib/letter.mjs の buildPublicLetter を確かめてください。`);
   }
 }
-const letterPath = 'data/runtime/public_letter.json';
-const publishedPath = 'data/runtime/published.json';
-if (existsSync(join(root, letterPath)) && existsSync(join(root, publishedPath))) {
+for (const [dir] of RUNTIME_DIRS) {
+  const letterPath = `${dir}/public_letter.json`;
+  const publishedPath = `${dir}/published.json`;
+  if (!existsSync(join(root, letterPath)) || !existsSync(join(root, publishedPath))) continue;
   const live = read(letterPath);
   for (const entry of readJson(publishedPath).entries.filter((e) => e.disclosure === 'archive_only')) {
     if (live.includes(entry.quote) || live.includes(`"${entry.id}"`)) {
@@ -91,9 +94,16 @@ for (const entry of checked.entries) {
     enProblems.push(`${entry.id} の英語訳がありません。npm run generate で作るか、data/translations.en.json に足してください。`);
     continue;
   }
+  // 訳が指す原文が今の項目と同じでなければ、再利用されず画面に出ない
+  if (t.source_quote !== entry.quote || (t.source_reason_quote ?? null) !== entry.reason_quote) {
+    enProblems.push(`${entry.id} の英語訳が指す原文（source_quote・source_reason_quote）が項目の原文と一致しません。訳を確かめて、原文を合わせてください。`);
+  }
   if (!t.title_text) enProblems.push(`${entry.id} の title_text がありません。`);
   if (entry.tags.includes('味ことば')) {
     if (t.text !== '' || t.untranslated.length === 0) enProblems.push(`${entry.id} は方言の味ことばです。訳さず untranslated に入れてください。`);
+    for (const word of t.untranslated) {
+      if (!word.gloss_ja?.startsWith('≈') || !word.gloss_en?.startsWith('≈')) enProblems.push(`${entry.id} の添え書きは ≈ で始めてください（正解の訳として書かないため）。`);
+    }
   } else if (!t.text) {
     enProblems.push(`${entry.id} の英語訳が空です。`);
   }

@@ -1,7 +1,8 @@
 // generate と verify を、一時フォルダのコピーで実際に走らせて確かめる（本体のデータは触らない）。
 import assert from 'node:assert/strict';
-import { spawnSync } from 'node:child_process';
+import { execFile, spawnSync } from 'node:child_process';
 import { cpSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { createServer } from 'node:http';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { after, before, test } from 'node:test';
@@ -74,4 +75,54 @@ test('verify は③カードから Translated by Claude の部品が消えると
   assert.equal(result.status, 1);
   assert.match(result.stderr, /teaserView に「Translated by Claude」/);
   writeFileSync(join(copy, 'public/choose.js'), source);
+});
+
+test('verify は訳が指す原文が項目とずれると止まる', () => {
+  const saved = readCopy('data/translations.en.json');
+  editJson('data/translations.en.json', (file) => ({ ...file, translations: file.translations.map((t, i) => (i === 0 ? { ...t, source_quote: 'ちがう文' } : t)) }));
+  const result = run('verify.mjs');
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /原文（source_quote/);
+  writeFileSync(join(copy, 'data/translations.en.json'), saved);
+});
+
+test('generate --keep-reviewed は原文が同じ確認済みの英訳を残し、残りだけ訳を頼む', async () => {
+  const files = ['data/translations.en.json', 'data/replay/farm_archive.json', 'data/replay/letter_assignment.json'];
+  const saved = files.map(readCopy);
+  const archive = JSON.parse(saved[1]);
+  const assigned = JSON.parse(saved[2]);
+  const asked = [];
+  const server = createServer(async (req, res) => {
+    const chunks = [];
+    for await (const chunk of req) chunks.push(chunk);
+    const body = JSON.parse(Buffer.concat(chunks).toString());
+    const { properties } = body.output_config.format.schema;
+    let answer = properties.entries ? archive : assigned;
+    if (properties.translations) {
+      const list = JSON.parse(body.messages[0].content.slice(body.messages[0].content.indexOf('[')));
+      asked.push(...list.map((x) => x.id));
+      answer = { translations: list.map((x) => ({ ref_id: x.id, text: 'NEW', reason_text: null, title_text: 't', untranslated: [] })) };
+    }
+    res.writeHead(200, { 'content-type': 'application/json' });
+    res.end(JSON.stringify({ id: 'm', type: 'message', role: 'assistant', model: 'claude-opus-5-5', stop_reason: 'end_turn', usage: { input_tokens: 1, output_tokens: 1 }, content: [{ type: 'text', text: JSON.stringify(answer) }] }));
+  });
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  editJson(files[0], (file) => ({ ...file, translations: file.translations.map((t) => (t.ref_id === 'e-02' ? { ...t, reviewed_by: 'karen' } : t)) }));
+  const checkedText = JSON.parse(readCopy(files[0])).translations.find((t) => t.ref_id === 'e-02').text;
+  await new Promise((resolve, reject) => {
+    execFile(process.execPath, [join(copy, 'scripts/generate.mjs'), '--keep-reviewed'], {
+      cwd: copy,
+      env: { ...process.env, ANTHROPIC_API_KEY: 'test-key', ANTHROPIC_BASE_URL: `http://127.0.0.1:${server.address().port}` },
+    }, (error) => (error ? reject(error) : resolve()));
+  });
+  server.close();
+  const result = JSON.parse(readCopy(files[0])).translations;
+  const kept = result.find((t) => t.ref_id === 'e-02');
+  assert.equal(kept.text, checkedText);
+  assert.equal(kept.reviewed_by, 'karen');
+  assert.ok(!asked.includes('e-02'));
+  assert.equal(result.find((t) => t.ref_id === 'e-03').text, 'NEW');
+  assert.equal(result.find((t) => t.ref_id === 'e-03').source_quote, '葉の先が丸まったら、水を止める');
+  assert.equal(result.find((t) => t.ref_id === 'e-03').reviewed_by, null);
+  files.forEach((file, i) => writeFileSync(join(copy, file), saved[i]));
 });

@@ -2,7 +2,7 @@ import { mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { UserError, parseTranscript, transcriptHash } from '../lib/ingest.mjs';
 import { verifyArchive } from '../lib/verbatim.mjs';
-import { assignByRule, buildPublicLetter, isOutward, sealArchive } from '../lib/letter.mjs';
+import { assignByRule, buildPublicLetter, isOutward, matchTranslations, sealArchive, withSource } from '../lib/letter.mjs';
 import { NoApiKeyError, runAssignment, runFarmArchive, runTranslation } from './claude.mjs';
 
 const dataDir = fileURLToPath(new URL('../data/', import.meta.url));
@@ -106,6 +106,23 @@ async function withReplayFallback(label, live, replay) {
   }
 }
 
+// 保存してある訳を先に使い、原文が一致しない項目だけ Claude に頼む。頼んだ訳は実行中のデータに残して、封をし直しても取り直さない。
+async function collectTranslations(outward) {
+  const saved = await readJson(`${dataDir}translations.en.json`);
+  const cachePath = `${runtimeDir}translations.live.json`;
+  const cache = (await readJsonIfExists(cachePath)) ?? [];
+  const { matched, missing } = matchTranslations(outward, [...saved.translations, ...cache]);
+  if (missing.length === 0 || demo) return matched;
+  try {
+    const live = withSource(missing, (await runTranslation(missing)).translations);
+    await saveRuntime('translations.live.json', [...cache, ...live]);
+    return [...matched, ...live];
+  } catch (error) {
+    console.error(`[translate] 保存してある訳だけで続けます: ${error.message}`);
+    return matched;
+  }
+}
+
 export async function sealLetter(decisions) {
   const draft = await getDraft();
   if (!draft) {
@@ -123,17 +140,7 @@ export async function sealLetter(decisions) {
     () => (demo ? readJson(`${dataDir}replay/letter_assignment.json`) : runAssignment(outward)),
     async () => (sample ? readJson(`${dataDir}replay/letter_assignment.json`) : assignByRule(outward))
   );
-  const translationFile = await withReplayFallback(
-    'translate',
-    async () => (demo ? readJson(`${dataDir}translations.en.json`) : {
-      archive_version: version,
-      ...(await runTranslation(outward)),
-    }),
-    async () => {
-      if (!sample) return { archive_version: version, translations: [] };
-      return readJson(`${dataDir}translations.en.json`);
-    }
-  );
+  const translationFile = { archive_version: version, translations: await collectTranslations(outward) };
 
   const meta = await readJson(`${dataDir}letter_meta.json`);
   const letter = buildPublicLetter(published, assignment, translationFile, meta);
