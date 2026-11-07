@@ -2706,3 +2706,10 @@ html[lang='en'] .reader.page-top .top__doors .door .door__for { font-size: 11px;
 .unit.is-active { box-shadow: inset 4px 0 0 var(--ha), 0 10px 18px -16px var(--shade); }
 .notice { border-left: 4px solid var(--ink); }
 .notice--label { border-left: 4px solid var(--ink); }
+
+/* ---------- トップ（パソコン）：土の写真が指の動きにわずかに寄る（index.js が --px/--py を置く。transform だけ。動きを減らす設定では動かない） ---------- */
+@media (min-width: 1024px) and (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .page-top .top__lid::before { transform: translate(calc(var(--px, 0) * -10px), calc(var(--py, 0) * -8px)) scale(1.06); transition: transform 900ms var(--ease-out); }
+  .page-top .top__lid.appear::before { transition: none; }
+}
+@keyframes lid-settle { from { transform: scale(1.12); } }

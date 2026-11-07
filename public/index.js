@@ -87,9 +87,28 @@ function render() {
   }
 }
 
+// ふたの土が指の動きにわずかに寄る（パソコン・ポインタがあるときだけ。transform だけ。動きを減らす設定では動かない）。字と注記は動かさない
+function soilParallax() {
+  if (!motion || !matchMedia('(hover: hover) and (min-width: 1024px)').matches) return;
+  let raf = 0;
+  root.addEventListener('pointermove', (event) => {
+    const lid = root.querySelector('.top__lid');
+    if (!lid || raf) return;
+    raf = requestAnimationFrame(() => {
+      raf = 0;
+      const box = lid.getBoundingClientRect();
+      const x = Math.max(-1, Math.min(1, ((event.clientX - box.left) / box.width - 0.5) * 2));
+      const y = Math.max(-1, Math.min(1, ((event.clientY - box.top) / box.height - 0.5) * 2));
+      lid.style.setProperty('--px', x.toFixed(3));
+      lid.style.setProperty('--py', y.toFixed(3));
+    });
+  }, { passive: true });
+}
+
 // 最初の描画は待たない（ラベルを帯と同じ時に出す）。動くかどうかはその場で決め、止まっていたら releaseIfStalled が外す。
 motionProbe(); // 言語の切り替えのために、裏で確かめておく
 await startReader();
 motion = !matchMedia('(prefers-reduced-motion: reduce)').matches && !document.hidden;
 onLangChange(render);
 render();
+soilParallax();
