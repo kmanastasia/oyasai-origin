@@ -113,5 +113,9 @@ if (data) {
   cacheLetter(data);
 } else if (!letter) failed = true;
 render(); // 一覧とラベルは、動きの確かめを待たずにすぐ出す
-if (letter) warmFonts(JSON.stringify(letter)); // ④の字を先に読んでおく
+// ④の字は、手紙のカードに指やフォーカスが向いたときにだけ先に読む（③を開いただけでは読まない）
+const warm = warmFonts(letter);
+for (const type of ['pointerover', 'focusin', 'touchstart']) {
+  root.addEventListener(type, (event) => { if (event.target.closest?.('.card--letter')) warm(); }, { passive: true });
+}
 showOpening(await live);

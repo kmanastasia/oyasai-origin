@@ -146,16 +146,23 @@ export function startReader({ route = 0 } = {}) {
 }
 
 // ④で使う字の書体を、③にいる間に先に読んでおく（④に移ったとき、代わりの書体から入れ替わって字が揺れないように）。
-// 読むのは字の形だけで、画面には何も足さない。
-export function warmFonts(extra = '') {
-  const text = [...dictionary.values()].map((s) => `${s.ja}${s.en}`).join('') + extra;
-  const run = () => {
-    for (const face of ['400 16px "Zen Kaku Gothic New"', '500 16px "Zen Kaku Gothic New"', '700 16px "Zen Kaku Gothic New"', '500 16px "Shippori Mincho B1"', '700 16px "Shippori Mincho B1"']) {
-      document.fonts?.load(face, text).catch(() => {});
-    }
+// 読むのは④に実際に出る字の形だけ（本人の言葉と④の画面の文）。画面には何も足さない。
+const LETTER_KEYS = /^(letter|bite|voice|close|visit|town|photo|route|band|verified|sns|check)/;
+export function warmFonts(letterData) {
+  let done = false;
+  return () => {
+    if (done || !letterData) return;
+    done = true;
+    const items = [...(letterData.land ?? []), ...(letterData.chapters ?? []).flatMap((c) => c.items)];
+    const quotes = items.map((i) => `${i.quote ?? ''}${i.reason_quote ?? ''}`).join('') + (letterData.teaser?.quote ?? '') + (letterData.meta?.vegetable?.ja ?? '') + '「」';
+    const ui = [...dictionary.values()].filter((s) => LETTER_KEYS.test(s.key)).map((s) => (lang === 'en' ? s.en : s.ja)).join('')
+      + items.map((i) => i.title_sys ?? '').join('') + (letterData.meta?.farmer?.ja ?? '') + (letterData.meta?.town?.ja ?? '');
+    const unique = (text) => [...new Set(text)].join('');
+    const load = (face, text) => document.fonts?.load(face, unique(text)).catch(() => {});
+    load('500 16px "Shippori Mincho B1"', quotes + ui);
+    load('400 16px "Zen Kaku Gothic New"', ui + quotes);
+    load('500 16px "Zen Kaku Gothic New"', ui);
   };
-  if ('requestIdleCallback' in window) requestIdleCallback(run, { timeout: 1200 });
-  else setTimeout(run, 300);
 }
 
 // ③で読んだ手紙を④に渡す（④の表紙を、読み込みを待たずに出すため）
