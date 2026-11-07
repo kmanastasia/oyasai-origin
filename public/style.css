@@ -1812,3 +1812,7 @@ html .reader .sheet--soil .sheet__title { color: var(--on-dark); }
 @keyframes sheet-out { from { transform: translateY(-32px) scaleY(0.97); } }
 /* 結びの封は、結びが開いたときに一度だけ押される */
 .stamp--sign.stamp--press { animation: press var(--dur-m) var(--ease-out); }
+
+/* 読み上げ中の印は野菜の淡い色（味ことばの若葉の札と見分ける）。墨の字 13.5:1 */
+.page-letter .sheet--bite .item::before { background: var(--veg-100); }
+.page-letter .sheet--bite .item::after { background: var(--veg); }
