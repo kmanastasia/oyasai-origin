@@ -338,17 +338,6 @@ html[lang='en'] .sheet__title { font-family: var(--fraunces); font-weight: 600; 
 
 .voice-bar__stop { min-height: 44px; padding: 0 12px; background: none; border: 1px solid var(--ink); border-radius: 4px; font: inherit; color: inherit; cursor: pointer; }
 
-.shiori-track {
-  position: fixed;
-  top: var(--chrome-h);
-  bottom: 0;
-  right: max(0px, calc(50vw - 240px));
-  width: 6px;
-  z-index: 10;
-  pointer-events: none;
-}
-
-.shiori { height: 100%; background: var(--ha); transform: scaleY(0); transform-origin: top; transition: transform 0.4s ease-out; }
 
 .next-bite {
   position: fixed;
@@ -368,7 +357,6 @@ html[lang='en'] .sheet__title { font-family: var(--fraunces); font-weight: 600; 
   cursor: pointer;
 }
 
-body:has(.next-bite) .column { padding-bottom: calc(104px + env(safe-area-inset-bottom)); }
 
 .closing__line { font-size: 17px; line-height: 1.8; margin: 8px 0; }
 .closing__sub { font-size: 14px; margin-bottom: 20px; }
@@ -676,6 +664,7 @@ html[lang='en'] .door { padding: 18px 24px; gap: 4px; }
   border: 0;
 }
 
+
 /* ===== 表示ラベルの守り：架空・見本・合成音声・Translated by Claude・仮 は、動かさない・薄くしない ===== */
 .band, .tag-note, .tag-line, .tr-tag, .voice-bar, .offer__done, .photo__cap {
   opacity: 1 !important;
@@ -904,7 +893,6 @@ html[lang='ja'] .sheet__title { font-family: var(--gothic); font-size: 18px; fon
 .voice-bar__stop .icon { width: 16px; height: 16px; }
 
 /* 次のひと口へ：上端に細い光の線、明朝の字、右に矢印。スマホは全幅・72px のまま */
-html { scroll-padding-bottom: calc(88px + env(safe-area-inset-bottom)); }
 .next-bite {
   display: flex;
   align-items: center;
@@ -920,24 +908,6 @@ html { scroll-padding-bottom: calc(88px + env(safe-area-inset-bottom)); }
   .next-bite:hover { background: var(--ha-700); }
   .next-bite:hover .icon { transform: translateX(4px); }
 }
-body:has(.next-bite) .column { padding-bottom: calc(120px + env(safe-area-inset-bottom)); }
-
-/* 栞：手紙の右端 6px。先は燕尾。封がほどけるまでは伸びない */
-.shiori-track { right: max(24px, calc(50vw - var(--sheet-w, 432px) / 2)); }
-.shiori-track::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 6px;
-  height: 14px;
-  background: var(--ha);
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 70%, 0 100%);
-  transform: translateY(calc(var(--p, 0) * (100vh - var(--chrome-h)) - 1px));
-  opacity: 0;
-  transition: transform 0.4s var(--ease-std), opacity 0.2s;
-}
-.shiori-track.has-tip::after { opacity: 1; }
 
 /* パソコン・タブレット：便箋を少し広く（列は1本のまま）。次のひと口へは便箋の幅に合わせて浮かせる */
 @media (min-width: 768px) {
@@ -947,7 +917,6 @@ body:has(.next-bite) .column { padding-bottom: calc(120px + env(safe-area-inset-
   .cover-band { margin: -40px -48px 24px; padding: 0 48px; }
   .cover-ribbon { right: 108px; }
   .band--inline { margin: -40px -48px 24px; padding: 8px 48px; }
-  .next-bite { width: min(100% - 48px, var(--sheet-w)); bottom: 24px; height: 72px; padding: 0; border-radius: 4px; }
   .word { font-size: clamp(32px, 3vw, 44px); }
 }
 
@@ -988,8 +957,6 @@ html[lang='en'] .closing__line { font-size: 22px; line-height: 1.5; }
 .sheet > .item:last-child { padding-bottom: 0; }
 .tag-line, .band--inline { text-wrap: balance; word-break: auto-phrase; }
 
-/* 栞は便箋の外側の余白に（帯やラベルの上に重ねない） */
-.shiori-track { right: max(9px, calc(50vw - var(--sheet-w, 342px) / 2 - 15px)); }
 
 /* ②の選ぶボタン：選んだものは淡い緑の地とチェック（CSS の線2本）。動きなし */
 .together__btn, .audience__btn { position: relative; border-color: color-mix(in srgb, var(--momi), var(--haicha) 50%); }
@@ -1008,3 +975,141 @@ html[lang='en'] .closing__line { font-size: 22px; line-height: 1.5; }
 
 /* 結びの見出し（日本語）：明朝の小さな「畑より」 */
 .closing__eyebrow { font-family: var(--mincho); font-size: 14px; letter-spacing: 0.3em; color: var(--haicha); }
+
+/* ===== ④ 読む間：次のひと口へ・栞・目次（2026-11-07 Karen 承認の上書き） ===== */
+/* 次のひと口へは 56px。便箋の下の余白・スクロールの止まる位置は、どれも「帯の高さ＋24px」でそろえる */
+:root { --next-h: 56px; --dur-l: 600ms; --wrap: 1104px; --edge: max(24px, calc(50% - var(--wrap) / 2)); }
+html { scroll-padding-bottom: calc(var(--next-h) + 24px + env(safe-area-inset-bottom)); }
+body:has(.next-bite) .column { padding-bottom: calc(var(--next-h) + 24px + env(safe-area-inset-bottom)); }
+.page-letter .sheet { scroll-margin-bottom: calc(var(--next-h) + 24px); }
+
+.next-bite {
+  height: calc(var(--next-h) + env(safe-area-inset-bottom));
+  font-size: 17px;
+  border-top: 1px solid rgba(248, 243, 232, 0.24);
+  transition: transform 240ms var(--ease-std), background-color 120ms var(--ease-std);
+}
+/* 帯の上に紙のぼかし：便箋の字が帯の縁で急に切れない */
+.next-bite::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  height: 16px;
+  background: linear-gradient(rgba(239, 230, 212, 0), var(--kinari));
+  pointer-events: none;
+}
+.next-bite.is-tucked { transform: translateX(-50%) translateY(calc(100% + 16px)); }
+.next-bite__count { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; opacity: 0.8; }
+
+/* タブレット：便箋の幅より狭い、浮いた一筆箋の形 */
+@media (min-width: 768px) {
+  .next-bite { width: min(100% - 48px, 360px); bottom: 16px; height: var(--next-h); padding: 0 20px; border-radius: 6px; border-top: 0; outline: 1px solid rgba(248, 243, 232, 0.4); outline-offset: -5px; }
+  .next-bite::before { display: none; }
+  body:has(.next-bite) .column { padding-bottom: calc(var(--next-h) + 48px); }
+}
+
+/* 栞：短いひもが、開いた便箋の数だけ下がる。便箋の右の縁に掛ける。スマホでは出さない */
+.shiori { display: none; }
+@media (min-width: 768px) {
+  .shiori {
+    display: block;
+    position: fixed;
+    z-index: 10;
+    top: calc(var(--chrome-h) + 24px);
+    left: calc(50% + var(--sheet-w) / 2 + 12px);
+    width: 10px;
+    height: clamp(96px, 14vh, 140px);
+    background: var(--ha-700);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 82%, 0 100%);
+    transform: translateY(calc(var(--p, 0) * 36vh));
+    opacity: 0;
+    transition: transform var(--dur-l) var(--ease-std), opacity var(--dur-m) var(--ease-std);
+    pointer-events: none;
+  }
+  .shiori.is-on { opacity: 1; }
+}
+
+/* 便箋の目次：パソコンの左の余白に。移動するだけ */
+.sheet-index { display: none; }
+
+/* ===== パソコン：ロゴ・流れの表示・中身の左端を同じ線にそろえる ===== */
+@media (min-width: 1024px) {
+  :root { --edge: max(48px, calc(50% - var(--wrap) / 2)); --sheet-w: 640px; }
+  .kakegami { padding-left: var(--edge); padding-right: calc(var(--edge) - 12px); }
+  .route { padding-left: var(--edge); padding-right: var(--edge); font-size: 15px; }
+
+  /* ④：便箋は真ん中の 640px。次のひと口へは右の余白に置き、便箋に重ねない */
+  .page-letter .quote { font-size: 22px; line-height: 2; }
+  .page-letter .en-main { font-size: 21px; line-height: 1.65; }
+  .page-letter .jp-sub { font-size: 15px; }
+  html[lang='ja'] .page-letter .sheet__title { font-size: 21px; letter-spacing: 0.16em; }
+  html[lang='en'] .page-letter .sheet__title { font-size: 24px; }
+  .page-letter .sheet__no { display: flex; align-items: center; gap: 12px; font-size: 13px; }
+  .page-letter .sheet__no::after { content: ''; width: 40px; height: 1px; background: var(--momi); }
+
+  /* 表紙：持ち上げたふたのように画面を満たす。中身は真ん中に */
+  .page-letter .sheet--cover { display: flex; flex-direction: column; min-height: calc(100svh - 290px); }
+  .sheet--cover > * { flex: none; }
+  .sheet--cover > .card__top { margin-top: auto; }
+  .sheet--cover > :last-child { margin-bottom: auto; }
+  .sheet--cover > .tag-line { align-self: flex-start; }
+  .sheet--cover .card__veg { font-size: 44px; font-family: var(--mincho); font-weight: 500; letter-spacing: 0.08em; }
+  .sheet--cover .card__veg .fraunces { font-size: 24px; }
+  .sheet--cover .card__teaser { font-size: 24px; line-height: 1.9; }
+  .sheet--cover .card__teaser .en-main { font-size: 24px; }
+}
+
+@media (min-width: 1200px) {
+  .next-bite {
+    left: calc(50% + var(--sheet-w) / 2 + 40px);
+    transform: none;
+    width: auto;
+    min-width: 220px;
+    max-width: calc(50% - var(--sheet-w) / 2 - 80px);
+    bottom: 40px;
+    justify-content: space-between;
+  }
+  .next-bite.is-tucked { transform: none; }
+  .next-bite:active { transform: translateY(1px); }
+  body:has(.next-bite) .column { padding-bottom: 56px; }
+
+  .sheet-index:not(:empty) {
+    display: block;
+    position: fixed;
+    z-index: 10;
+    top: calc(var(--chrome-h) + 120px);
+    left: var(--edge);
+    width: calc(50% - var(--sheet-w) / 2 - var(--edge) - 48px);
+  }
+  .sheet-index__no { margin-bottom: 16px; }
+  .sheet-index ol { display: grid; gap: 2px; border-left: 1px solid var(--momi); }
+  .sheet-index button {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    width: 100%;
+    min-height: 40px;
+    margin-left: -1px;
+    padding: 8px 0 8px 16px;
+    background: none;
+    border: 0;
+    border-left: 2px solid transparent;
+    color: var(--haicha);
+    font-family: var(--mincho);
+    font-size: 14px;
+    letter-spacing: 0.12em;
+    text-align: left;
+    cursor: pointer;
+    transition: color var(--dur-s) var(--ease-std), border-color var(--dur-s) var(--ease-std);
+  }
+  html[lang='en'] .sheet-index button { font-family: var(--fraunces); letter-spacing: 0.02em; font-size: 15px; }
+  .sheet-index button:hover { color: var(--ink); }
+  .sheet-index button.is-current { color: var(--ha-700); border-left-color: var(--ha); font-weight: 700; }
+  .sheet-index__n { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; }
+}
+
+/* 表紙の栞ひもは左に寄せ、右の封と重ならないように */
+.cover-ribbon { right: auto; left: 40px; background: var(--ha-700); }
+@media (min-width: 768px) { .cover-ribbon { left: 64px; } }

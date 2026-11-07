@@ -62,6 +62,8 @@
   { "key": "letter.noWord", "ja": "⌀ ぴったりの言葉はありません", "en": "⌀ no direct word", "en_reviewed_by": null },
   { "key": "letter.wordSource", "ja": "作り手", "en": "Maker", "en_reviewed_by": null },
   { "key": "letter.glossBy", "ja": "≈ は Claude による添え書き", "en": "≈ notes by Claude", "en_reviewed_by": null },
+  { "key": "letter.index", "ja": "便箋", "en": "Sheets", "en_reviewed_by": null },
+  { "key": "letter.index.closing", "ja": "結び", "en": "Closing", "en_reviewed_by": null },
   { "key": "letter.backToList", "ja": "手紙の一覧へ", "en": "Back to the letters", "en_reviewed_by": null },
 
   { "key": "bite.raw", "ja": "生で", "en": "Raw", "en_reviewed_by": null },

@@ -5,6 +5,7 @@ const root = document.getElementById('root');
 const voiceRoot = document.getElementById('voice');
 const nextRoot = document.getElementById('next');
 const shiori = document.getElementById('shiori');
+const indexRoot = document.getElementById('sheet-index');
 const live = document.getElementById('sr-live');
 const canSpeak = 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
 const calm = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -51,7 +52,14 @@ const speakable = (chapter) => chapter.items.filter((item) => !item.skip_speech)
 
 // 読み上げている項目だけに印を付ける。語単位では追わない。
 function markSpeaking() {
-  for (const el of root.querySelectorAll('[data-item-id]')) el.classList.toggle('is-speaking', el.dataset.itemId === speakingItem);
+  for (const el of root.querySelectorAll('[data-item-id]')) {
+    const on = el.dataset.itemId === speakingItem;
+    el.classList.toggle('is-speaking', on);
+    if (!on) continue;
+    // 読んでいる項目が画面の外なら、真ん中まで寄せる
+    const box = el.getBoundingClientRect();
+    if (box.bottom < 120 || box.top > innerHeight - 120) el.scrollIntoView({ block: 'center', behavior: calm() ? 'auto' : 'smooth' });
+  }
 }
 
 function speak(index) {
@@ -325,6 +333,7 @@ function renderBody() {
   settleAppear();
   markSpeaking();
   renderNext();
+  renderIndex();
   updateShiori();
 }
 
@@ -343,12 +352,78 @@ function renderNext() {
     nextRoot.replaceChildren();
     return;
   }
-  const label = revealed === chapters.length ? t('letter.toClosing') : t('letter.next');
+  const toClosing = revealed === chapters.length;
+  const label = toClosing ? t('letter.toClosing') : t('letter.next');
   nextRoot.replaceChildren(h('button', {
     class: 'next-bite',
     type: 'button',
     onclick: next,
-  }, h('span', { class: 'next-bite__label', text: label }), icon('arrow')));
+  },
+  h('span', { class: 'next-bite__label', text: label }),
+  toClosing ? null : h('span', { class: 'next-bite__count', 'aria-hidden': 'true', text: `${revealed + 1} / ${chapters.length}` }),
+  icon('arrow')));
+  tucked = false;
+}
+
+// スマホ：読み進めて下へ送っている間は「次のひと口へ」をしまい、戻るか便箋の終わりで出す（動きを減らす設定では出したまま）
+let tucked = false;
+let lastY = scrollY;
+let handAt = 0; // 指・ホイール・キーで動かしたときだけしまう（「次へ」の自動スクロールではしまわない）
+for (const type of ['touchmove', 'wheel', 'keydown']) addEventListener(type, () => { handAt = Date.now(); }, { passive: true });
+function tuckNext() {
+  const bar = nextRoot.firstElementChild;
+  const y = scrollY;
+  const down = y > lastY + 4;
+  const up = y < lastY - 4;
+  if (down || up) lastY = y;
+  if (!bar) return;
+  const wide = matchMedia('(min-width: 768px)').matches;
+  const atEnd = innerHeight + y >= document.documentElement.scrollHeight - 80;
+  const byHand = Date.now() - handAt < 700;
+  const want = !wide && !noMotion() && !atEnd && (down && byHand ? true : up ? false : tucked);
+  if (want !== tucked) {
+    tucked = want;
+    bar.classList.toggle('is-tucked', tucked);
+  }
+}
+addEventListener('scroll', () => { tuckNext(); markIndex(); }, { passive: true });
+
+/* ---- 便箋の目次（パソコン）：開いた便箋だけ。いまの便箋を緑に。移動だけで、新しい文はない ---- */
+function currentSection() {
+  const sections = [...root.querySelectorAll('[data-section]')];
+  return sections.filter((s) => s.getBoundingClientRect().top <= innerHeight * 0.4).pop()?.dataset.section ?? 'cover';
+}
+
+function markIndex() {
+  if (!indexRoot) return;
+  const now = currentSection();
+  for (const el of indexRoot.querySelectorAll('[data-to]')) {
+    const here = el.dataset.to === now;
+    el.classList.toggle('is-current', here);
+    if (here) el.setAttribute('aria-current', 'true');
+    else el.removeAttribute('aria-current');
+  }
+}
+
+function renderIndex() {
+  if (!indexRoot) return;
+  if (!opened || unsealing) {
+    indexRoot.replaceChildren();
+    return;
+  }
+  const entries = [];
+  if (letter.land.length) entries.push(['land', t('letter.opening')]);
+  chapters.slice(0, revealed).forEach((chapter, i) => entries.push([`bite-${i}`, t(`bite.${chapter.kind}`)]));
+  if (atClosing()) entries.push(['closing', t('letter.index.closing')]);
+  indexRoot.setAttribute('aria-label', t('letter.index'));
+  indexRoot.replaceChildren(h('p', { class: 'sheet-index__no mono', lang: 'en', text: letter.meta.no }),
+    h('ol', {}, entries.map(([key, label], i) => h('li', {},
+      h('button', {
+        type: 'button',
+        'data-to': key,
+        onclick: () => root.querySelector(`[data-section="${key}"]`)?.scrollIntoView({ behavior: calm() ? 'auto' : 'smooth', block: 'start' }),
+      }, h('span', { class: 'sheet-index__n', 'aria-hidden': 'true', text: pad(i + 1) }), h('span', { text: label }))))));
+  markIndex();
 }
 
 // 新しく開いた便箋の見出しへフォーカスを移し、位置だけを読み上げソフトに伝える（本文は読ませない）
@@ -404,11 +479,11 @@ function openLetter(thenListen) {
 }
 
 // 栞の長さは開いた便箋の数だけで決める。戻っても縮まない。
+// 短い栞ひもが、開いた便箋の数だけ下がる（全体の高さの線は引かない）
 function updateShiori() {
   const p = opened && !unsealing ? Math.min(1, revealed / (chapters.length + 1)) : 0;
-  shiori.style.transform = `scaleY(${p})`;
-  shiori.parentElement.style.setProperty('--p', String(p));
-  shiori.parentElement.classList.toggle('has-tip', p > 0);
+  shiori.style.setProperty('--p', String(p));
+  shiori.classList.toggle('is-on', opened && !unsealing);
 }
 
 // 手が汚れていても進めるように、画面の下半分はどこを押しても次へ。
