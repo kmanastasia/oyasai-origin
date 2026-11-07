@@ -108,13 +108,9 @@ function showOpening(motion) {
 }
 
 const live = motionProbe(); // 読み込みを待つあいだに確かめておく
-await startReader({ route: 1 });
+const [, data] = await Promise.all([startReader({ route: 1 }), api('letter').catch(() => null)]);
 onLangChange(render);
-try {
-  ({ letter } = await api('letter'));
-} catch {
-  failed = true;
-}
-const motion = await live;
-render();
-showOpening(motion);
+if (data) ({ letter } = data);
+else failed = true;
+render(); // 一覧とラベルは、動きの確かめを待たずにすぐ出す
+showOpening(await live);

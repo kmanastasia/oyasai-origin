@@ -270,7 +270,8 @@ body:has(.voice-bar) .sheet, body:has(.voice-bar) #closing { scroll-margin-top: 
 /* 現れ終わりの指定を持たない。動かない環境でも本文は元の見た目のまま読める */
 .appear { animation: appear 0.6s ease-out backwards; animation-delay: calc(var(--i, 0) * 0.12s); }
 
-@keyframes appear { from { opacity: 0; transform: translateY(8px); } }
+/* 動きが止められていても最初の1枚で読めるよう、透明からは始めない */
+@keyframes appear { from { opacity: 0.4; transform: translateY(8px); } }
 
 html[lang='en'] .sheet__title { font-family: var(--fraunces); font-weight: 600; letter-spacing: 0.04em; }
 

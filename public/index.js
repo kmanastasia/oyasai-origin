@@ -76,8 +76,9 @@ function render() {
   }
 }
 
-const live = motionProbe();
+// 最初の描画は待たない（ラベルを帯と同じ時に出す）。動くかどうかはその場で決め、止まっていたら releaseIfStalled が外す。
+motionProbe(); // 言語の切り替えのために、裏で確かめておく
 await startReader();
-motion = await live;
+motion = !matchMedia('(prefers-reduced-motion: reduce)').matches && !document.hidden;
 onLangChange(render);
 render();

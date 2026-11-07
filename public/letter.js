@@ -439,14 +439,13 @@ onLangChange(() => {
   if (key) root.querySelector(`[data-section="${key}"]`)?.scrollIntoView({ block: 'start' });
 });
 
-const probing = motionProbe();
-await startReader({ route: 2 });
-motionOk = await probing;
-try {
-  const data = await api('letter');
+// 最初の描画は動きの確かめを待たない。答えは「封を開ける」を押すころには出ている。
+motionProbe().then((ok) => { motionOk = ok; });
+const [, data] = await Promise.all([startReader({ route: 2 }), api('letter').catch(() => null)]);
+if (data) {
   letter = data.letter;
   offer = data.offer;
-} catch (error) {
+} else {
   root.replaceChildren(h('p', { class: 'state', role: 'alert', text: t('choose.error') }));
 }
 if (letter) {
