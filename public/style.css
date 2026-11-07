@@ -503,13 +503,14 @@ body:has(.next-bite) .column { padding-bottom: calc(104px + env(safe-area-inset-
 .route__steps { display: flex; gap: 12px; list-style: none; margin: 0; padding: 0; }
 .route__step.is-current { color: var(--ink); font-weight: 700; border-bottom: 2px solid var(--ha); min-height: 44px; display: inline-flex; align-items: center; }
 
-/* ===== トップ：2つの扉 ===== */
+/* ===== トップ：2つの扉（390×844 で1画面に収める） ===== */
+.column.top { padding-bottom: 24px; }
 .top__core { font-size: 28px; line-height: 1.5; letter-spacing: 0.04em; margin-bottom: 8px; }
 
 .door {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
   padding: 24px;
   margin-bottom: 16px;
   border: 1px solid var(--ink);
@@ -522,5 +523,26 @@ body:has(.next-bite) .column { padding-bottom: calc(104px + env(safe-area-inset-
 .door--primary { background: var(--ha); border-color: var(--ha); color: var(--shiro); }
 .door__for { font-size: 14px; font-weight: 500; opacity: 0.85; }
 .door__title { font-size: 20px; font-weight: 700; line-height: 1.5; }
-.door__steps { font-size: 14px; opacity: 0.85; }
 .door__title::after { content: ' →'; }
+.door__sub, .door__meta { font-size: 14px; opacity: 0.9; }
+
+/* 道の印：丸 24px と名前を一組にし、組の途中では折らない。組の間に 20px の細い線 */
+.door__path { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 0; margin: 2px 0; }
+.door__node { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; font-size: 14px; }
+.door__node + .door__node::before { content: ''; width: 20px; height: 1px; margin: 0 8px; background: currentColor; opacity: 0.6; }
+.door__no {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1;
+}
+
+/* 足もとの SNS：行き先が決まるまで押せない文字と「準備中」 */
+.top__sns { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--momi); font-size: 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+.top__sns-text { color: var(--ink); }

@@ -65,12 +65,12 @@ function renderChrome() {
   renderRoute();
 }
 
-// 受け取る方の流れ（③えらぶ → ④手紙）。トップでは出さない。
+// 読む流れ（③えらぶ → ④手紙）。トップでは出さない。
 function renderRoute() {
   const slot = document.getElementById('route');
   if (!slot || !routeCurrent) return;
   slot.replaceChildren(routeBar({
-    who: t('route.reader'),
+    who: t('route.read'),
     steps: [['③', t('route.choose'), '/choose'], ['④', t('route.letter'), '/letter']],
     current: routeCurrent,
     home: t('route.home'),

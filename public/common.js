@@ -61,9 +61,9 @@ export function routeBar({ who, steps, current, home }) {
     })));
 }
 
-// 作り手（農家）の流れ。①②は日本語のみ。
+// 書く流れ（①残す → ②封をする）。①②は日本語のみ。
 export const makerRoute = (current) => routeBar({
-  who: '作り手の方',
+  who: '書く',
   steps: [['①', '残す', '/keep'], ['②', '封をする', '/seal']],
   current,
   home: '← トップ',
