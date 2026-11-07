@@ -77,7 +77,7 @@ function showOpening() {
   setTimeout(() => overlay.remove(), 2700); // アニメーションが進まない環境でも手紙を隠したままにしない
 }
 
-await startReader();
+await startReader({ route: 1 });
 onLangChange(render);
 try {
   ({ letter } = await api('letter'));

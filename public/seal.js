@@ -1,7 +1,8 @@
-import { CATEGORY, api, errorBox, h, toolBands } from './common.js';
+import { CATEGORY, api, errorBox, h, makerRoute, toolBands } from './common.js';
 
 const root = document.getElementById('root');
 document.getElementById('chrome').replaceChildren(...toolBands('農家役（デモ）・運営者が代わりに操作中').filter(Boolean));
+document.getElementById('route').replaceChildren(makerRoute(2));
 
 const DEFAULT_DISCLOSURE = { land: 'public', person: 'public', craft: 'eaters_only', judgment: 'eaters_only' };
 const AUDIENCE = [
@@ -119,7 +120,7 @@ function sealedView() {
       h('div', { class: 'stamp stamp--big stamp--press', 'aria-hidden': 'true', text: '封' }),
       h('p', { class: 'seal-done__msg', role: 'status', text: '封をしました。いつでも取り下げられます。' }),
       result.archive_only > 0 ? h('p', { class: 'seal-done__sub', text: `残すだけにした ${result.archive_only}件は、外に出ません。` }) : null),
-    h('a', { class: 'btn btn--primary btn--big', href: '/choose', text: '届いている手紙を見る →' }),
+    h('a', { class: 'btn btn--primary btn--big', href: '/choose', text: '③ 食べる人に届く手紙を見る →' }),
     h('button', {
       class: 'btn btn--ghost btn--big',
       type: 'button',

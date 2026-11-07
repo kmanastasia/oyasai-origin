@@ -1,10 +1,11 @@
-// 受け取る側（③④）の共通部分：注意帯・掛け紙の帯・JP｜EN。
-import { api, h } from './common.js';
+// 受け取る側（トップ・③④）の共通部分：注意帯・掛け紙の帯・JP｜EN・流れの表示。
+import { api, h, routeBar } from './common.js';
 
 const STORAGE_KEY = 'oyasai-lang';
 let dictionary = new Map();
 let lang = 'ja';
 const listeners = [];
+let routeCurrent = 0;
 
 function loadLang() {
   const fromUrl = new URLSearchParams(location.search).get('lang');
@@ -58,15 +59,29 @@ function renderChrome() {
   root.replaceChildren(
     h('div', { class: 'band', role: 'note', text: t('band.fiction') }),
     h('header', { class: 'kakegami' },
-      h('a', { class: 'kakegami__name', href: '/choose', lang: 'en', text: 'OYASAI ORIGIN' }),
+      h('a', { class: 'kakegami__name', href: '/', lang: 'en', text: 'OYASAI ORIGIN' }),
       h('div', { class: 'lang', role: 'group', 'aria-label': 'JP / EN' }, toggle('ja', 'JP'), h('span', { class: 'lang__sep', 'aria-hidden': 'true', text: '｜' }), toggle('en', 'EN')))
   );
+  renderRoute();
 }
 
-export async function startReader() {
+// 受け取る方の流れ（③えらぶ → ④手紙）。トップでは出さない。
+function renderRoute() {
+  const slot = document.getElementById('route');
+  if (!slot || !routeCurrent) return;
+  slot.replaceChildren(routeBar({
+    who: t('route.reader'),
+    steps: [['③', t('route.choose'), '/choose'], ['④', t('route.letter'), '/letter']],
+    current: routeCurrent,
+    home: t('route.home'),
+  }));
+}
+
+export async function startReader({ route = 0 } = {}) {
   const { strings } = await api('ui-strings');
   dictionary = new Map(strings.map((s) => [s.key, s]));
   lang = loadLang();
+  routeCurrent = route;
   document.documentElement.lang = lang;
   renderChrome();
 }

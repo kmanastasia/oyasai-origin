@@ -483,3 +483,44 @@ body:has(.next-bite) .column { padding-bottom: calc(104px + env(safe-area-inset-
 @media print {
   .chrome .kakegami, .tool-actions, .btn { display: none; }
 }
+
+/* ===== 流れの表示（どの画面でも、だれの流れの何番目か） ===== */
+.route {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 16px;
+  padding: 8px 24px;
+  background: var(--shiro);
+  border-bottom: 1px solid var(--momi);
+  font-size: 14px;
+  color: var(--haicha);
+}
+
+.route a { color: inherit; min-height: 44px; display: inline-flex; align-items: center; }
+.route__home { font-weight: 500; color: var(--ink) !important; }
+.route__who { font-weight: 500; }
+.route__steps { display: flex; gap: 12px; list-style: none; margin: 0; padding: 0; }
+.route__step.is-current { color: var(--ink); font-weight: 700; border-bottom: 2px solid var(--ha); min-height: 44px; display: inline-flex; align-items: center; }
+
+/* ===== トップ：2つの扉 ===== */
+.top__core { font-size: 28px; line-height: 1.5; letter-spacing: 0.04em; margin-bottom: 8px; }
+
+.door {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 24px;
+  margin-bottom: 16px;
+  border: 1px solid var(--ink);
+  border-radius: 4px;
+  background: var(--shiro);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.door--primary { background: var(--ha); border-color: var(--ha); color: var(--shiro); }
+.door__for { font-size: 14px; font-weight: 500; opacity: 0.85; }
+.door__title { font-size: 20px; font-weight: 700; line-height: 1.5; }
+.door__steps { font-size: 14px; opacity: 0.85; }
+.door__title::after { content: ' →'; }

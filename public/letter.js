@@ -389,7 +389,7 @@ onLangChange(() => {
   if (key) root.querySelector(`[data-section="${key}"]`)?.scrollIntoView({ block: 'start' });
 });
 
-await startReader();
+await startReader({ route: 2 });
 try {
   const data = await api('letter');
   letter = data.letter;

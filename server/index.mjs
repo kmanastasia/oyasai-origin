@@ -12,7 +12,7 @@ const MAX_BODY = 512 * 1024;
 
 if (process.argv.includes('--demo')) configure({ demo: true });
 
-const PAGES = { '/keep': 'keep.html', '/seal': 'seal.html', '/choose': 'choose.html', '/letter': 'letter.html' };
+const PAGES = { '/': 'index.html', '/keep': 'keep.html', '/seal': 'seal.html', '/choose': 'choose.html', '/letter': 'letter.html' };
 const TYPES = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.svg': 'image/svg+xml' };
 
 function sendJson(res, status, value) {
@@ -70,17 +70,12 @@ async function serveStatic(pathname, res) {
     res.end(body);
   } catch {
     res.writeHead(404, { 'content-type': 'text/plain; charset=utf-8' });
-    res.end('ページが見つかりません。/keep から始めてください。');
+    res.end('ページが見つかりません。トップ（/）から始めてください。');
   }
 }
 
 const server = createServer(async (req, res) => {
   const { pathname } = new URL(req.url, 'http://localhost');
-  if (pathname === '/') {
-    res.writeHead(302, { location: '/keep' });
-    res.end();
-    return;
-  }
   if (!pathname.startsWith('/api/')) {
     await serveStatic(pathname, res);
     return;

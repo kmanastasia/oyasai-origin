@@ -1,7 +1,8 @@
-import { CATEGORY, api, errorBox, h, toolBands } from './common.js';
+import { CATEGORY, api, errorBox, h, makerRoute, toolBands } from './common.js';
 
 const root = document.getElementById('root');
 document.getElementById('chrome').replaceChildren(...toolBands().filter(Boolean));
+document.getElementById('route').replaceChildren(makerRoute(1));
 
 let transcript = '';
 let draft = null;
@@ -13,7 +14,7 @@ let demo = false;
 const steps = () => {
   const current = draft ? 2 : 1;
   return h('ol', { class: 'steps' },
-    ['①預かる', '②下書きを見る', '③作り手に見せる'].map((label, i) =>
+    ['1 預かる', '2 下書きを見る', '3 作り手に見せる'].map((label, i) =>
       h('li', { class: i + 1 === current ? 'steps__item is-current' : 'steps__item', 'aria-current': i + 1 === current ? 'step' : null, text: label })));
 };
 
