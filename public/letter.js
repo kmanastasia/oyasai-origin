@@ -291,6 +291,7 @@ function originCard() {
       }));
 }
 
+// 結びの組み：帯 → 畑より → 一行と朱の封（見せ場） → 添えの文と受け取るボタン。パソコンでは左に一行、右にそのほか
 function closingJp() {
   return [
     h('p', { class: 'band band--inline', role: 'note' }, labelText(t('close.jp.band'))),
@@ -298,11 +299,12 @@ function closingJp() {
     h('div', { class: 'closing__sign' },
       h('p', { class: `closing__line mincho${appear('closing')}`, text: t('close.jp.line', { farmer: letter.meta.farmer.ja }) }),
       sealStamp(` stamp--sign${entering.has('closing') ? ' stamp--press' : ''}`)),
-    h('p', { class: 'closing__sub', text: t('close.jp.sub') }),
-    closingOpen
-      ? originCard()
-      : h('button', { class: 'btn btn--primary', type: 'button', onclick: openOffer, text: t('close.jp.button') }),
-    h('p', { class: 'closing__keep', text: t('close.jp.keep') }),
+    h('div', { class: 'closing__meta' },
+      h('p', { class: 'closing__sub', text: t('close.jp.sub') }),
+      closingOpen
+        ? originCard()
+        : h('button', { class: 'btn btn--primary', type: 'button', onclick: openOffer, text: t('close.jp.button') }),
+      h('p', { class: 'closing__keep', text: t('close.jp.keep') })),
   ];
 }
 
@@ -333,15 +335,17 @@ function visitSnsView() {
 function closingEn() {
   return [
     h('p', { class: 'band band--inline', role: 'note' }, labelText(t('close.en.band'))),
-    h('p', { class: 'mono sheet__no', text: t('close.en.eyebrow') }),
-    h('p', { class: `closing__line fraunces${appear('closing')}`, text: t('close.en.line') }),
-    h('p', { class: 'closing__sub', text: t('close.en.sub') }),
-    h('p', { class: 'closing__operator', text: t('visit.operator') }),
-    visitSnsView(),
-    closingOpen
-      ? visitCard()
-      : h('button', { class: 'btn btn--primary', type: 'button', onclick: openOffer, text: t('close.en.button') }),
-    h('p', { class: 'closing__keep', text: t('close.en.ship') }),
+    h('p', { class: 'mono sheet__no closing__eyebrow', text: t('close.en.eyebrow') }),
+    h('div', { class: 'closing__sign' },
+      h('p', { class: `closing__line fraunces${appear('closing')}`, text: t('close.en.line') })),
+    h('div', { class: 'closing__meta' },
+      h('p', { class: 'closing__sub', text: t('close.en.sub') }),
+      h('p', { class: 'closing__operator', text: t('visit.operator') }),
+      visitSnsView(),
+      closingOpen
+        ? visitCard()
+        : h('button', { class: 'btn btn--primary', type: 'button', onclick: openOffer, text: t('close.en.button') }),
+      h('p', { class: 'closing__keep', text: t('close.en.ship') })),
   ];
 }
 

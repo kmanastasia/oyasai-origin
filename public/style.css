@@ -2282,3 +2282,69 @@ html[lang='ja'] .page-top .top__core .glyph { display: inline-block; letter-spac
 }
 /* ふた自体は薄くならない（動くのは中の写真と字だけ） */
 .page-top .top__lid.appear { animation: none; }
+
+/* =====================================================================
+   第6版 ④ 結び：暗い空白をなくし、見せ場をひとつに
+   帯 → 畑より → 一行と朱の封 → 添えの文と受け取るボタン。足もとに畝（CSS で引いた畑の筋）。
+   パソコンは左に縦の一行と封、右に畑より・文・ボタン。一画面いっぱいには伸ばさない
+   ===================================================================== */
+.page-letter .sheet--closing { padding-bottom: 0; }
+.closing__eyebrow { margin-bottom: 20px; }
+.sheet--closing .closing__sign { margin: 8px 0 20px; }
+.sheet--closing .closing__line { margin: 0; }
+.closing__meta { display: flex; flex-direction: column; }
+.closing__meta .closing__sub { margin-bottom: 20px; }
+.closing__meta > .btn { align-self: stretch; }
+.closing__meta .closing__keep { margin-top: 12px; }
+.sheet--closing .closing__back { margin: 20px 0 0; }
+/* 畝：萌黄の線が奥へ詰まっていく（文字のない足もと。便箋の幅いっぱい）。
+   ::after は最後の便箋のずらした下の紙に使われているので、::before を使い、順番だけ最後にする */
+.page-letter .sheet--soil.sheet--closing { display: flex; flex-direction: column; }
+.page-letter .sheet--soil.sheet--closing::before {
+  content: '';
+  order: 99;
+  position: static;
+  display: block;
+  width: auto;
+  height: 64px;
+  margin: 28px -24px 0;
+  background:
+    linear-gradient(var(--moegi), var(--moegi)) 0 100% / 100% 2px no-repeat,
+    linear-gradient(var(--moegi), var(--moegi)) 0 80% / 100% 1px no-repeat,
+    linear-gradient(var(--moegi), var(--moegi)) 0 63% / 100% 1px no-repeat,
+    linear-gradient(var(--moegi), var(--moegi)) 0 49% / 100% 1px no-repeat,
+    linear-gradient(var(--moegi), var(--moegi)) 0 38% / 100% 1px no-repeat,
+    linear-gradient(var(--moegi), var(--moegi)) 0 29% / 100% 1px no-repeat;
+  opacity: 0.6;
+  pointer-events: none;
+}
+.page-letter .sheet--soil.sheet--closing > .band--inline { order: -1; }
+@media (min-width: 768px) { .page-letter .sheet--soil.sheet--closing::before { margin-inline: -48px; height: 80px; } }
+
+@media (min-width: 1024px) {
+  html[lang] .page-letter .sheet--closing {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    grid-template-rows: auto auto 1fr auto auto;
+    column-gap: 48px;
+    align-items: start;
+    max-width: none;
+    min-height: 0;
+    margin-inline: 0;
+    padding: 0 56px 0;
+  }
+  html[lang] .page-letter .sheet--closing > .band--inline, html[lang] .page-letter .sheet--closing > .band { grid-column: 1 / -1; grid-row: 1; margin: 0 -56px 36px; padding-inline: 56px; }
+  html[lang] .page-letter .sheet--closing > .closing__eyebrow { grid-column: 2; grid-row: 2; margin-bottom: 16px; }
+  html[lang] .page-letter .sheet--closing > .closing__sign { grid-column: 1; grid-row: 2 / span 3; align-self: start; margin: 0; }
+  html[lang] .page-letter .sheet--closing > .closing__meta { grid-column: 2; grid-row: 3; align-self: center; margin: 16px 0; }
+  html[lang] .page-letter .sheet--closing > .closing__back { grid-column: 2; grid-row: 4; align-self: end; margin: 20px 0 0; }
+  html[lang] .page-letter .sheet--soil.sheet--closing::before { grid-column: 1 / -1; grid-row: 5; margin: 36px -56px 0; }
+  /* 右の段：畑よりは上、文とボタンは真ん中の高さ、一覧へは封の足もと */
+  .closing__meta .closing__sub { font-size: 18px; }
+  /* 日本語：縦の一行（2列に折れる）と、その下に朱の封 */
+  html[lang='ja'] .closing__sign { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+  html[lang='ja'] .closing__sign .closing__line { flex: none; writing-mode: vertical-rl; max-width: none; max-height: 11.5em; margin: 0; padding: 8px 20px; border: 0; border-left: 1px solid var(--line-dark); border-right: 1px solid var(--line-dark); font-size: 34px; letter-spacing: 0.18em; line-height: 1.9; }
+  html[lang='ja'] .stamp--sign { position: static; width: 80px; height: 80px; margin: 0; align-self: center; }
+  /* 英語：大きな Fraunces の一行を左の段に */
+  html[lang='en'] .page-letter .sheet--closing .closing__line { font-size: clamp(32px, 2.8vw, 40px); line-height: 1.18; letter-spacing: -0.01em; max-width: none; margin: 0; padding: 0; border: 0; }
+}
