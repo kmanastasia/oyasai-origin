@@ -14,6 +14,7 @@ const noMotion = () => calm() || document.hidden || !motionOk;
 const APPEAR_MS = 1300; // 文字が現れ終わる時間より少し長く
 const SEAL_MS = 620; // 封が離れきる時間。ここで表紙を「開いたあと」の形に差し替える（見た目は動きの終わりと同じ）
 const SLIDE_MS = 140; // 封が持ち上がり始めてすぐ、便箋が表紙の下から滑り出す（封と便箋が重なって動く。間に空白の紙を見せない）
+const HOLD_MS = 420; // 封が割れて便箋が滑り出すまでは画面を送らない（見せ場を見てから送る）
 
 let letter = null;
 let offer = null;
@@ -507,15 +508,14 @@ function slideOutSheets() {
   entering = new Set();
   // 同じ長さだけ上から滑り出す（便箋どうしは重ならない）。書き出しの便箋のほうが少し遅れて出る（先に出るひと口の便箋の下に潜らない）
   sections.forEach((section, i) => { section.style.setProperty('--from', '-220px'); section.style.setProperty('--s', String(sections.length - 1 - i)); });
-  gliding = true;
+  gliding = true; // 封が割れるまでは寄せない（読み上げの印でも送らない）
   root.append(...sections);
   settleAppear();
   markSpeaking();
   renderNext();
   renderIndex();
   updateShiori();
-  gliding = false;
-  goToFirstSheet();
+  setTimeout(() => { gliding = false; goToFirstSheet(); }, Math.max(0, HOLD_MS - SLIDE_MS));
 }
 
 // 封が離れきったら、表紙だけをその場で「開いたあと」の形にする（たたむ動きの終わりと同じ見た目。便箋の動きは止めない）
@@ -611,6 +611,7 @@ function placeShiori() {
   if (!shiori.classList.contains('is-on')) return;
   const section = root.querySelector(`[data-section="${currentSection()}"]`);
   if (!section) return;
+  shiori.classList.toggle('is-hidden', section.classList.contains('sheet--closing')); // 結びの暗い一枚の上には栞を出さない
   const box = section.getBoundingClientRect();
   const top = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--chrome-h')) || 68;
   const band = section.querySelector(':scope > .band'); // 結びの「仮」の帯には決して重ねない

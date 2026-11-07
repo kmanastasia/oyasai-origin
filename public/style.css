@@ -4,54 +4,55 @@
 @font-face { font-family: 'Zen Kaku Gothic New fb'; src: local('HiraginoSans-W6'), local('Hiragino Sans W6'); font-weight: 700; size-adjust: 87%; unicode-range: U+0000-024F, U+2000-206F, U+2190-21FF; }
 
 :root {
-  /* ===== 色（第5版・2026-11-07 組み直し）：和紙・土・葉・人参・墨 =====
-     面は3つだけ：①和紙（読む便箋）②深い土（掛け紙・書き出し・結び。土は1色＋一段明るい面）③葉（押すところ）。
-     1つの画面の色の役目（増やさない）：
+  /* ===== 色（第7版・2026-11-07 組み直し）：和紙・墨・土・葉・人参・朱・注意黄 =====
+     面は3つ：①和紙（読む便箋。明るく、少し暖かい生成り）②深い土（掛け紙・書き出し・結び。赤みの黒土と一段明るい面）③葉（押すところ）。
+     役目（1つの画面で増やさない）：
        葉 = 押すところ・いまの位置／朱 = 封だけ／注意黄 = 架空・見本・仮・合成音声の表示だけ／
-       野菜の色 = 野菜の名・番号の罫・目次のいまの項目だけ（手紙ごとに差し替える1色。ラベルの形には使わない）
-     淡い緑は2つだけ：若葉（大きな面と印）・葉の淡色（札と押した印）。ΔE76 で 11 離す
-     コントラスト（WCAG 2.x・scratchpad の contrast5.mjs で計算。本文 4.5:1・大きな字と部品 3:1）
-       ink/kinari 14.9  ink/shiro 16.8  ink/paper 17.7  ink/kinari-2 12.1
-       haicha/kinari 6.7  haicha/shiro 7.6  haicha/kinari-2 5.4  haicha/paper 7.9
-       on-dark/tsuchi 16.9  on-dark-2/tsuchi 10.7  on-dark/tsuchi-2 14.6  on-dark-2/tsuchi-2 9.2
-       moegi/tsuchi 11.2  moegi/tsuchi-2 9.6（暗い面のフォーカス）
-       on-dark/ha 7.2  on-ha-2/ha 6.0  on-dark/ha-700 10.8  ha/kinari 6.4（部品）
-       ha-700/shiro 10.8  ha-700/kinari 9.5  ha-700/ha-050 9.9  ha-700/wakaba 8.6
-       ink/wakaba 13.5  ink/ha-050 15.4  haicha/wakaba 6.1  haicha/ha-050 6.9
-       veg/shiro 5.7  veg/kinari 5.0  veg/paper 6.0  ink/veg-100 14.0  haicha/veg-100 6.3
-       ink/chui 11.1（表示ラベル）  chui/tsuchi 11.1  shiro/shu 5.9  shu/kinari 5.3
-       ΔE76：veg-shu 31.3  veg-500-shu 29.4  veg-chui 53.3  shu-chui 77.0 */
-  /* 紙（4段。明るさ L* 85 / 92 / 97 / 99） */
-  --kinari: #EFE9DC;   /* 地の和紙 */
-  --shiro: #FAF7F1;    /* 便箋 */
-  --paper: #FFFDF9;    /* 書き込む欄・一筆箋。真っ白にはしない */
-  --kinari-2: #DDD3BF; /* ずらした下の紙・封筒の背（面ではなく縁） */
-  /* 墨と土 */
-  --ink: #1A1611;
-  --haicha-ink: #5A4E41; /* 添え書き（明るい面） */
+       人参 = この手紙の野菜の色（名の罫・番号・目次のいまの項目・③のカードの頭。手紙ごとに差し替える1色。ラベルの形には使わない）
+     コントラスト（WCAG 2.x。scratchpad の contrast7.mjs が :root の値を読んで計算。本文 4.5:1・大きな字と部品 3:1・表示ラベル 7:1 以上）
+       ink/kinari 16.1  ink/shiro 17.5  ink/paper 18.4  ink/kinari-2 13.3
+       haicha/kinari 6.7  haicha/shiro 7.3  haicha/kinari-2 5.5  haicha/paper 7.7
+       on-dark/tsuchi 17.7  on-dark-2/tsuchi 11.9  on-dark/tsuchi-2 14.9  on-dark-2/tsuchi-2 10.0
+       moegi/tsuchi 12.2  moegi/tsuchi-2 10.3（暗い面のフォーカス）
+       on-dark/ha 6.1  on-ha-2/ha 5.1  on-dark/ha-700 9.2  on-dark/ha-900 11.8  ha/kinari 5.6  ha/shiro 6.1（部品）
+       ha-700/shiro 9.2  ha-700/kinari 8.5  ha-700/ha-050 8.7  ha-700/wakaba 7.7
+       ink/wakaba 14.6  ink/ha-050 16.5  haicha/wakaba 6.1  haicha/ha-050 6.9
+       veg/shiro 5.4  veg/kinari 5.0  veg/paper 5.7  veg/ha-050 5.1  veg-500/tsuchi 5.8（暗い面の上の人参）  veg-500/shiro 3.0（罫だけ）
+       ink/veg-100 15.0  haicha/veg-100 6.3
+       ink/chui 11.1（表示ラベル）  chui/tsuchi 11.2  on-dark/shu 5.6  shu/shiro 5.6  shu/kinari 5.1
+       ΔE76：veg-shu 28.5  veg-500-shu 34.8  veg-chui 56.2  shu-chui 79.7  wakaba-ha-050 8.2  moegi-chui 39.5  tsuchi-tsuchi-2 9.5 */
+  /* 紙（4段。L* 93 / 97 / 99 / 86）。真っ白にはしない */
+  --kinari: #F4EEE2;   /* 地の和紙 */
+  --shiro: #FBF8F2;    /* 便箋 */
+  --paper: #FFFEFA;    /* 書き込む欄・一筆箋 */
+  --kinari-2: #E3D9C5; /* ずらした下の紙・封筒の背（面ではなく縁） */
+  /* 墨と土：墨はわずかに緑に寄せた黒（和紙の上で冷たく見えない）。土は赤みの黒土 */
+  --ink: #14130F;
+  --haicha-ink: #5B5143; /* 添え書き（明るい面） */
   --haicha: var(--haicha-ink);
-  --momi: #CFC3A8;     /* 細い罫（文字には使わない） */
-  --tsuchi: #1B1510;   /* 土：掛け紙・書き出し・結びの便箋（1色にそろえる） */
-  --tsuchi-2: #2B2219; /* 土の上の一段明るい面（指を載せた・読み上げ中） */
+  --momi: #D2C8AE;     /* 細い罫（文字には使わない） */
+  --tsuchi: #17110C;   /* 土：掛け紙・書き出し・結びの便箋 */
+  --tsuchi-2: #2B2118; /* 土の上の一段明るい面（指を載せた・読み上げ中） */
   --kogecha: var(--tsuchi); /* 旧名。土と同じ色 */
-  /* 葉：押すところ＝ha、文字の緑＝ha-700、暗い面の上の光＝moegi */
-  --ha: #2F5D2A;
-  --ha-700: #1E4119;
-  --wakaba: #DCE3BF;   /* 若葉：大きな面と印（読む扉・照合の印・バッジ） */
+  /* 葉：押すところ＝ha（生成りの字 6.2:1）、字の緑＝ha-700、最も深い葉＝ha-900、暗い面の上の光＝moegi */
+  --ha: #2E6B2F;
+  --ha-700: #1F4D22;
+  --ha-900: #163B19;
+  --wakaba: #DCE8CF;   /* 若葉：大きな面と印（照合の印・バッジ） */
   --ha-100: var(--wakaba); /* 旧名。若葉と同じ色 */
-  --ha-050: #EDEFDF;   /* 葉の淡色：味ことばの札・選んだボタン */
-  --moegi: #C0D47E;    /* 萌黄：暗い面の上だけ */
-  /* 野菜の色（この手紙はにんじん）。手紙の根元で差し替えられる */
-  --veg: #9B4D17;      /* 文字にも使える濃さ */
-  --veg-500: #CF6630;  /* 太い罫だけ（文字には使わない） */
-  --veg-100: #F3E0CE;  /* 読み上げ中の下敷き */
+  --ha-050: #EEF3E6;   /* 葉の淡色：味ことばの札・押した印 */
+  --moegi: #C6DA7E;    /* 萌黄：暗い面の上だけ */
+  /* 人参（この手紙はにんじん）。手紙の根元で差し替えられる */
+  --veg: #A84A17;      /* 文字にも使える濃さ（和紙の上 4.9〜5.7:1） */
+  --veg-500: #E0702E;  /* 太い罫と、暗い面の上の人参（文字には使わない） */
+  --veg-100: #F7E4D2;  /* 読み上げ中の下敷き */
   /* 決まった意味の色：この2つはほかに使わない */
-  --shu: #B8222E;      /* 朱：封だけ */
-  --chui: #F5C540;     /* 注意黄：架空・見本・仮・合成音声の表示だけ */
+  --shu: #C21F30;      /* 朱：封だけ（生成りの字 5.6:1） */
+  --chui: #F2C230;     /* 注意黄：架空・見本・仮・合成音声の表示だけ（墨の字 10.5:1） */
   /* 暗い面・葉の面の上の字と線 */
   --on-dark: var(--shiro);
-  --on-dark-2: #CFC6B6;
-  --on-ha-2: #DDE6D2;
+  --on-dark-2: #D6CDBD;
+  --on-ha-2: #DCE8D3;
   --line-dark: color-mix(in srgb, var(--shiro) 28%, transparent);
   --line-ink: color-mix(in srgb, var(--ink) 22%, transparent);
   --shade: color-mix(in srgb, var(--tsuchi) 55%, transparent);
@@ -2498,3 +2499,210 @@ html[lang='ja'] .page-top .top__core .glyph { display: inline-block; letter-spac
 ::view-transition-old(vt-name) { animation: vt-out 160ms var(--ease-std) both; mix-blend-mode: normal; }
 ::view-transition-new(vt-name) { animation: vt-in-late 520ms var(--ease-out) both; mix-blend-mode: normal; }
 @keyframes vt-in-late { from { opacity: 0; } 28% { opacity: 0; } 55% { opacity: 1; } to { opacity: 1; } }
+
+/* =====================================================================
+   第7版（2026-11-07）：色の組み直しの当てはめ・トップの見出し・ふたの明るさ・封を開ける・③の封筒・結び・④の格子
+   ===================================================================== */
+
+/* ---------- トップの見出し：一字ずつ墨が置かれる（字そのものを動かす。親の background-clip: text は中の字を描けない） ---------- */
+html[lang] .page-top .top__lid .top__core.appear, .page-top .top__core.appear { color: inherit; background-image: none; -webkit-background-clip: border-box; background-clip: border-box; animation: none; }
+@media (prefers-reduced-motion: no-preference) {
+  /* 順番：字（0〜0.8秒）→ 扉（0.76秒〜）→ 封（1.1秒）。副題は字のすぐあとに墨が入る */
+  .page-top .top__core.appear .glyph { animation: glyph-in 460ms var(--ease-out) both; animation-delay: calc(var(--g, 0) * 40ms); }
+  .page-top .top__lid .lead-line.appear { animation-delay: 360ms; }
+  .page-top .door.appear { animation-delay: calc(760ms + (var(--i, 3) - 3) * 120ms); }
+  .page-top .top__seal.appear { animation-delay: 1100ms; }
+  .page-top .top__seal.appear::after { animation-delay: 1240ms; }
+}
+@keyframes glyph-in { from { opacity: 0.3; filter: blur(3px); transform: translateY(0.14em); } 60% { filter: blur(0); } to { opacity: 1; filter: none; transform: none; } }
+
+/* ---------- トップ（スマホ・タブレット）：土の写真を沈めすぎない。字の列の後ろだけを暗くし、ふたは少し低く（2 つ目の扉の見出しまで最初の画面に） ---------- */
+@media (max-width: 1023px) {
+  .page-top .top__lid { height: clamp(380px, 47svh, 430px); padding: 24px 24px 44px; }
+  .page-top .top__lid::before { mix-blend-mode: normal; opacity: 1; filter: brightness(1.3) contrast(1.06); background-position: 44% 42%; background-size: 150% auto; } /* 第3版の粒の重ね（overlay・半透明）を外し、写真をそのまま。縦長の枠では茎と石のあたりを見せる */
+  /* 日本語：見出しは右の列。右の 55% だけを土の色で沈め、左は土の粒が見えるまま */
+  html[lang='ja'] .page-top .top__lid::after {
+    background:
+      radial-gradient(90% 70% at 100% 0%, color-mix(in srgb, var(--ha-900) 55%, transparent), transparent 70%),
+      linear-gradient(to left, color-mix(in srgb, var(--tsuchi) 80%, transparent) 0 30%, color-mix(in srgb, var(--tsuchi) 52%, transparent) 55%, color-mix(in srgb, var(--tsuchi) 8%, transparent) 100%),
+      linear-gradient(180deg, color-mix(in srgb, var(--tsuchi) 22%, transparent), transparent 40%, color-mix(in srgb, var(--tsuchi) 46%, transparent) 100%);
+  }
+  /* 英語：見出しは下。下の 60% を沈め、上は写真のまま */
+  html[lang='en'] .page-top .top__lid::after {
+    background:
+      radial-gradient(90% 60% at 100% 0%, color-mix(in srgb, var(--ha-900) 45%, transparent), transparent 70%),
+      linear-gradient(180deg, color-mix(in srgb, var(--tsuchi) 10%, transparent) 0 26%, color-mix(in srgb, var(--tsuchi) 60%, transparent) 56%, color-mix(in srgb, var(--tsuchi) 86%, transparent) 100%);
+  }
+  html[lang='ja'] .page-top .top__core { font-size: clamp(36px, 11vw, 46px); margin-block-end: 16px; }
+  html[lang='ja'] .page-top .top__lid .lead-line { top: calc(24px + 2.2em); bottom: 56px; right: calc(24px + 2 * 1.34 * clamp(36px, 11vw, 46px) + 16px); }
+  html[lang='en'] .page-top .top__lid { padding-bottom: 60px; }
+  html[lang='en'] .page-top .top__core { font-size: clamp(32px, 8.8vw, 38px); }
+  html[lang='en'] .page-top .top__seal { top: 20px; right: 20px; width: 76px; height: 76px; }
+  .page-top .top__seal { bottom: 46px; width: 80px; height: 80px; }
+  .page-top .top__cap { margin: 0; }
+  .page-top .top__body { padding-top: 24px; }
+  .page-top .section-eyebrow { margin-bottom: 10px; }
+  .reader.page-top .top__doors .door { padding: 16px 20px 46px 50px; margin-bottom: 12px; }
+}
+
+/* ---------- トップの扉：番号は線で描いた数字（スマホも同じ）。掛け紙の帯は少し広く、字は 13px・0.2em ---------- */
+.reader.page-top .top__doors .door::after { color: transparent; -webkit-text-stroke: 1.2px var(--ha); font-weight: 400; }
+.reader.page-top .top__doors .door:not(.door--primary)::after { color: transparent; -webkit-text-stroke: 1.2px var(--tsuchi); }
+.reader.page-top .top__doors .door:hover::after, .reader.page-top .top__doors .door:active::after { color: transparent; -webkit-text-stroke: 1.2px color-mix(in srgb, var(--on-dark) 55%, transparent); }
+.reader.page-top .top__doors .door .door__for { width: 34px; font-size: 13px; letter-spacing: 0.2em; }
+html[lang='en'] .reader.page-top .top__doors .door .door__for { font-size: 11px; letter-spacing: 0.18em; }
+@media (min-width: 1024px) {
+  .reader.page-top .top__doors .door .door__for { width: 48px; font-size: 14px; }
+  html[lang='en'] .reader.page-top .top__doors .door .door__for { font-size: 12px; }
+}
+/* 扉：墨の枠線は紙の縁（薄い）と重ねた影に。指を載せると 4px 持ち上がる */
+.reader.page-top .top__doors .door { border-color: color-mix(in srgb, var(--ink) 55%, var(--momi)); box-shadow: 0 1px 0 var(--momi), 0 8px 16px -12px var(--shade), 0 24px 40px -30px var(--shade); }
+@media (hover: hover) {
+  .page-top .door:hover { transform: translateY(-4px); box-shadow: 0 1px 0 var(--momi), 0 14px 24px -16px var(--shade), 0 36px 56px -32px var(--shade); }
+}
+
+/* ---------- ③：まだ封をしていない手紙は、封筒の形（折り返したふた・空の封の輪） ---------- */
+.slot {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+  align-items: end;
+  gap: 2px 12px;
+  min-height: 112px;
+  padding: 44px 20px 14px;
+  background: var(--kinari) url('/img/paper-grain.png') 0 0 / 192px;
+  border: 1px solid var(--momi);
+  box-shadow: 0 1px 0 var(--momi), 0 14px 24px -22px var(--shade);
+  color: var(--haicha);
+}
+.slot > .mono { grid-column: 1; grid-row: 1; color: var(--haicha); }
+.slot > span:not(.mono) { grid-column: 1; grid-row: 2; font-size: 14px; color: var(--ink); }
+/* ふた：便箋の上の縁から折り返した三角（紙の裏の少し濃い色） */
+.slot::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 36px;
+  background: var(--kinari-2) url('/img/paper-grain.png') 0 0 / 192px;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  border: 0;
+  filter: drop-shadow(0 1px 0 var(--momi));
+}
+/* 封の場所：破線の輪（まだ封はない） */
+.slot::after {
+  content: '';
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  width: 40px;
+  height: 40px;
+  border: 1.5px dashed color-mix(in srgb, var(--shu) 55%, var(--momi));
+  border-radius: 50%;
+}
+.slots .slot:nth-child(2) { transform: rotate(0.4deg); }
+.slots .slot:nth-child(1) { transform: rotate(-0.3deg); }
+@media (hover: hover) { .slot { transition: transform var(--dur-s) var(--ease-std); } .slot:hover { transform: translateY(-2px); } }
+@media (prefers-reduced-motion: reduce) { .slot:hover { transform: none; } }
+/* ③のカードの頭の人参の罫は、名前の罫に集める（写真の上の細い線はやめる） */
+.page-choose .card--letter { border-top: 1px solid var(--momi); }
+.page-choose .card__veg > .mincho { text-decoration: underline 2px var(--veg); text-underline-offset: 0.3em; text-decoration-skip-ink: none; }
+@media (min-width: 1024px) {
+  .page-choose .slots { margin-top: 8px; }
+  .page-choose .card--letter .card__top .stamp { width: 64px; height: 64px; }
+}
+
+/* ---------- ④ 封を開ける：封が割れるように大きく離れ、輪が広がる。便箋が滑り出し、そのあとで送る（送るのは letter.js が 0.42 秒待つ） ---------- */
+@keyframes unseal-peel {
+  0% { transform: rotate(var(--tilt)) scale(1); }
+  28% { transform: translate(0, -10px) rotate(calc(var(--tilt) + 3deg)) scale(1.16); filter: drop-shadow(0 22px 20px var(--shade)); opacity: 1; animation-timing-function: var(--ease-std); }
+  62% { opacity: 0.92; }
+  100% { transform: translate(34px, -58px) rotate(calc(var(--tilt) - 26deg)) scale(1.06); filter: drop-shadow(0 30px 26px transparent); opacity: 0; }
+}
+.sheet--cover .card__top .stamp { position: relative; }
+.sheet--cover .card__top .stamp--open::after { content: ''; position: absolute; inset: -10px; border-radius: 50%; border: 2px solid var(--shu); opacity: 0; pointer-events: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .sheet--cover .card__top .stamp--open::after { animation: seal-ring 560ms var(--ease-out) 60ms both; }
+  .sheet--cover.is-unsealing .cover-band { animation: band-lift var(--dur-m) var(--ease-std) var(--dur-xs) both; }
+  .sheet--cover.is-unsealing .cover-ribbon { animation: ribbon-swing var(--dur-l) var(--ease-std) var(--dur-xs) both; }
+}
+@keyframes band-lift { 45% { transform: translateY(-8px); } }
+@keyframes ribbon-swing { 35% { transform: rotate(-14deg); } 70% { transform: rotate(5deg); } 100% { transform: rotate(0deg); } }
+
+/* ---------- ④ 読む間：次のひと口へ（指を載せると持ち上がる）。見出しのフォーカスの枠はキーボードのときだけ ---------- */
+.next-bite { transition: transform var(--dur-s) var(--ease-out), background-color var(--dur-xs) var(--ease-std), box-shadow var(--dur-s) var(--ease-out), border-color var(--dur-s) var(--ease-std); }
+@media (hover: hover) {
+  .next-bite:hover { transform: translateY(-3px); border-top-color: var(--ha-700); box-shadow: 0 1px 0 var(--momi), 0 24px 36px -24px var(--shade); }
+  .next-bite:hover .icon { transform: translateY(4px); }
+  html[lang='ja'] .next-bite:hover .icon { transform: rotate(90deg) translateX(4px); }
+}
+.next-bite:active, html[lang] .next-bite:active { transform: translateY(1px); box-shadow: 0 1px 0 var(--momi); }
+@media (min-width: 1200px) { .next-bite:hover { border-left-color: var(--ha-700); } html[lang='ja'] .next-bite:hover { border-top-color: var(--ha-700); } }
+.sheet__title:focus:not(:focus-visible), .offer__name:focus:not(:focus-visible) { outline: none; }
+/* 表紙の番号の札：土の色で塗る（写真の上でも測れる濃さ） */
+.page-letter .cover-band .mono { background: var(--tsuchi); }
+
+/* ---------- ④ 結び：畑よりのすぐ下に文。萌黄の太い棒はやめる。右の段は封の高さに寄せる。栞は暗い一枚の上では出さない ---------- */
+.sheet--closing .closing__eyebrow::after { content: none; }
+.closing__eyebrow { margin-bottom: 16px; }
+.closing__meta .closing__sub { margin-bottom: 16px; }
+.shiori.is-hidden { opacity: 0; }
+/* スマホ：日本語の一行は縦組みで、横に大きな朱の封（トップのふたと同じ組） */
+@media (max-width: 1023px) {
+  html[lang='ja'] .sheet--closing .closing__sign { display: flex; align-items: flex-end; justify-content: flex-start; gap: 24px; margin: 16px 0 24px; }
+  html[lang='ja'] .sheet--closing .closing__line { flex: none; writing-mode: vertical-rl; max-width: none; max-height: 11em; margin: 0; padding: 6px 16px; border: 0; border-left: 1px solid var(--line-dark); border-right: 1px solid var(--line-dark); font-size: clamp(26px, 7.6vw, 34px); letter-spacing: 0.14em; line-height: 1.8; }
+  html[lang='ja'] .sheet--closing .stamp--sign { position: static; flex: none; width: 96px; height: 96px; margin: 0 0 6px 4px; }
+  html[lang='en'] .sheet--closing .closing__line { font-size: clamp(24px, 6.4vw, 30px); line-height: 1.25; letter-spacing: -0.01em; max-width: 12em; margin: 8px 0 20px; padding: 14px 0 18px; }
+}
+@media (min-width: 1024px) {
+  html[lang] .page-letter .sheet--closing { grid-template-rows: auto auto auto auto auto; column-gap: 56px; }
+  html[lang] .page-letter .sheet--closing > .closing__sign { grid-row: 2 / span 3; align-self: center; }
+  html[lang] .page-letter .sheet--closing > .closing__eyebrow { align-self: end; margin: 8px 0 16px; }
+  html[lang] .page-letter .sheet--closing > .closing__meta { align-self: start; margin: 0; }
+  html[lang] .page-letter .sheet--closing > .closing__back { align-self: start; margin: 16px 0 0; }
+  html[lang] .page-letter .sheet--soil.sheet--closing::before { margin-top: 48px; }
+  html[lang='en'] .page-letter .sheet--closing .closing__line { font-size: clamp(30px, 2.6vw, 38px); max-width: 11em; }
+  html[lang='ja'] .closing__sign .closing__line { font-size: 36px; max-height: 12em; }
+  html[lang='ja'] .stamp--sign { width: 96px; height: 96px; }
+}
+/* 畝：便箋の幅いっぱいに、奥へ向かって淡くなる */
+.page-letter .sheet--soil.sheet--closing::before { opacity: 0.75; mask-image: linear-gradient(to top, var(--ink) 30%, transparent 100%); }
+
+/* ---------- ④ パソコン（1200px 以上）：便箋を 8 列に広げる（3〜10 列目）。目次は 1〜2 列目、次のひと口へは 11〜12 列目 ---------- */
+@media (min-width: 1200px) {
+  :root {
+    --sheet-x: calc(var(--edge) + 2 * (var(--col) + var(--gap)));
+    --sheet-w: calc(8 * var(--col) + 7 * var(--gap));
+  }
+  .sheet-index:not(:empty) { width: calc(2 * var(--col) + var(--gap)); column-gap: 14px; }
+  .sheet-index__veg { font-size: 36px; }
+  .sheet-index button { font-size: 13px; letter-spacing: 0.08em; padding-left: 12px; }
+  html[lang='en'] .sheet-index button { font-size: 14px; }
+  .page-letter .sheet { padding: 48px 56px; }
+  .cover-lid { margin: -48px -56px 0; }
+  .cover-lid__cap { padding: 10px 56px 12px; }
+  .page-letter .cover-band { height: 200px; padding: 24px 56px; }
+  .page-letter .sheet--cover .card__top { top: 156px; right: 160px; }
+  .band--inline { margin: -48px -56px 24px; padding: 8px 56px; }
+  html[lang] .page-letter .sheet--closing { padding-inline: 56px; }
+  html[lang='ja'] .page-letter .sheet--bite { grid-template-columns: 72px minmax(0, 1fr); column-gap: 48px; }
+  html[lang='ja'] .page-letter .sheet--bite > .sheet__title { font-size: 60px; }
+}
+
+/* ---------- ①②：書く側にも便箋の言葉。② 封をしましたの封は大きく、輪がひろがる（動きを減らす設定では出さない）。橋は点線の道 ---------- */
+.seal-done .stamp--seal { position: relative; width: 200px; height: 200px; }
+@media (min-width: 768px) { .seal-done .stamp--seal { width: 240px; height: 240px; } }
+.seal-done .stamp--seal::after { content: ''; position: absolute; inset: -14px; border-radius: 50%; border: 2px solid var(--shu); opacity: 0; pointer-events: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .tool .seal-done .stamp--seal.stamp--press { animation: press var(--dur-m) var(--ease-out); }
+  .tool .seal-done .stamp--seal.stamp--press::after { animation: seal-ring 700ms var(--ease-out) 120ms both; }
+  .tool .seal-done .seal-done__msg { animation: appear var(--dur-l) var(--ease-out) 200ms backwards; } /* 見本の添え書きは動かさない */
+  .tool .units .unit { animation: appear var(--dur-l) var(--ease-out) backwards; animation-delay: calc(min(var(--i, 0), 6) * 60ms); }
+}
+.seal-bridge::before { width: 0; height: 36px; top: -36px; background: none; border-left: 2px dotted var(--ha); }
+.seal-bridge { margin-top: 44px; }
+.unit { box-shadow: 0 1px 0 var(--momi), 0 10px 18px -16px var(--shade); }
+.unit.is-active { box-shadow: inset 4px 0 0 var(--ha), 0 10px 18px -16px var(--shade); }
+.notice { border-left: 4px solid var(--ink); }
+.notice--label { border-left: 4px solid var(--ink); }

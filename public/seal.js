@@ -115,6 +115,7 @@ function reviewView() {
         try {
           result = await api('seal', { decisions: replies, checked_with_farmer: checkedWithFarmer });
           phase = 'sealed';
+          justSealed = !matchMedia('(prefers-reduced-motion: reduce)').matches;
         } catch (e) {
           error = e;
           phase = 'review';
@@ -136,9 +137,11 @@ function reviewView() {
   ];
 }
 
-// ③④と同じ朱の封（SVG）。①②は動かさないので、押す動きは付けない。
+// ③④と同じ朱の封（SVG）。封をした直後だけ押す動き（動きを減らす設定では動かない）。読み込み直したときは動かない
+let justSealed = false;
 function sealStamp() {
-  const el = h('div', { class: 'stamp stamp--big stamp--seal', 'aria-hidden': 'true' });
+  const el = h('div', { class: `stamp stamp--big stamp--seal${justSealed ? ' stamp--press' : ''}`, 'aria-hidden': 'true' });
+  if (justSealed) { justSealed = false; setTimeout(() => el.classList.remove('stamp--press'), 900); }
   const template = document.getElementById('tpl-stamp');
   if (template) el.append(template.content.firstElementChild.cloneNode(true));
   else el.textContent = '封';
