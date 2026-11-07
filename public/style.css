@@ -29,7 +29,7 @@
   --chui: #F7C843;     /* 注意黄：架空・見本・仮・合成音声の表示だけ（墨の字に 11:1） */
   /* 暗い面の上の字と線（生成りの濃淡） */
   --on-dark: var(--shiro);
-  --on-dark-2: #C9C2B6; /* 暗い面の上の控えめな字（掛け紙の上で 8.9:1） */
+  --on-dark-2: #C9C2B6; /* 暗い面の上の控えめな字（掛け紙の上で 8.5:1） */
   --line-dark: color-mix(in srgb, var(--shiro) 28%, transparent);
   --line-ink: color-mix(in srgb, var(--ink) 20%, transparent);
   --shade: color-mix(in srgb, var(--tsuchi) 55%, transparent);
