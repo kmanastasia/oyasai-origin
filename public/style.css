@@ -1312,7 +1312,7 @@ body:has(.next-bite) .column { padding-bottom: calc(var(--next-h) + 24px + env(s
 body:has(.voice-bar) .page-letter .item { scroll-margin-top: calc(var(--chrome-h) + 76px); }
 
 /* ---------- 写真の色：葉と土の二色に沈める（③のふた・④のふた共通） ---------- */
-.card__lid .card__photo img, .cover-band__img { filter: grayscale(1) contrast(1.12) brightness(1.06); mix-blend-mode: normal; opacity: 1; }
+.card__lid .card__photo img, .cover-band__img { filter: grayscale(1) contrast(1.05) brightness(1.3); mix-blend-mode: normal; opacity: 1; }
 .card__lid .card__photo::after, .cover-band::after {
   content: '';
   position: absolute;
@@ -1345,7 +1345,7 @@ body:has(.voice-bar) .page-letter .item { scroll-margin-top: calc(var(--chrome-h
   box-shadow: 0 1px 0 var(--momi), 0 22px 36px -28px var(--shade);
   transition: transform var(--dur-s) var(--ease-std), color 240ms var(--ease-std), box-shadow var(--dur-m) var(--ease-std);
 }
-.page-top .door--primary { padding-left: 44px; }
+.page-top .top__doors .door--primary { padding-left: 44px; }
 .page-top .door:focus-visible { outline: 3px solid var(--ha); outline-offset: 3px; }
 .page-top .door .door__no, .page-top .door--primary .door__no { border-color: currentColor; }
 .page-top .door__for { opacity: 1; color: inherit; font-size: 13px; letter-spacing: 0.08em; }
@@ -1420,11 +1420,11 @@ html[lang='en'] .page-top .door__title { font-family: var(--fraunces); font-weig
   .page-top .top__lid::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--moegi); transform-origin: left; }
   html[lang='ja'] .page-top .top__core { font-size: clamp(38px, 10.6vw, 44px); line-height: 1.32; letter-spacing: 0.04em; margin-bottom: 14px; }
   html[lang='en'] .page-top .top__core { font-family: var(--fraunces); font-weight: 400; font-size: clamp(32px, 9vw, 38px); line-height: 1.1; letter-spacing: -0.01em; margin-bottom: 12px; }
-  .page-top .top__lid .lead-line { color: var(--on-dark-2); font-size: 18px; line-height: 1.6; margin: 0; padding: 0; border: 0; }
+  html .page-top .top__lid .lead-line { color: var(--on-dark-2); font-size: 18px; line-height: 1.6; margin: 0; padding: 0; border: 0; }
   html[lang='en'] .page-top .top__lid .lead-line { font-family: var(--fraunces); font-size: 18px; }
   .page-top .section-eyebrow { font-size: 14px; letter-spacing: 0.08em; margin-bottom: 10px; }
   /* 押す先の丸は右下に。見出しは扉の幅いっぱいに組む */
-  .page-top .door { padding-right: 24px; }
+  .page-top .top__doors .door { padding-right: 24px; }
   .door__go { top: auto; bottom: 16px; right: 16px; width: 44px; height: 44px; margin-top: 0; }
   .page-top .door__meta { padding-right: 52px; }
   .page-top .door__title { font-size: 22px; }
@@ -1449,8 +1449,8 @@ html[lang='en'] .page-top .door__title { font-family: var(--fraunces); font-weig
   .top__body { display: flex; flex-direction: column; align-self: stretch; padding: 0 0 30px; }
   .top__doors { margin: auto 0; }
   .page-top .section-eyebrow { margin: 0; font-size: 15px; letter-spacing: 0.1em; }
-  .page-top .door { padding: 28px 112px 28px 40px; margin-bottom: 20px; }
-  .page-top .door--primary { padding-left: 64px; }
+  .page-top .top__doors .door { padding: 28px 112px 28px 40px; margin-bottom: 20px; }
+  .page-top .top__doors .door--primary { padding-left: 64px; }
   .door__wrap { left: 24px; width: 14px; }
   .page-top .door__title { font-size: 32px; }
   html[lang='en'] .page-top .door__title { font-size: 30px; }
@@ -1555,3 +1555,8 @@ html[lang='ja'] .page-letter .sheet__title { font-family: var(--mincho); font-we
 .page-choose .card__photo, .page-letter .cover-band { view-transition-name: vt-lid; }
 ::view-transition-group(vt-lid) { animation-duration: 460ms; animation-timing-function: var(--ease-out); }
 ::view-transition-old(vt-lid), ::view-transition-new(vt-lid) { height: 100%; object-fit: cover; }
+
+/* ③の副題もトップと同じ明朝の見出しの段に */
+@media (min-width: 1024px) {
+  .page-choose .lead-line { font-size: clamp(28px, 2.4vw, 36px); letter-spacing: 0.08em; margin-bottom: 32px; }
+}
