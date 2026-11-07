@@ -14,15 +14,15 @@
 - 仕様から実装に必要な事実（画面・データの形・表示の約束）だけを使う。
 - コミットや push の前に `git status` を見て、`private/`・`.env`・動画が入っていないことを確かめる（`npm run verify` でも確かめる）。
 
-## 画面（入口＋4つ）
-入口のトップ `/`（読む／書く）。①残す `/keep` ②封をする `/seal` ③えらぶ `/choose` ④手紙 `/letter`。①②は日本語のみ。トップ・③④と結びは JP/EN 切り替え。
+## 画面（入口＋5つ）
+入口のトップ `/`（畑からのお手紙を読む／書く）。書く：残す `/keep` → 封をする `/seal`（日本語のみ）。読む：作り手の一覧 `/choose` → 作り手のページ `/farmer?id=` → 手紙 `/letter`（JP/EN 切り替え）。手紙は、お野菜の QR を読み込んだ印（`/letter?qr=番号`、見本のボタン）が無いとひらかない。画面に ①②③④ の番号は出さない（2026-11-08 Karen 決定）。
 
 ## 必ず守ること
 - 農家の言葉は一字も直さない。quote は原文に完全一致するものだけ。照合は `npm run verify`。
 - 理由が語られていない判断は reason: null と next_question。推測で埋めない。
 - archive_only の項目は、受け取る側のどの画面・データにも出さない。
 - Claude に本文・方言・土地の歴史を書かせない。Claude がするのは、分類・段落番号の割り当て・英訳だけ。
-- 「架空」「見本」「合成音声・架空の語り手」「Translated by Claude」「仮」の表示を消さない。
+- 「合成音声」「Translated by Claude」と、お金の「仮」の表示を消さない。「架空」「見本」の帯と写真の注記は出さない（2026-11-08 Karen 決定。農家・農園・地域は仮の値で「（仮）」を付ける）。
 - 読み上げはブラウザ標準（speechSynthesis）だけ。外部の音声サービス・音声ファイル・声の複製は使わない。skip_speech の部分は読まない。
 - 決済・申し込み・入力フォーム・外部リンクは作らない。押しても「見本」の表示で止まる。例外は「おやさい旅」の SNS へのリンク1か所だけ（2026-11-07 Karen 決定）。
 - 使わない：Streamlit、チャット UI、ログイン、録音。
@@ -33,10 +33,10 @@
 | Skills | 聞き手の作法：farm-archive（残す）、eat-and-listen（手紙） | `.claude/skills/` |
 | Structured outputs | Claude の出力の形を JSON Schema で固定 | `schemas/` |
 | フック | `git commit` の前に `npm run verify` を走らせ、失敗したら止める | `.claude/settings.json`、`.claude/hooks/` |
-| サブエージェント | label-checker：表示（架空・見本・合成音声・Translated by Claude・仮）と英訳の点検。読むだけ | `.claude/agents/label-checker.md` |
+| サブエージェント | label-checker：表示（合成音声・Translated by Claude・仮）と英訳の点検。読むだけ | `.claude/agents/label-checker.md` |
 | MCP | 使わない（外部につなぐ必要がない）。理由を README に書く | — |
 
-`npm run verify` が確かめること：quote・reason_quote の一字一句一致／archive_only の流出0件／英語訳の漏れ0件／送信・決済のコードがないこと／`private/`・`.env` が git に追跡されていないこと。
+`npm run verify` が確かめること：quote・reason_quote の一字一句一致／archive_only の流出0件／英語訳の漏れ0件／合成音声・Translated by Claude・仮の表示／送信・決済のコードがないこと／`private/`・`.env` が git に追跡されていないこと。
 
 ## README に置く6節
 ①誰の・どんな課題か ②3分で試せる始め方（仮データ同梱）③機能の使い分け表 ④試行錯誤の経緯（v1〜v4、各1行）⑤この期間に作ったもの／事前に書いた仕様（非公開・文書のみ）の区別 ⑥これから誰が使い続けるか（数字は「仮」）。
