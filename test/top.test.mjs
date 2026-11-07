@@ -73,3 +73,15 @@ test('390×844 の調整は仕様の値を変えず、流れの表示はラベ�
   // ③の副題（.lead-line）を変えないよう、トップの調整は .top の下だけに置く
   assert.match(css, /\n\.top \.lead-line \{ margin-bottom: 16px; \}/);
 });
+
+// 2026-11-07 Karen 承認の上書き：日本語のトップ見出しだけ 28px → 32〜36px（「日本のお野菜を／世界へ。」で改行）。
+// パソコン（1024px 以上）は縦組みの大きな見出し。英語のスマホの大きさは変えない。
+test('日本語の見出しだけ大きくし、文字は辞書の core のまま改行だけを入れる', () => {
+  const css = read('public/style.css');
+  assert.match(css, /html\[lang='ja'\] \.top__core \{ font-size: clamp\(32px, 8\.6vw, 36px\);/);
+  assert.match(css, /html\[lang='en'\] \.top__core \{ font-size: 24px;/);
+  assert.match(css, /html\[lang='ja'\] \.top__lid \{ writing-mode: vertical-rl;/);
+  const source = read('public/index.js');
+  assert.match(source, /const text = t\('core'\);/);
+  assert.match(source, /text\.slice\(0, at \+ 1\), h\('br'\), text\.slice\(at \+ 1\)/);
+});

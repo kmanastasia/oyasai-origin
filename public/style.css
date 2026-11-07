@@ -592,7 +592,6 @@ html[lang='en'] .top .lead-line { line-height: 1.45; }
 .door--primary { background: var(--ha); border-color: var(--ha); color: var(--shiro); }
 .door__for { font-size: 14px; font-weight: 500; opacity: 0.85; }
 .door__title { font-size: 20px; font-weight: 700; line-height: 1.5; word-break: auto-phrase; }
-.door__title::after { content: '\00a0→'; } /* 矢印だけが次の行に落ちないように */
 .door__sub, .door__meta { font-size: 14px; opacity: 0.9; }
 .door__for, .door__sub, .door__meta, .door__node { line-height: 1.5; }
 
@@ -688,3 +687,97 @@ html[lang='en'] .door { padding: 18px 24px; gap: 4px; }
   filter: none !important;
   backdrop-filter: none !important;
 }
+
+/* ===== アイコン（Lucide・線 1.5・文字の色） ===== */
+.icon { width: 1em; height: 1em; flex: none; vertical-align: -0.15em; }
+.door__last { white-space: nowrap; }
+.door__last .icon { width: 0.9em; height: 0.9em; margin-left: 0.3em; transition: transform var(--dur-s) var(--ease-std); }
+
+/* ===== トップ（スマホ）：箱を開けたときの最初の1枚 ===== */
+/* スマホでは左右の入れ物を持たない（並びは今までどおり上から）。写真と注記はパソコンだけ */
+.top__hero, .top__lid, .top__body { display: contents; }
+.top__cap { display: none; }
+
+/* 日本語の見出しだけ大きく、「日本のお野菜を／世界へ。」で意図して改行する（2026-11-07 Karen 承認の上書き） */
+html[lang='ja'] .top__core { font-size: clamp(32px, 8.6vw, 36px); line-height: 1.4; letter-spacing: 0.06em; word-break: keep-all; margin-bottom: 10px; }
+html[lang='ja'] .top .lead-line { padding-bottom: 14px; margin-bottom: 14px; border-bottom: 1px solid var(--momi); }
+
+/* 読む扉：ベタの緑の内側 7px に、生成りの細い線（箱の内ぶた） */
+.door--primary { outline: 1px solid rgba(248, 243, 232, 0.42); outline-offset: -7px; }
+.door--primary .door__no { border-color: rgba(248, 243, 232, 0.8); }
+.door--primary:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+@media (hover: hover) {
+  .door:hover .door__last .icon { transform: translateX(4px); }
+}
+
+/* 現れる動き（トップは最初の1回だけ。80ms ずつ） */
+.page-top .appear { animation-duration: 600ms; animation-timing-function: var(--ease-out); animation-delay: calc(var(--i, 0) * 80ms); }
+
+/* ===== トップ（パソコン）：左に箱のふた（土の質感に縦組み）、右に扉 ===== */
+@media (min-width: 1024px) {
+  .column.top {
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    column-gap: clamp(48px, 6vw, 120px);
+    align-items: start;
+    max-width: 1200px;
+    padding: 40px 48px 56px;
+  }
+  .top__hero { display: flex; flex-direction: column; gap: 10px; position: sticky; top: calc(var(--chrome-h) + 40px); }
+  .top__lid {
+    display: flex;
+    position: relative;
+    isolation: isolate;
+    min-height: min(640px, calc(100vh - var(--chrome-h) - 120px));
+    padding: 48px 40px;
+    border-radius: 4px;
+    color: var(--shiro);
+    background-color: var(--tsuchi);
+    background-image: url('/img/texture-soil.jpg');
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+  }
+  /* 写真は土の色に沈める。上の文字の読みやすさを先に守る */
+  .top__lid::before { content: ''; position: absolute; inset: 0; z-index: -1; background: rgba(27, 22, 18, 0.5); }
+  .top__lid::after { content: ''; position: absolute; inset: 10px; z-index: -1; border: 1px solid rgba(248, 243, 232, 0.22); border-radius: 2px; pointer-events: none; }
+  .top__cap { display: block; }
+  .top__body { display: block; align-self: center; padding: 8px 0; }
+
+  /* 日本語：縦組み。見出しは2行（右から）、その左に副題 */
+  html[lang='ja'] .top__lid { writing-mode: vertical-rl; flex-direction: column; align-items: flex-start; justify-content: flex-start; column-gap: 0; }
+  html[lang='ja'] .top__core {
+    font-size: clamp(56px, 3.6vw + 16px, 96px);
+    line-height: 1.5;
+    letter-spacing: 0.12em;
+    margin: 0;
+    margin-block-end: 22px;
+    text-wrap: nowrap;
+  }
+  html[lang='ja'] .top .lead-line {
+    font-size: clamp(20px, 0.8vw + 10px, 24px);
+    letter-spacing: 0.24em;
+    line-height: 1.8;
+    margin: 0;
+    margin-inline-start: 4.5em; /* 縦組みなので、見出しより少し下から始める */
+    padding: 0;
+    padding-block-start: 22px; /* 見出しとのあいだに縦の細い罫 */
+    border: 0;
+    border-block-start: 1px solid rgba(248, 243, 232, 0.4);
+  }
+
+  /* 英語：横組み Fraunces。ふたの下に寄せる */
+  html[lang='en'] .top__lid { flex-direction: column; justify-content: flex-end; gap: 16px; }
+  html[lang='en'] .top__core { font-family: var(--fraunces); font-weight: 400; font-size: clamp(48px, 3vw + 16px, 80px); line-height: 1.08; letter-spacing: -0.01em; margin: 0; }
+  html[lang='en'] .top .lead-line { font-family: var(--fraunces); font-size: 22px; line-height: 1.45; margin: 0; padding-top: 16px; border-top: 1px solid rgba(248, 243, 232, 0.4); }
+
+  .top .section-eyebrow { margin-bottom: 16px; }
+  .top .door { padding: 28px 32px; }
+  html[lang='en'] .top .door { padding: 24px 32px; }
+  .top .door__title { font-size: 22px; }
+  .top__qr { margin-top: 4px; }
+}
+
+/* 写真の注記：墨色・13px（注意黄にしない）。動かさない */
+.photo__cap { font-size: 13px; line-height: 1.5; color: var(--ink); font-family: var(--gothic); }

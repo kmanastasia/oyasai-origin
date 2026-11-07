@@ -100,3 +100,12 @@ export function motionProbe() {
   });
   return probe;
 }
+
+// アイコンは HTML の中の sprite（<symbol>）を <template> から複製して使う。h() では SVG を作れないため。
+export function icon(name) {
+  const template = document.getElementById('tpl-icon');
+  if (!template) return null;
+  const svg = template.content.firstElementChild.cloneNode(true);
+  svg.querySelector('use').setAttribute('href', `#i-${name}`);
+  return svg;
+}
