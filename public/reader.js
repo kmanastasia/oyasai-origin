@@ -36,9 +36,13 @@ export function t(key, values = {}) {
 }
 
 export const onLangChange = (listener) => listeners.push(listener);
+// 切り替える直前（まだ元の言葉の組みのうち）に呼ぶ。読んでいる位置を測るため
+const beforeListeners = [];
+export const beforeLangChange = (listener) => beforeListeners.push(listener);
 
 function setLang(next) {
   if (next === lang) return;
+  for (const listener of beforeListeners) listener();
   lang = next;
   document.documentElement.lang = next;
   try {

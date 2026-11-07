@@ -1,5 +1,5 @@
 import { api, h, icon, labelText, motionProbe, releaseIfStalled } from './common.js';
-import { checkTag, cachedLetter, getLang, hasStrings, onLangChange, sealStamp, startReader, t, translationTag } from './reader.js';
+import { checkTag, beforeLangChange, cachedLetter, getLang, hasStrings, onLangChange, sealStamp, startReader, t, translationTag } from './reader.js';
 
 const root = document.getElementById('root');
 const voiceRoot = document.getElementById('voice');
@@ -591,14 +591,26 @@ function readingAnchor() {
   return { selector: `[${attr}="${el.getAttribute(attr)}"]`, top: el.getBoundingClientRect().top };
 }
 
+let pendingAnchor = null;
+beforeLangChange(() => { pendingAnchor = readingAnchor(); });
 onLangChange(() => {
-  const anchor = readingAnchor();
+  const anchor = pendingAnchor ?? readingAnchor();
+  pendingAnchor = null;
   closingOpen = false;
   actionDone = false;
   renderBody();
   renderVoice();
-  const again = anchor && root.querySelector(anchor.selector);
-  if (again) scrollBy({ top: again.getBoundingClientRect().top - anchor.top, behavior: 'instant' });
+  if (!anchor) return;
+  // 書体が届いて字の幅が変わっても、目印の高さを保つ（すぐ・書体が届いたとき・少しあと の3回）
+  const at = Date.now();
+  const correct = () => {
+    if (handAt > at) return; // そのあいだに自分で動かしたら、そちらを優先
+    const again = root.querySelector(anchor.selector);
+    if (again) scrollBy({ top: again.getBoundingClientRect().top - anchor.top, behavior: 'instant' });
+  };
+  correct();
+  document.fonts?.ready.then(() => requestAnimationFrame(correct));
+  setTimeout(correct, 300);
 });
 
 const useLetter = (data) => {
