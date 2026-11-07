@@ -97,10 +97,8 @@ export function translationTag(translations) {
 }
 
 // ③のカードと④の表紙の確認のタグ。消す操作はない。
-// 本人と一緒に見たときは実線の枠、運営者が代理で封をしたときは点線の枠。どちらも「見本」を添える。
-export function checkTag(letter) {
-  const together = letter.checked_with_farmer === true;
-  return h('p', { class: `tag-line ${together ? 'tag-line--together' : 'tag-line--proxy'}` },
-    h('span', { text: together ? t('check.together') : t('check.done') }),
-    together ? h('span', { class: 'tag-note', text: t('check.sample') }) : null);
+// デモでは②の「本人と一緒に見ている」の答えにかかわらず、いつも今の文（運営者の代理・見本）を点線の枠で出す。
+// 「一緒に確かめた」の文は本番だけ（デモでは使わない）。
+export function checkTag() {
+  return h('p', { class: 'tag-line tag-line--proxy' }, h('span', { text: t('check.done') }));
 }

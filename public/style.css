@@ -168,7 +168,7 @@ button, a.btn { font-family: inherit; }
 .card__small { font-size: 14px; color: var(--haicha); }
 .card .btn { margin-top: 20px; }
 
-/* 確認のタグ（③のカード・④の表紙）。枠線のみ・色は使わない。点線＝運営者が代理で封をした／実線＝本人と一緒に確かめた */
+/* 確認のタグ（③のカード・④の表紙）。枠線のみ・色は使わない。デモはいつも点線（運営者が代理で封をした） */
 .tag-line {
   display: inline-flex;
   flex-wrap: wrap;

@@ -40,8 +40,6 @@
   { "key": "choose.error", "ja": "読み込めませんでした。npm run dev が動いているか確かめて、もう一度開いてください。", "en": "Could not load. Check that npm run dev is running, then reopen this page.", "en_reviewed_by": null },
 
   { "key": "check.done", "ja": "作り手の確認：済（運営者が代理・口頭／見本）", "en": "Maker's check: done (by the operator, verbally / sample)", "en_reviewed_by": null },
-  { "key": "check.together", "ja": "作り手と一緒に確かめた手紙", "en": "Checked together with the maker", "en_reviewed_by": null },
-  { "key": "check.sample", "ja": "見本", "en": "Sample", "en_reviewed_by": null },
   { "key": "verified", "ja": "引用 {kept}/{total} 照合済み", "en": "Quotes {kept}/{total} verified", "en_reviewed_by": null },
   { "key": "verified.dropped", "ja": "照合で落とした引用 {n} 件", "en": "{n} quotes dropped at verification", "en_reviewed_by": null },
   { "key": "town.tag", "ja": "架空の町", "en": "Fictional town", "en_reviewed_by": null },
