@@ -1,4 +1,4 @@
-// ③のカードと④の表紙の確認のタグ：文言・枠の種類・「見本」の表示を確かめる。
+// 作り手のページと手紙の表紙の確認のタグ：文言・枠の種類・「見本」の表示を確かめる。
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
@@ -11,7 +11,7 @@ const reader = read('public/reader.js');
 const helper = reader.slice(reader.indexOf('export function checkTag('));
 
 const CHECK = {
-  'check.done': ['作り手の確認：済（運営者が代理・口頭／見本）', "Maker's check: done (by the operator, verbally / sample)"],
+  'check.done': ['作り手の確認：済（運営者が代理・口頭）', "Maker's check: done (by the operator, verbally)"],
 };
 
 test('確認のタグの文言は JP/EN の両方があり、英語は未確認のまま', () => {
@@ -23,9 +23,10 @@ test('確認のタグの文言は JP/EN の両方があり、英語は未確認�
   }
 });
 
-test('タグの文に「見本」が入っている', () => {
-  assert.match(strings.get('check.done').ja, /見本/);
-  assert.match(strings.get('check.done').en, /sample/);
+test('タグの文に「運営者が代理」が入っている（見本・架空の語は出さない）', () => {
+  assert.match(strings.get('check.done').ja, /運営者が代理/);
+  assert.match(strings.get('check.done').en, /operator/);
+  assert.doesNotMatch(strings.get('check.done').ja, /見本|架空/);
 });
 
 test('デモでは②の答えにかかわらず、いつも今の文を点線の枠で出す（「一緒に確かめた」の文は本番だけ）', () => {
@@ -39,8 +40,8 @@ test('デモでは②の答えにかかわらず、いつも今の文を点線�
   assert.match(css, /\.tag-line--proxy \{ border-style: dashed; \}/);
 });
 
-test('③のカードと④の表紙は同じ確認のタグを使い、古い文の出し方は残っていない', () => {
-  for (const file of ['public/choose.js', 'public/letter.js']) {
+test('作り手のページと手紙の表紙は同じ確認のタグを使い、古い文の出し方は残っていない', () => {
+  for (const file of ['public/farmer.js', 'public/letter.js']) {
     const source = read(file);
     assert.match(source, /import \{ checkTag,/, `${file} が checkTag を読み込んでいません`);
     assert.equal(source.split('checkTag(letter)').length - 1, 1, `${file} の確認のタグは1か所だけ`);

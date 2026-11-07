@@ -48,31 +48,29 @@ export function errorBox(error) {
 
 export const CATEGORY = { craft: '技', judgment: '判断', land: '土地', person: '人' };
 
-// どの画面でも「だれの流れの、いま何番目か」と、トップへ戻る道を出す。
-// steps は [番号, 呼び名, 行き先] の並び。current は 1 から数える（0 ならどれも今ではない）。
+// どの画面でも「読む／書くのどちらの流れの、どこにいるか」と、トップへ戻る道を出す。番号は付けない。
+// steps は [呼び名, 行き先] の並び。current は 1 から数える（0 ならどれも今ではない）。
 export function routeBar({ who, steps, current, home }) {
   return h('nav', { class: 'route', 'aria-label': who },
     h('a', { class: 'route__home', href: '/', text: home }),
     h('span', { class: 'route__who', text: who }),
-    h('ol', { class: 'route__steps' }, steps.map(([no, label, href], i) => {
+    h('ol', { class: 'route__steps' }, steps.map(([label, href], i) => {
       const here = i + 1 === current;
-      // 番号はトップの扉と同じ、線で描いた丸（文字の丸数字は使わない）
-      const n = '①②③④'.indexOf(no) + 1;
-      const inner = [h('span', { class: 'route__no', 'aria-hidden': 'true', text: String(n || no) }), h('span', { class: 'visually-hidden', text: no }), h('span', { text: label })];
+      const inner = h('span', { text: label });
       return h('li', { class: here ? 'route__step is-current' : 'route__step', 'aria-current': here ? 'step' : null },
         here ? h('span', { class: 'route__here' }, inner) : h('a', { href }, inner));
     })));
 }
 
-// 書く流れ（①残す → ②封をする）。①②は日本語のみ。
+// 書く流れ（残す → 封をする）。日本語のみ。
 export const makerRoute = (current) => routeBar({
   who: '書く',
-  steps: [['①', '残す', '/keep'], ['②', '封をする', '/seal']],
+  steps: [['残す', '/keep'], ['封をする', '/seal']],
   current,
   home: '← トップ',
 });
 
-// 表示ラベルの文字：【架空】のような括弧の組は、行の途中で割らない。短い文は「。」の後で折る（文字は変えない。折る位置だけ）。
+// 【】で囲んだ語は行の途中で割らない（お知らせの文に使う）
 export function labelText(text) {
   return String(text).split(/(?<=。)/).filter(Boolean).map((sentence) => {
     const parts = sentence.split(/(【[^】]*】)/).filter(Boolean).map((part) => (part.startsWith('【') ? h('span', { class: 'nobr', text: part }) : part));
@@ -80,16 +78,21 @@ export function labelText(text) {
   });
 }
 
-// ①②の帯：架空の表示と、農家役の表示を1本の帯にまとめる（2本の帯を重ねない）。字の大きさはどちらも今までどおり
-export function toolBands(extra) {
+// 書く側の画面の上：掛け紙だけ（読む側と同じ。日本語だけなので言語の切り替えは置かない）。帯は出さない（2026-11-08 Karen 決定）
+export function toolBands() {
   return [
-    h('div', { class: `band${extra ? ' band--stack' : ''}`, role: 'note' },
-      h('span', { class: 'band__line' }, labelText('【架空】の農家・デモ')),
-      extra ? h('span', { class: 'band__line' }, labelText(extra)) : null),
-    // ③④と同じ掛け紙（①②は日本語だけなので、言語の切り替えは置かない）
     h('header', { class: 'kakegami kakegami--tool' },
       h('a', { class: 'kakegami__name', href: '/', lang: 'en', text: 'OYASAI ORIGIN' })),
   ];
+}
+
+// 巻物：封をした手紙の印。HTML の <template id="tpl-maki"> から複製する（h() では SVG を作れない）。
+// state は 'closed'（巻いて朱の紐で結んである）か 'open'（ひらいてある）
+export function makimono(state = 'closed', extra = '') {
+  const el = h('span', { class: `maki maki--${state}${extra}`, 'aria-hidden': 'true' });
+  const template = document.getElementById('tpl-maki');
+  if (template) el.append(template.content.firstElementChild.cloneNode(true));
+  return el;
 }
 
 // 動きが本当に進む環境かを、見えない小さな印で一度だけ確かめる。

@@ -37,7 +37,7 @@ test('「Visit this land」は今までどおり見本で止まり、JP の結�
   const visit = slice('visitCard', 'visitSnsView');
   assert.match(visit, /actionDone = true/);
   assert.match(visit, /t\('close\.en\.done'\)/);
-  assert.match(strings.get('close.en.done').en, /Sample only\. Nothing was sent\./);
+  assert.match(strings.get('close.en.done').en, /Provisional\. Nothing was sent\./);
   const jp = slice('closingJp', 'visitCard');
   assert.doesNotMatch(jp, /visit\.|sns/);
 });

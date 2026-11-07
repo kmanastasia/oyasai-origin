@@ -1,7 +1,7 @@
-import { CATEGORY, api, errorBox, h, makerRoute, toolBands } from './common.js';
+import { CATEGORY, api, errorBox, h, makerRoute, makimono, toolBands } from './common.js';
 
 const root = document.getElementById('root');
-document.getElementById('chrome').replaceChildren(...toolBands('農家役（デモ）・運営者が代わりに操作中').filter(Boolean));
+document.getElementById('chrome').replaceChildren(...toolBands().filter(Boolean));
 document.getElementById('route').replaceChildren(makerRoute(2));
 
 const DEFAULT_DISCLOSURE = { land: 'public', person: 'public', craft: 'eaters_only', judgment: 'eaters_only' };
@@ -137,14 +137,11 @@ function reviewView() {
   ];
 }
 
-// ③④と同じ朱の封（SVG）。封をした直後だけ押す動き（動きを減らす設定では動かない）。読み込み直したときは動かない
+// 封をした印は、読む側と同じ巻いた巻物。封をした直後だけ、ひらいた巻物が巻かれていく（動きを減らす設定では動かない）
 let justSealed = false;
 function sealStamp() {
-  const el = h('div', { class: `stamp stamp--big stamp--seal${justSealed ? ' stamp--press' : ''}`, 'aria-hidden': 'true' });
-  if (justSealed) { justSealed = false; setTimeout(() => el.classList.remove('stamp--press'), 900); }
-  const template = document.getElementById('tpl-stamp');
-  if (template) el.append(template.content.firstElementChild.cloneNode(true));
-  else el.textContent = '封';
+  const el = makimono('closed', ` maki--seal${justSealed ? ' maki--rolling' : ''}`);
+  if (justSealed) { justSealed = false; setTimeout(() => el.classList.remove('maki--rolling'), 1200); }
   return el;
 }
 
@@ -159,7 +156,7 @@ function sealedView() {
     h('p', { class: 'seal-bridge', text: 'ここから先は、読む方の画面です' }),
     h('a', { class: 'btn btn--primary btn--big', href: '/choose' },
       h('span', { text: 'できあがりを見る' }),
-      h('span', { class: 'btn__to', text: '→ ③' })),
+      h('span', { class: 'btn__to', text: '→' })),
     h('button', {
       class: 'btn btn--ghost btn--big',
       type: 'button',
@@ -186,7 +183,7 @@ function render() {
     view = [
       h('h1', { class: 'tool-h1', text: '封をする前に' }),
       error ? errorBox(error) : h('p', { class: 'tool-lead', text: '確かめる下書きがまだありません。' }),
-      h('a', { class: 'btn btn--primary btn--big', href: '/keep', text: '①残す へ' }),
+      h('a', { class: 'btn btn--primary btn--big', href: '/keep', text: '手紙を書く へ' }),
     ];
   } else if (phase === 'sealed') view = sealedView();
   else if (phase === 'cards') view = cardView();
@@ -199,7 +196,7 @@ try {
   ({ draft, demo } = await api('draft'));
   if (draft?.entries.length === 0) {
     draft = null;
-    error = { message: '照合を通った項目がありません。', next: '①残す で文字起こしを確かめて、下書きを作り直してください。' };
+    error = { message: '照合を通った項目がありません。', next: '「手紙を書く」で文字起こしを確かめて、下書きを作り直してください。' };
   }
 } catch (e) {
   error = e;

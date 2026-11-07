@@ -1,10 +1,13 @@
 {
   "no": "No.001",
+  "farmer_id": "minami",
   "vegetable": { "ja": "にんじん", "en": "Carrot" },
-  "farmer": { "ja": "みなみ（架空）", "en": "Minami (fictional)", "name_ja": "みなみ" },
-  "town": { "ja": "【架空の町】", "en": "A fictional town" },
+  "farmer": { "ja": "みなみ", "en": "Minami", "name_ja": "みなみ" },
+  "farm": { "ja": "みなみ農園（仮）", "en": "Minami Farm (provisional)" },
+  "town": { "ja": "山あいの町（仮）", "en": "A mountain town (provisional)" },
+  "season": { "ja": "冬", "en": "Winter" },
   "is_fictional": true,
   "is_sample": true,
   "place_is_fictional": true,
-  "slots": ["No.002", "No.003"]
+  "slots": []
 }

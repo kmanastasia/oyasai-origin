@@ -47,7 +47,13 @@ const REPLAY_NOTICE = {
   failed: '保存データを表示中です（Claude との通信に失敗したため）。',
 };
 
-export async function createDraft(text) {
+// 書く側の書式（送りもと・品目・季節）。文字だけを受け取り、長さをそろえる。想いの本文は文字起こしの中（本人の言葉）にある
+function cleanMeta(meta) {
+  const take = (value) => (typeof value === 'string' ? value.trim().slice(0, 40) : '');
+  return { farm: take(meta?.farm), item: take(meta?.item), season: take(meta?.season) };
+}
+
+export async function createDraft(text, meta) {
   const paragraphs = parseTranscript(text);
   let archive;
   let source = 'live';
@@ -87,6 +93,7 @@ export async function createDraft(text) {
     source,
     notice,
     is_placeholder: text.includes('【仮】'),
+    meta: cleanMeta(meta),
     ...checked,
   };
   await saveRuntime('draft.json', draft);
@@ -142,11 +149,23 @@ export async function sealLetter(decisions, checkedWithFarmer = false) {
   );
   const translationFile = { archive_version: version, translations: await collectTranslations(outward) };
 
-  const meta = await readJson(`${dataDir}letter_meta.json`);
+  const meta = withDraftMeta(await readJson(`${dataDir}letter_meta.json`), draft.meta);
   const letter = buildPublicLetter(published, assignment, translationFile, meta);
   await saveRuntime('published.json', published);
   await saveRuntime('public_letter.json', letter);
   return { letter, published };
+}
+
+// 書く側で入れた送りもと・品目・季節を、手紙の表紙に使う（空のところは同梱の値のまま）。
+function withDraftMeta(base, draftMeta) {
+  if (!draftMeta) return base;
+  const meta = structuredClone(base);
+  // 英語は、同梱の値と同じ日本語のときだけ同梱の英語を使う（Claude に訳させない。違う語なら英語は空のまま）
+  const pick = (ja, saved) => ({ ja, en: saved?.ja === ja ? saved.en : '' });
+  if (draftMeta.farm) meta.farm = pick(draftMeta.farm, base.farm);
+  if (draftMeta.item) meta.vegetable = pick(draftMeta.item, base.vegetable);
+  if (draftMeta.season) meta.season = pick(draftMeta.season, base.season);
+  return meta;
 }
 
 export async function unsealLetter() {
@@ -160,3 +179,4 @@ export async function resetAll() {
 export const getLetter = () => readJsonIfExists(`${runtimeDir}public_letter.json`);
 export const getOffer = () => readJson(`${dataDir}offer.json`);
 export const getUiStrings = () => readJson(`${dataDir}ui_strings.json`);
+export const getFarmers = async () => (await readJson(`${dataDir}farmers.json`)).farmers;

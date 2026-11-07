@@ -8,20 +8,30 @@ const project = fileURLToPath(new URL('..', import.meta.url));
 const read = (path) => readFileSync(`${project}${path}`, 'utf8');
 const strings = new Map(JSON.parse(read('data/ui_strings.json')).map((s) => [s.key, s]));
 
-test('トップの扉は 読む→③えらぶ、書く→①残す', () => {
+test('トップの扉は 読む→作り手の一覧、書く→残す。番号の丸と「どちらにしますか」は無い', () => {
   const source = read('public/index.js');
   assert.match(source, /key: 'read', href: '\/choose'/);
   assert.match(source, /key: 'write', href: '\/keep'/);
+  assert.match(source, /img: '\/img\/oyasai-tabi\.jpg'/);
+  assert.match(source, /img: '\/img\/nouka\.jpg'/);
   for (const side of ['read', 'write']) {
-    for (const part of ['for', 'title', 'sub', 'meta']) {
+    for (const part of ['title', 'sub']) {
       const entry = strings.get(`top.${side}.${part}`);
       assert.ok(entry?.ja && entry?.en, `top.${side}.${part} の JP/EN がありません`);
       assert.equal(entry.en_reviewed_by, null);
     }
   }
-  assert.equal(strings.get('top.read.for').ja, '手紙を読む方へ');
-  assert.equal(strings.get('top.write.for').ja, '手紙を書く方へ');
-  assert.equal(strings.get('top.ask').ja, 'どちらにしますか');
+  assert.equal(strings.get('top.read.title').ja, '畑からのお手紙を読む');
+  assert.equal(strings.get('top.write.title').ja, '畑からのお手紙を書く');
+  assert.equal(strings.get('subtitle').ja, '畑からのお手紙');
+  assert.ok(!strings.has('top.ask'));
+  assert.ok(!strings.has('band.fiction'));
+  assert.ok(!strings.has('photo.caption'));
+  assert.doesNotMatch(source, /pathView|door__path/);
+  for (const file of ['public/index.js', 'public/common.js', 'public/reader.js', 'public/keep.js', 'public/seal.js', 'public/choose.js', 'public/farmer.js', 'public/letter.js']) {
+    assert.doesNotMatch(read(file).replace(/\/\/.*$/gm, ''), /[①②③④]/, `${file} に丸数字が残っています`);
+  }
+  assert.doesNotMatch(JSON.stringify([...strings.values()]), /[①②③④]/, 'ui_strings に丸数字が残っています');
 });
 
 test('流れの表示は「読む」「書く」', () => {
@@ -31,15 +41,18 @@ test('流れの表示は「読む」「書く」', () => {
   assert.equal(strings.get('route.write').en, 'Write');
   assert.ok(!strings.has('route.reader'));
   assert.match(read('public/reader.js'), /who: t\('route\.read'\)/);
-  // ①②は日本語のみで、ui_strings の「書く」と同じ語を使う
+  // 書く側は日本語のみで、ui_strings の「書く」と同じ語を使う
   assert.match(read('public/common.js'), new RegExp(`who: '${strings.get('route.write').ja}'`));
 });
 
-test('QR の文は、その作り手の手紙の表紙（④）が直接開く（見本）', () => {
+test('QR の文は、お野菜の QR からその作り手の手紙がひらく', () => {
   const qr = strings.get('top.qr');
-  assert.match(qr.ja, /表紙（④）が直接開きます（見本）/);
-  assert.match(qr.en, /\(④\) directly \(sample\)/);
-  assert.match(read('README.md'), /その作り手の手紙の表紙（④）が直接開く想定です（見本）/);
+  assert.match(qr.ja, /QR を読み込むと、その作り手の手紙がひらきます/);
+  assert.match(qr.en, /QR code/);
+  // 手紙は QR を読み込んだ印（?qr=番号 か 見本のボタン）が無いとひらかない
+  assert.match(read('public/letter.js'), /isUnlocked\(letter\.meta\.no\)/);
+  assert.match(read('public/letter.js'), /get\('qr'\)/);
+  assert.match(read('public/farmer.js'), /unlockLetter\(/);
 });
 
 test('トップの足もとの SNS は押せない文字と「準備中」だけで、リンクも URL もない', () => {

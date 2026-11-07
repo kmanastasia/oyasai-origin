@@ -1,5 +1,5 @@
-import { api, h, icon, labelText, motionProbe, releaseIfStalled } from './common.js';
-import { checkTag, beforeLangChange, cachedLetter, getLang, hasStrings, onLangChange, sealStamp, startReader, t, translationTag } from './reader.js';
+import { api, h, icon, labelText, makimono, motionProbe, releaseIfStalled } from './common.js';
+import { checkTag, beforeLangChange, cachedLetter, getLang, hasStrings, isUnlocked, markOpened, onLangChange, sealStamp, startReader, t, translationTag, unlockLetter } from './reader.js';
 
 const root = document.getElementById('root');
 const voiceRoot = document.getElementById('voice');
@@ -206,17 +206,12 @@ function coverView() {
   const folded = opened && !unsealing;
   const teaserBelow = folded && teaser && letter.land.some((item) => item.id === teaser.id);
   return h('section', { class: `sheet sheet--cover${unsealing ? ' is-unsealing' : ''}${folded ? ' is-opened' : ''}`, 'data-section': 'cover', style: unsealing ? coverVars : null },
-    // 個包装のふた：③と同じ質感の写真（イメージ）に手紙の番号。すぐ下に必ず注記。作り手・町・畑の写真としては見せない
-    h('figure', { class: 'cover-lid' },
-      h('div', { class: 'cover-band' },
-        h('img', { class: 'cover-band__img', src: '/img/texture-sprouts.jpg', alt: '', width: '1200', height: '675', decoding: 'sync', fetchpriority: 'high' }),
-        h('span', { class: 'mono', text: `${t('route.letter')} · ${meta.no}` })),
-      h('figcaption', { class: 'photo__cap cover-lid__cap', text: t('photo.caption') }),
-      h('span', { class: 'cover-ribbon', 'aria-hidden': 'true' })),
-    h('div', { class: 'card__top' },
-      sealStamp(`${unsealing ? ' stamp--open' : ''}${opened && !unsealing ? ' stamp--gone' : ''}`)),
+    // 表紙のふた：巻いた巻物（朱の紐で結んである）と手紙の番号。ひらくと巻物がほどけて便箋になる
+    h('div', { class: 'cover-lid' },
+      makimono(folded ? 'open' : 'closed', ` maki--cover${unsealing ? ' maki--unrolling' : ''}`),
+      h('span', { class: 'mono cover-lid__no', text: `${t('route.letter')} · ${meta.no}` })),
     h('h1', { class: 'card__veg' }, h('span', { class: 'mincho', lang: 'ja', text: meta.vegetable.ja }), ' ', h('span', { class: 'fraunces', lang: 'en', text: meta.vegetable.en })),
-    h('p', { class: 'card__who', text: `${pair(meta.farmer)}／${pair(meta.town)}` }),
+    h('p', { class: 'card__who', text: `${pair(meta.farmer)}／${meta.farm ? `${pair(meta.farm)}・` : ''}${pair(meta.town)}` }),
     teaser && !teaserBelow
       ? en() && translated?.text
         ? h('div', { class: 'card__teaser' }, translationTag([translated]), h('p', { class: 'en-main', lang: 'en', text: `“${translated.text}”` }), h('p', { class: 'jp-sub', lang: 'ja', text: `「${teaser.quote}」` }))
@@ -224,7 +219,7 @@ function coverView() {
       : null,
     checkTag(letter),
     h('p', { class: 'card__small', text: t('verified', verified) }),
-    // 封がほどけている間は、ボタンの場所をそのまま残して見えなくするだけ（押した指の下で表紙が縮まない）
+    // 巻物がほどけている間は、ボタンの場所をそのまま残して見えなくするだけ（押した指の下で表紙が縮まない）
     !opened || unsealing
       ? h('div', { class: `cover-actions${unsealing ? ' is-leaving' : ''}`, inert: unsealing },
         h('p', { class: 'cover-hint', text: t('letter.hint') }),
@@ -235,11 +230,24 @@ function coverView() {
       : null);
 }
 
+// QR をまだ読み込んでいないとき：巻いた巻物と、作り手のページへの道だけ
+function lockedView() {
+  const { meta } = letter;
+  return h('section', { class: 'sheet sheet--cover sheet--locked', 'data-section': 'cover' },
+    h('div', { class: 'cover-lid' },
+      makimono('closed', ' maki--cover'),
+      h('span', { class: 'mono cover-lid__no', text: `${t('route.letter')} · ${meta.no}` })),
+    h('h1', { class: 'card__veg' }, h('span', { class: 'mincho', lang: 'ja', text: meta.vegetable.ja }), ' ', h('span', { class: 'fraunces', lang: 'en', text: meta.vegetable.en })),
+    h('p', { class: 'card__who', text: `${pair(meta.farmer)}／${meta.farm ? `${pair(meta.farm)}・` : ''}${pair(meta.town)}` }),
+    h('p', { class: 'card__locked', text: t('letter.locked') }),
+    h('a', { class: 'btn btn--ghost btn--tall', href: `/farmer?id=${encodeURIComponent(meta.farmer_id ?? '')}`, text: t('letter.lockedBack') }));
+}
+
 function landView() {
   if (letter.land.length === 0) return null;
   return h('section', { class: `sheet sheet--soil sheet--land${entering.has('land') ? ' sheet--enter' : ''}`, style: '--s:0', 'data-section': 'land' },
     h('p', { class: 'mono sheet__no', text: `LAND ${pad(1)}｜${pad(letter.land.length)}` }),
-    h('h2', { class: 'sheet__title', tabindex: '-1' }, t('letter.opening'), ' ', h('span', { class: 'tag-note', text: t('town.tag') })),
+    h('h2', { class: 'sheet__title', tabindex: '-1' }, t('letter.opening'), ' ', h('span', { class: 'sheet__place', text: pair(letter.meta.town) })),
     itemsTag(letter.land),
     letter.land.map((item, i) => renderItem(item, 'land', i)));
 }
@@ -378,7 +386,8 @@ function closingView() {
 let pendingRender = false; // 封がほどけている間に頼まれた描き直し。封が離れたあとで一度だけ行う
 function renderBody() {
   if (!letter) return;
-  if (root.querySelector('.sheet--cover.is-unsealing')) { pendingRender = true; return; } // 描き直すと封の動きが最初に戻る
+  if (!isUnlocked(letter.meta.no)) { root.replaceChildren(lockedView()); renderNext(); renderIndex(); updateShiori(); return; }
+  if (root.querySelector('.sheet--cover.is-unsealing')) { pendingRender = true; return; } // 描き直すと巻物の動きが最初に戻る
   const sections = [coverView()];
   if (opened && !unsealing) {
     sections.push(landView(), ...chapters.slice(0, revealed).map(chapterView));
@@ -528,8 +537,8 @@ function settleCover() {
   cover.querySelector('.cover-actions')?.remove();
   const teaser = letter.teaser;
   if (teaser && letter.land.some((item) => item.id === teaser.id)) cover.querySelector('.card__teaser')?.remove();
-  const stamp = cover.querySelector('.stamp');
-  if (stamp) { stamp.classList.remove('stamp--open'); stamp.classList.add('stamp--gone'); }
+  const maki = cover.querySelector('.maki');
+  if (maki) { maki.classList.remove('maki--closed', 'maki--unrolling'); maki.classList.add('maki--open'); }
   if (pendingRender) { pendingRender = false; renderBody(); }
 }
 
@@ -574,6 +583,7 @@ function glide(to) {
 // 読み上げは押した瞬間に始める。遅らせるのはスクロールと文字だけ。
 function openLetter(thenListen) {
   opened = true;
+  markOpened(letter.meta.no); // ひらいた手紙として、この端末に残す（一覧の「ひらいた手紙 n／10」に数える）
   revealed = Math.min(1, chapters.length);
   if (chapters.length === 0) revealed = 1;
   if (noMotion()) {
@@ -676,7 +686,11 @@ const useLetter = (data) => {
   chapters = letter.chapters.filter((c) => c.items.length > 0);
 };
 
-// 最初の描画は動きの確かめを待たない。答えは「封を開ける」を押すころには出ている。
+// QR の URL（/letter?qr=番号）で来たら、その手紙を読み込んだことにする（明日の読み取りもここに合流する）
+const qrNo = new URLSearchParams(location.search).get('qr');
+if (qrNo) unlockLetter(qrNo);
+
+// 最初の描画は動きの確かめを待たない。答えは「巻物をひらく」を押すころには出ている。
 motionProbe().then((ok) => { motionOk = ok; });
 const ready = startReader({ route: 2 });
 const early = cachedLetter();
@@ -698,5 +712,5 @@ if (data?.letter) {
 if (!letter && !root.hasChildNodes()) {
   root.replaceChildren(
     h('p', { class: 'state', text: t('choose.empty') }),
-    h('a', { class: 'btn btn--ghost', href: '/keep', text: t('choose.start') }));
+    h('a', { class: 'btn btn--ghost', href: '/choose', text: t('letter.backToList') }));
 }

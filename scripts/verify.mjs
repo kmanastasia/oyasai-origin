@@ -122,13 +122,13 @@ const unknownSkips = skipIds.filter((id) => !archive.entries.some((e) => e.id ==
 report('読み上げから外す項目', unknownSkips.map((id) => `data/speech.json の ${id} は項目にありません。data/replay/farm_archive.json の id に合わせてください。`), `${skipIds.length}件`);
 
 // 5. 表示の約束：外せない文言が受け取る側のデータに残っている
+// （2026-11-08 Karen 決定：「架空」「見本」の帯と写真の注記は出さない。残すのは 合成音声・Translated by Claude・お金の「仮」）
 const strings = read('data/ui_strings.json');
-const labelProblems = ['架空', 'Fictional', '見本', 'Sample', '合成音声', 'Synthetic voice', 'Translated by Claude', '仮：', '架空の町', 'fictional narrator']
+const labelProblems = ['合成音声', 'Synthetic voice', 'Translated by Claude', '仮', 'Provisional']
   .filter((label) => !strings.includes(label))
   .map((label) => `「${label}」の表示が data/ui_strings.json から消えています。元に戻してください。`);
 if (!read('data/offer.json').includes('（仮）')) labelProblems.push('価格の「（仮）」が data/offer.json から消えています。');
-if (!read('public/reader.js').includes("'band.fiction'")) labelProblems.push('注意帯が public/reader.js から消えています。');
-if (!read('public/letter.js').includes("'voice.label'")) labelProblems.push('「合成音声・架空の語り手」が public/letter.js から消えています。');
+if (!read('public/letter.js').includes("'voice.label'")) labelProblems.push('「合成音声」の表示が public/letter.js から消えています。');
 const reader = read('public/reader.js');
 for (const key of ['letter.translatedBy', 'letter.checked', 'letter.notChecked']) {
   if (!reader.includes(`'${key}'`)) labelProblems.push(`翻訳の表示 ${key} が public/reader.js から消えています。`);
@@ -141,7 +141,7 @@ const functionBody = (source, name) => {
   const end = rest.search(/\n(function |const |async function |\/\* )/);
   return end < 0 ? rest : rest.slice(0, end);
 };
-for (const [file, name] of [['public/choose.js', 'teaserView'], ['public/letter.js', 'coverView']]) {
+for (const [file, name] of [['public/farmer.js', 'teaserView'], ['public/letter.js', 'coverView']]) {
   if (!functionBody(read(file), name).includes('translationTag(')) labelProblems.push(`${file} の ${name} に「Translated by Claude」と確認状態がありません。translationTag を呼んでください。`);
 }
 for (const name of ['landView', 'chapterView']) {
@@ -152,11 +152,11 @@ for (const label of ['≈ は Claude による添え書き', '≈ notes by Claud
   if (!strings.includes(label)) labelProblems.push(`「${label}」の表示が data/ui_strings.json から消えています。元に戻してください。`);
 }
 if (!functionBody(read('public/letter.js'), 'flavorItem').includes("'letter.glossBy'")) labelProblems.push('public/letter.js の flavorItem に添え書きの出どころの表示がありません。');
-// 結びの帯は、カードを開かなくても最初から出る
+// 結びの「仮」の帯（お金は仮の数字・購入はできない）は、カードを開かなくても最初から出る
 for (const [name, key] of [['closingJp', 'close.jp.band'], ['closingEn', 'close.en.band']]) {
   if (!functionBody(read('public/letter.js'), name).includes(`'${key}'`)) labelProblems.push(`public/letter.js の ${name} に結びの帯 ${key} がありません。先頭に条件なしで出してください。`);
 }
-report('架空・見本・合成音声・翻訳・仮の表示', labelProblems);
+report('合成音声・翻訳・仮の表示', labelProblems);
 
 // 6. 送信・決済・録音・外部音声のコードがない
 function walk(dir) {

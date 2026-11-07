@@ -45,11 +45,12 @@ test('先頭の固定タグと2択は、項目の画面と封をする前の画�
   assert.match(body('reviewView'), /api\('seal', \{ decisions: replies, checked_with_farmer: checkedWithFarmer \}\)/);
 });
 
-test('完了の画面は送らずに見本と書き、橋から③へ進む。項目の3つの答えはそのまま', () => {
+test('完了の画面は送らずに見本と書き、橋から読む側へ進む（番号は出さない）。項目の3つの答えはそのまま', () => {
   const done = body('sealedView');
   assert.ok(done.includes(SEAL['seal.done.demo']));
   assert.ok(done.includes(`'${SEAL['seal.bridge']}'`));
-  assert.match(done, /href: '\/choose' \},\s*h\('span', \{ text: 'できあがりを見る' \}\),\s*h\('span', \{ class: 'btn__to', text: '→ ③' \}\)/);
+  assert.match(done, /href: '\/choose' \},\s*h\('span', \{ text: 'できあがりを見る' \}\),\s*h\('span', \{ class: 'btn__to', text: '→' \}\)/);
+  assert.doesNotMatch(source.replace(/\/\/.*$/gm, ''), /[①②③④]/);
   // 送るのは自分のサーバーの api だけ
   assert.doesNotMatch(source, /fetch\(|mailto:|sms:|https?:/);
   for (const label of ['はい、これで合っています', 'ちがう', '残すだけ（外に出さない）']) assert.ok(body('cardView').includes(`'${label}'`));

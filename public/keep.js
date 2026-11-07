@@ -11,10 +11,12 @@ let working = false;
 let activeId = null;
 let demo = false;
 
+let meta = { farm: '', item: '', season: '' }; // 書式：送りもと（何農園か）・品目・書いている季節
+
 const steps = () => {
   const current = draft ? 2 : 1;
   return h('ol', { class: 'steps' },
-    ['1 預かる', '2 下書きを見る', '3 作り手に見せる'].map((label, i) =>
+    ['預かる', '下書きを見る', '作り手に見せる'].map((label, i) =>
       h('li', { class: i + 1 === current ? 'steps__item is-current' : 'steps__item', 'aria-current': i + 1 === current ? 'step' : null, text: label })));
 };
 
@@ -114,11 +116,19 @@ function resultView() {
   ];
 }
 
+// 書式の欄：送りもと・品目・季節は短い文字だけ。想いや特徴は、本人の言葉として文字起こしの欄に入れる
+function metaField(key, label, placeholder) {
+  const input = h('input', { class: 'field__input', type: 'text', maxlength: '40', id: `meta-${key}`, placeholder, autocomplete: 'off' });
+  input.value = meta[key];
+  input.addEventListener('input', () => { meta[key] = input.value; });
+  return h('label', { class: 'field', for: `meta-${key}` }, h('span', { class: 'field__label', text: label }), input);
+}
+
 function inputView() {
   const area = h('textarea', {
     class: 'paste',
     rows: 12,
-    'aria-label': '聞き取りの文字起こし',
+    'aria-label': 'こめた想いや特徴（聞き取りの文字起こし）',
     placeholder: '聞き手：この土地のことを教えてください。\nみなみ：……',
   });
   area.value = transcript;
@@ -135,7 +145,7 @@ function inputView() {
       error = null;
       render();
       try {
-        ({ draft } = await api('draft', { transcript }));
+        ({ draft } = await api('draft', { transcript, meta }));
       } catch (e) {
         error = e;
       }
@@ -145,8 +155,13 @@ function inputView() {
     text: working ? (demo ? '保存データを読み込んでいます…' : 'Claude が分けています（1分ほどかかることがあります）…') : '手紙の下書きにする',
   });
   return [
-    h('h1', { class: 'tool-h1', text: '話を預かる' }),
-    h('p', { class: 'tool-lead', text: '聞き取りの文字起こしを貼ると、Claude が技・判断・土地・人に分けます。言葉は一字も直しません。' }),
+    h('h1', { class: 'tool-h1', text: '畑からのお手紙を書く' }),
+    h('p', { class: 'tool-lead', text: '送りもと・品目・季節を書き、こめた想いや特徴は聞き取りの文字起こしのまま貼ります。Claude が技・判断・土地・人に分けます。言葉は一字も直しません。' }),
+    h('div', { class: 'fields' },
+      metaField('farm', '送りもと（何農園か）', '例：みなみ農園'),
+      metaField('item', '品目', '例：にんじん'),
+      metaField('season', '書いている季節', '例：冬')),
+    h('p', { class: 'field__label field__label--area', text: 'こめた想いや特徴（本人の言葉の文字起こし）' }),
     area,
     error ? errorBox(error) : null,
     h('div', { class: 'tool-actions' },
@@ -175,6 +190,7 @@ function render() {
 
 try {
   ({ draft, demo } = await api('draft'));
+  if (draft?.meta) meta = { ...meta, ...draft.meta };
 } catch (e) {
   error = e;
 }

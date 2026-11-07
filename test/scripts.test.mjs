@@ -68,13 +68,13 @@ test('verify --final は本番の文字起こしで全部確認済みなら通�
   writeFileSync(join(copy, 'data/ui_strings.json'), strings);
 });
 
-test('verify は③カードから Translated by Claude の部品が消えると止まる', () => {
-  const source = readCopy('public/choose.js');
-  writeFileSync(join(copy, 'public/choose.js'), source.replace('translationTag([translation]),', ''));
+test('verify は作り手の画面から Translated by Claude の部品が消えると止まる', () => {
+  const source = readCopy('public/farmer.js');
+  writeFileSync(join(copy, 'public/farmer.js'), source.replace('translationTag([translation]),', ''));
   const result = run('verify.mjs');
   assert.equal(result.status, 1);
   assert.match(result.stderr, /teaserView に「Translated by Claude」/);
-  writeFileSync(join(copy, 'public/choose.js'), source);
+  writeFileSync(join(copy, 'public/farmer.js'), source);
 });
 
 test('verify は訳が指す原文が項目とずれると止まる', () => {
