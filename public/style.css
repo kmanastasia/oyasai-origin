@@ -2487,3 +2487,14 @@ html[lang='ja'] .page-top .top__core .glyph { display: inline-block; letter-spac
 /* 注記は移り変わりの間も薄くならない：古い絵は出さず、新しい注記を最初の一枚から濃いまま（大きさだけが落ち着く） */
 ::view-transition-old(vt-cap) { animation: none; opacity: 0; }
 ::view-transition-new(vt-cap) { animation: none; opacity: 1; mix-blend-mode: normal; }
+/* 第7版：注記は写真のどの絵よりも上に重ねる（古い写真が残っても、注記が隠れない） */
+::view-transition-group(vt-cap) { z-index: 2; }
+/* 写真の絵は形が変わるあいだ、伸ばさずに切り取る（横長の帯 → 表紙のふた） */
+::view-transition-old(vt-lid), ::view-transition-new(vt-lid) { height: 100%; object-fit: cover; }
+/* 相手のいない古い絵（新しい画面にまだ同じ名前の要素がない）は、残さずにすぐ消す。注記のない写真・二重の封・二重の名を出さない */
+::view-transition-old(vt-lid):only-child, ::view-transition-old(vt-seal):only-child, ::view-transition-old(vt-name):only-child { animation: vt-out 160ms var(--ease-std) both; }
+@keyframes vt-out { to { opacity: 0; } }
+/* 野菜の名：大きさの違う字を長く重ねない。古い名は動き出してすぐ消え、新しい名は位置が落ち着く手前で濃くなる */
+::view-transition-old(vt-name) { animation: vt-out 160ms var(--ease-std) both; mix-blend-mode: normal; }
+::view-transition-new(vt-name) { animation: vt-in-late 520ms var(--ease-out) both; mix-blend-mode: normal; }
+@keyframes vt-in-late { from { opacity: 0; } 28% { opacity: 0; } 55% { opacity: 1; } to { opacity: 1; } }

@@ -16,6 +16,7 @@
 addEventListener('pagereveal', function (event) {
   var transition = event.viewTransition;
   if (!transition) return;
+  if (!document.querySelector('.cover-band')) { transition.skipTransition(); return; } // 相手の絵がまだ無ければ、古い絵だけを残さない（注記のない写真を出さない）
   var done = false;
   transition.finished.finally(function () { done = true; });
   setTimeout(function () {
@@ -25,6 +26,8 @@ addEventListener('pagereveal', function (event) {
   setTimeout(function () { if (!done) transition.skipTransition(); }, 900);
 });
 </script>
+<!-- 画面の中身を作るモジュールは head に置く（render-blocking は head の中でしか効かない。body の末尾では最初の描画が先に来て、③→④の移り変わりの絵が空のまま撮られる） -->
+<script type="module" blocking="render" src="/letter.js"></script>
 </head>
 <body class="reader page-letter">
 <!-- アイコン：Lucide（ISC。LICENSES/lucide.txt）。xmlns は書かない（HTML の中なので SVG として読まれる） -->
@@ -45,6 +48,5 @@ addEventListener('pagereveal', function (event) {
 <main id="root" class="column"></main>
 <div id="next"></div>
 <p id="sr-live" class="visually-hidden" aria-live="polite"></p>
-<script type="module" blocking="render" src="/letter.js"></script>
 </body>
 </html>

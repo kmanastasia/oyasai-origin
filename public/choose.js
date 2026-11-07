@@ -118,5 +118,14 @@ const warm = warmFonts(letter);
 for (const type of ['pointerover', 'focusin', 'touchstart', 'pointerdown']) {
   root.addEventListener(type, (event) => { if (event.target.closest?.('.card--letter')) warm(); }, { passive: true });
 }
-setTimeout(warm, 1200); // ③を眺めているあいだに、④の字を裏で読んでおく（③→④の移り変わりで字が揺れない）
+setTimeout(warm, 600); // ③を眺めているあいだに、④の字を裏で読んでおく（③→④の移り変わりで字が揺れない）
+// 開くを押したら、④の字がそろうのを最長 0.3 秒だけ待ってから移る（移り変わりの途中で代わりの書体から入れ替わらない）。
+// 新しいタブで開く操作（修飾キー・中ボタン）はそのまま
+root.addEventListener('click', (event) => {
+  const link = event.target.closest?.('a.btn--primary[href="/letter"]');
+  if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  event.preventDefault();
+  const loads = warm();
+  Promise.race([Promise.all(loads), new Promise((resolve) => setTimeout(resolve, 300))]).then(() => location.assign(link.href));
+});
 showOpening(await live);
