@@ -61,7 +61,7 @@ beforeEach(() => {
   liveArchive = archive;
   liveTranslations = () => ({ translations: [] });
   if (runtimeDir) rmSync(runtimeDir, { recursive: true, force: true });
-  runtimeDir = mkdtempSync(join(tmpdir(), 'oyasai-test-'));
+  runtimeDir = `${mkdtempSync(join(tmpdir(), 'oyasai-test-'))}/`;
 });
 
 const allYes = (draft) => draft.entries.map((e) => ({ id: e.id, reply: 'yes' }));

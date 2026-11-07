@@ -13,7 +13,7 @@
   { "key": "top.write.sub", "ja": "作り手（農家）・聞き手（運営者）の方", "en": "For makers (farmers) and listeners (operators)", "en_reviewed_by": null },
   { "key": "top.write.meta", "ja": "日本語のみ ・ 運営者が封をします", "en": "Japanese only ・ The operator seals the letter", "en_reviewed_by": null },
   { "key": "top.qr", "ja": "直売所やお店の QR からは、その作り手の手紙の表紙（④）が直接開きます（見本）。", "en": "A QR code at a market stall or shop opens that maker's letter (④) directly (sample).", "en_reviewed_by": null },
-  { "key": "top.sns", "ja": "おやさい旅（SNS）↗　外のサイトに移ります", "en": "OYASAI TRIP (social) ↗ opens an external site", "en_reviewed_by": null },
+  { "key": "top.sns", "ja": "おやさい旅（SNS）", "en": "OYASAI TRIP (social)", "en_reviewed_by": null },
   { "key": "sns.pending", "ja": "準備中", "en": "Coming soon", "en_reviewed_by": null },
   { "key": "route.home", "ja": "← トップ", "en": "← Top", "en_reviewed_by": null },
   { "key": "route.read", "ja": "読む", "en": "Read", "en_reviewed_by": null },
@@ -95,5 +95,5 @@
   { "key": "close.en.notify", "ja": "", "en": "Tell me when trips open (sample)", "en_reviewed_by": null },
   { "key": "close.en.done", "ja": "", "en": "Sample only. Nothing was sent. No email is collected.", "en_reviewed_by": null },
   { "key": "visit.operator", "ja": "", "en": "The operator arranges the visit with the maker.", "en_reviewed_by": null },
-  { "key": "visit.sns", "ja": "", "en": "OYASAI TRIP (social) ↗ opens an external site", "en_reviewed_by": null }
+  { "key": "visit.sns", "ja": "", "en": "OYASAI TRIP (social)", "en_reviewed_by": null }
 ]

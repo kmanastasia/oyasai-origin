@@ -570,7 +570,7 @@ html[lang='en'] .top .lead-line { line-height: 1.45; }
 
 .door--primary { background: var(--ha); border-color: var(--ha); color: var(--shiro); }
 .door__for { font-size: 14px; font-weight: 500; opacity: 0.85; }
-.door__title { font-size: 20px; font-weight: 700; line-height: 1.5; }
+.door__title { font-size: 20px; font-weight: 700; line-height: 1.5; word-break: auto-phrase; }
 .door__title::after { content: ' →'; }
 .door__sub, .door__meta { font-size: 14px; opacity: 0.9; }
 .door__for, .door__sub, .door__meta, .door__node { line-height: 1.5; }

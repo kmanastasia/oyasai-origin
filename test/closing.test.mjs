@@ -27,7 +27,8 @@ test('EN の結びの SNS は押せない文字と「準備中」だけで、リ
   assert.doesNotMatch(slice('closingEn', 'closingView'), /h\('a'|href/);
   assert.doesNotMatch(source, /https?:/);
   const entry = strings.get('visit.sns');
-  assert.equal(entry.en, 'OYASAI TRIP (social) ↗ opens an external site');
+  // URL が決まるまでは押せないので、「↗」や「外のサイトに移ります」は書かない
+  assert.equal(entry.en, 'OYASAI TRIP (social)');
   assert.equal(entry.en_reviewed_by, null);
   assert.doesNotMatch(JSON.stringify(entry), /https?:/);
 });
