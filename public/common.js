@@ -56,8 +56,11 @@ export function routeBar({ who, steps, current, home }) {
     h('span', { class: 'route__who', text: who }),
     h('ol', { class: 'route__steps' }, steps.map(([no, label, href], i) => {
       const here = i + 1 === current;
+      // 番号はトップの扉と同じ、線で描いた丸（文字の丸数字は使わない）
+      const n = '①②③④'.indexOf(no) + 1;
+      const inner = [h('span', { class: 'route__no', 'aria-hidden': 'true', text: String(n || no) }), h('span', { class: 'visually-hidden', text: no }), h('span', { text: label })];
       return h('li', { class: here ? 'route__step is-current' : 'route__step', 'aria-current': here ? 'step' : null },
-        here ? h('span', { text: `${no} ${label}` }) : h('a', { href, text: `${no} ${label}` }));
+        here ? h('span', { class: 'route__here' }, inner) : h('a', { href }, inner));
     })));
 }
 
