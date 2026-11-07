@@ -23,7 +23,7 @@ function teaserView() {
 function cardPhoto() {
   return [
     h('div', { class: 'card__photo' },
-      h('img', { src: '/img/texture-sprouts.jpg', alt: '', width: '1200', height: '675', loading: 'lazy', decoding: 'async' })),
+      h('img', { src: '/img/texture-sprouts.jpg', alt: '', width: '1200', height: '675', decoding: 'async' })),
     h('p', { class: 'photo__cap card__cap', text: t('photo.caption') }),
   ];
 }
