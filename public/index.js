@@ -15,13 +15,8 @@ function pathView(steps) {
       h('span', { class: 'door__name', text: t(key) }))));
 }
 
-// 扉の見出し：矢印は最後の語と一緒にして、矢印だけが次の行に落ちないようにする。
-function doorTitle(text) {
-  const at = Math.max(text.lastIndexOf('、'), text.lastIndexOf(' '));
-  return h('span', { class: 'door__title' },
-    text.slice(0, at + 1),
-    h('span', { class: 'door__last' }, text.slice(at + 1), icon('arrow')));
-}
+// 扉の見出し：行の長さをそろえて組む（矢印は扉の右の丸に置く）。
+const doorTitle = (text) => h('span', { class: 'door__title', text });
 
 // 扉全体が1つのリンク。前置き・見出し・補足・道・端末と言語を一緒に見せる。
 function door({ key, href, primary, steps, order }) {
@@ -30,14 +25,17 @@ function door({ key, href, primary, steps, order }) {
     doorTitle(t(`top.${key}.title`)),
     h('span', { class: 'door__sub', text: t(`top.${key}.sub`) }),
     pathView(steps),
-    h('span', { class: 'door__meta', text: t(`top.${key}.meta`) }));
+    h('span', { class: 'door__meta', text: t(`top.${key}.meta`) }),
+    // 個包装の掛け紙（飾り）と、押す先を示す丸い矢印
+    primary ? h('span', { class: 'door__wrap', 'aria-hidden': 'true' }) : null,
+    h('span', { class: 'door__go', 'aria-hidden': 'true' }, icon('arrow')));
 }
 
 // おやさい旅の SNS は行き先が決まるまで、押せない文字と「準備中」だけ。リンクにしない。
 function snsView() {
   return h('p', { class: 'top__sns' },
     h('span', { class: 'top__sns-text', text: t('top.sns') }),
-    h('span', { class: 'tag-note', text: t('sns.pending') }));
+    h('span', { class: 'tag-status', text: t('sns.pending') }));
 }
 
 // 見出し：日本語は「日本のお野菜を／世界へ。」で意図して改行する（文字は辞書のまま）。
@@ -62,10 +60,12 @@ function render() {
     // 右：扉と足もと
     h('div', { class: 'top__body' },
       h('p', { class: `section-eyebrow${enter()}`, style: '--i:2', text: t('top.ask') }),
-      door({ key: 'read', href: '/choose', primary: true, steps: [['3', 'route.choose'], ['4', 'route.letter']], order: '--i:3' }),
-      door({ key: 'write', href: '/keep', steps: [['1', 'route.keep'], ['2', 'route.seal']], order: '--i:4' }),
-      h('p', { class: 'card__small top__qr', text: t('top.qr') }),
-      snsView()));
+      h('div', { class: 'top__doors' },
+        door({ key: 'read', href: '/choose', primary: true, steps: [['3', 'route.choose'], ['4', 'route.letter']], order: '--i:3' }),
+        door({ key: 'write', href: '/keep', steps: [['1', 'route.keep'], ['2', 'route.seal']], order: '--i:4' })),
+      h('div', { class: 'top__foot' },
+        h('p', { class: 'card__small top__qr', text: t('top.qr') }),
+        snsView())));
   if (motion && !entered) {
     entered = true;
     const moving = [...root.querySelectorAll('.appear')];

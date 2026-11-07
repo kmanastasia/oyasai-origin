@@ -1,5 +1,5 @@
 import { api, h, icon, motionProbe } from './common.js';
-import { checkTag, cacheLetter, cachedLetter, getLang, hasStrings, onLangChange, sealStamp, startReader, t, translationTag } from './reader.js';
+import { checkTag, cacheLetter, cachedLetter, getLang, hasStrings, onLangChange, sealStamp, startReader, t, translationTag, warmFonts } from './reader.js';
 
 const root = document.getElementById('root');
 let letter = null;
@@ -113,4 +113,5 @@ if (data) {
   cacheLetter(data);
 } else if (!letter) failed = true;
 render(); // 一覧とラベルは、動きの確かめを待たずにすぐ出す
+if (letter) warmFonts(JSON.stringify(letter)); // ④の字を先に読んでおく
 showOpening(await live);

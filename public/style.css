@@ -1280,3 +1280,278 @@ body:has(.next-bite) .column { padding-bottom: calc(var(--next-h) + 24px + env(s
   html[lang='ja'] .closing__sign .closing__line { flex: none; writing-mode: vertical-rl; max-width: none; max-height: 16em; margin: 0; padding: 0 20px; border: 0; border-left: 1px solid var(--momi); border-right: 1px solid var(--momi); font-size: 24px; letter-spacing: 0.16em; line-height: 1.9; }
   html[lang='ja'] .stamp--sign { margin-bottom: 4px; }
 }
+
+/* =====================================================================
+   第3版（2026-11-07）：ふた・扉・便箋の組み直し
+   ===================================================================== */
+
+/* 表示ラベルの括弧の組（【架空】など）は、行の途中で割らない */
+.nobr { white-space: nowrap; }
+
+/* 「準備中」は架空・見本・仮ではないので、注意黄を使わない。墨の細い枠だけ（字は 13px のまま） */
+.tag-status {
+  display: inline-block;
+  padding: 0 7px;
+  border: 1px solid var(--ink);
+  border-radius: 2px;
+  font-family: var(--gothic);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+/* ①②にも同じ紙の粒（動きなし） */
+.tool { background: var(--shiro) url('/img/paper-grain.png') 0 0 / 192px; }
+.btn__to { font-size: 14px; opacity: 1; }
+.seal-done__sub { text-wrap: balance; }
+
+/* 項目へ移ったとき、頭が固定の帯に隠れない */
+.page-letter .item { scroll-margin-top: calc(var(--chrome-h) + 24px); }
+body:has(.voice-bar) .page-letter .item { scroll-margin-top: calc(var(--chrome-h) + 76px); }
+
+/* ---------- 写真の色：葉と土の二色に沈める（③のふた・④のふた共通） ---------- */
+.card__lid .card__photo img, .cover-band__img { filter: grayscale(1) contrast(1.12) brightness(1.06); mix-blend-mode: normal; opacity: 1; }
+.card__lid .card__photo::after, .cover-band::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(155deg, var(--ha) 0%, var(--ha-700) 45%, var(--tsuchi) 100%);
+  mix-blend-mode: color;
+  pointer-events: none;
+}
+.card__lid .card__photo { position: relative; }
+.unwrap { z-index: 2; }
+
+/* ---------- トップ：箱のふた（土）と、2つの個包装の扉 ---------- */
+.page-top .top__lid { --ink-c: var(--on-dark); color: var(--on-dark); }
+.page-top .top__lid .top__core.appear, .page-top .top__lid .lead-line.appear { --ink-c: var(--on-dark); }
+
+/* 扉：紙の個包装。読む扉は葉の掛け紙が巻かれ、押す先の丸が塗られている */
+.page-top .door {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  gap: 2px;
+  padding: 20px 84px 20px 24px;
+  margin-bottom: 14px;
+  border: 1px solid var(--ink);
+  border-radius: 2px;
+  background: var(--shiro) url('/img/paper-grain.png') 0 0 / 192px;
+  color: var(--ink);
+  outline: 0;
+  box-shadow: 0 1px 0 var(--momi), 0 22px 36px -28px var(--shade);
+  transition: transform var(--dur-s) var(--ease-std), color 240ms var(--ease-std), box-shadow var(--dur-m) var(--ease-std);
+}
+.page-top .door--primary { padding-left: 44px; }
+.page-top .door:focus-visible { outline: 3px solid var(--ha); outline-offset: 3px; }
+.page-top .door .door__no, .page-top .door--primary .door__no { border-color: currentColor; }
+.page-top .door__for { opacity: 1; color: inherit; font-size: 13px; letter-spacing: 0.08em; }
+.page-top .door__sub, .page-top .door__meta { opacity: 1; }
+.page-top .door__title { font-family: var(--mincho); font-weight: 700; font-size: 23px; line-height: 1.45; letter-spacing: 0.04em; margin: 2px 0 4px; text-wrap: balance; }
+html[lang='en'] .page-top .door__title { font-family: var(--fraunces); font-weight: 600; letter-spacing: 0; line-height: 1.25; }
+
+/* 掛け紙：扉の左に巻いた葉の帯と、その内側の萌黄の細い線 */
+.door__wrap { position: absolute; top: 0; bottom: 0; left: 16px; width: 12px; z-index: 0; background: var(--ha); }
+.door__wrap::after { content: ''; position: absolute; top: 0; bottom: 0; left: 4px; width: 1px; background: var(--moegi); }
+
+/* 押す先の丸 */
+.door__go {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  margin-top: -24px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  transition: background-color 240ms var(--ease-std), color 240ms var(--ease-std), border-color 240ms var(--ease-std);
+}
+.door__go .icon { width: 20px; height: 20px; transition: transform var(--dur-s) var(--ease-std); }
+.door--primary .door__go { background: var(--ha); border-color: var(--ha); color: var(--on-dark); }
+
+/* 指を載せる・押す：中の色が左から満ちる（読む＝葉、書く＝焦げ茶）。字は生成りに変わる */
+.page-top .door::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--kogecha);
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 360ms var(--ease-out);
+}
+.page-top .door--primary::before { background: var(--ha); }
+.page-top .door:active::before { clip-path: inset(0 0 0 0); }
+.page-top .door:active { color: var(--on-dark); }
+.page-top .door--primary:active, .reader.page-top .door--primary:active { background-color: var(--shiro); }
+@media (hover: hover) {
+  .page-top .door:hover::before { clip-path: inset(0 0 0 0); }
+  .page-top .door:hover { color: var(--on-dark); transform: translateY(-2px); box-shadow: 0 1px 0 var(--momi), 0 30px 44px -28px var(--shade); }
+  .reader.page-top .door--primary:hover { background-color: var(--shiro); border-color: var(--ink); }
+  .page-top .door:not(.door--primary):hover { border-color: var(--ink); }
+  .page-top .door:hover .door__go { background: var(--on-dark); border-color: var(--on-dark); color: var(--ha-700); }
+  .page-top .door:not(.door--primary):hover .door__go { color: var(--kogecha); }
+  .page-top .door:hover .door__go .icon { transform: translateX(3px); }
+  .page-top .door--primary:hover .door__wrap { background: var(--ha-700); }
+}
+
+.top__foot .top__sns { margin-top: 16px; padding-top: 16px; }
+
+/* スマホ・タブレット：ふたは画面の頭いっぱいの土の板。見出しは生成りの明朝 */
+@media (max-width: 1023px) {
+  .column.top { padding-top: 0; }
+  .column.top::before { content: none; }
+  .page-top .top__lid {
+    display: block;
+    position: relative;
+    isolation: isolate;
+    margin: 0 -24px 22px;
+    padding: 30px 24px 26px;
+    background:
+      radial-gradient(120% 140% at 100% 0%, color-mix(in srgb, var(--ha-700) 55%, transparent), transparent 60%),
+      linear-gradient(180deg, var(--tsuchi-2), var(--tsuchi));
+  }
+  /* 土の粒と、掛け紙の萌黄の線（線は左から引かれる） */
+  .page-top .top__lid::before { content: ''; position: absolute; inset: 0; z-index: -1; background: url('/img/paper-grain.png') 0 0 / 160px; mix-blend-mode: overlay; opacity: 0.5; pointer-events: none; }
+  .page-top .top__lid::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--moegi); transform-origin: left; }
+  html[lang='ja'] .page-top .top__core { font-size: clamp(38px, 10.6vw, 44px); line-height: 1.32; letter-spacing: 0.04em; margin-bottom: 14px; }
+  html[lang='en'] .page-top .top__core { font-family: var(--fraunces); font-weight: 400; font-size: clamp(32px, 9vw, 38px); line-height: 1.1; letter-spacing: -0.01em; margin-bottom: 12px; }
+  .page-top .top__lid .lead-line { color: var(--on-dark-2); font-size: 18px; line-height: 1.6; margin: 0; padding: 0; border: 0; }
+  html[lang='en'] .page-top .top__lid .lead-line { font-family: var(--fraunces); font-size: 18px; }
+  .page-top .section-eyebrow { font-size: 14px; letter-spacing: 0.08em; margin-bottom: 10px; }
+  /* 押す先の丸は右下に。見出しは扉の幅いっぱいに組む */
+  .page-top .door { padding-right: 24px; }
+  .door__go { top: auto; bottom: 16px; right: 16px; width: 44px; height: 44px; margin-top: 0; }
+  .page-top .door__meta { padding-right: 52px; }
+  .page-top .door__title { font-size: 22px; }
+  .page-top .top__core.appear, .page-top .top__lid .lead-line.appear { --ink-c: var(--on-dark); }
+}
+@media (max-width: 1023px) and (prefers-reduced-motion: no-preference) {
+  .page-top .top__lid::after { animation: draw-line 900ms var(--ease-out) 120ms both; }
+}
+@keyframes draw-line { from { transform: scaleX(0); } }
+
+/* パソコン：左のふたと右の扉を同じ高さの1枚の格子に。上端と下端の線をそろえる */
+@media (min-width: 1024px) {
+  .column.top {
+    grid-template-columns: 5fr 6fr;
+    column-gap: clamp(56px, 6vw, 112px);
+    align-items: stretch;
+    max-width: calc(var(--wrap) + 96px);
+    padding: 40px 48px;
+  }
+  .top__hero { position: static; height: max(600px, calc(100svh - var(--chrome-h) - 80px)); }
+  .top__lid { flex: 1; min-height: 0; }
+  .top__body { display: flex; flex-direction: column; align-self: stretch; padding: 0 0 30px; }
+  .top__doors { margin: auto 0; }
+  .page-top .section-eyebrow { margin: 0; font-size: 15px; letter-spacing: 0.1em; }
+  .page-top .door { padding: 28px 112px 28px 40px; margin-bottom: 20px; }
+  .page-top .door--primary { padding-left: 64px; }
+  .door__wrap { left: 24px; width: 14px; }
+  .page-top .door__title { font-size: 32px; }
+  html[lang='en'] .page-top .door__title { font-size: 30px; }
+  .door__go { right: 32px; width: 60px; height: 60px; margin-top: -30px; }
+  .door__go .icon { width: 24px; height: 24px; }
+  .top__foot .top__sns { margin-top: 16px; }
+  /* 写真は土の色に深く沈め、上に細い萌黄の光 */
+  .top__lid::after { border-color: var(--line-dark); }
+  .top__lid { box-shadow: 0 40px 80px -48px var(--shade); }
+}
+
+/* ---------- ③：まだ封をしていない手紙は、重ねた封筒の背（失敗の空欄に見せない） ---------- */
+.slot {
+  position: relative;
+  min-height: 0;
+  padding: 30px 20px 12px;
+  border: 1px solid var(--momi);
+  background: var(--kinari-2) url('/img/paper-grain.png') 0 0 / 192px;
+}
+.slot::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 22px;
+  background:
+    linear-gradient(to top right, transparent calc(50% - 0.5px), var(--momi) 50%, transparent calc(50% + 0.5px)) left / 50% 100% no-repeat,
+    linear-gradient(to top left, transparent calc(50% - 0.5px), var(--momi) 50%, transparent calc(50% + 0.5px)) right / 50% 100% no-repeat;
+}
+.page-choose .card--letter { box-shadow: 0 1px 0 var(--momi), 0 40px 70px -44px var(--shade); }
+
+/* ---------- ④：表紙はふた（写真）・朱の封緘・大きな名前 ---------- */
+.cover-lid { position: relative; margin: -32px -24px 0; }
+.page-letter .cover-band {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  align-items: flex-start;
+  height: 148px;
+  margin: 0;
+  padding: 16px 24px;
+  background: var(--tsuchi);
+}
+.cover-band__img { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; object-fit: cover; }
+.page-letter .cover-band .mono { position: relative; z-index: 2; color: var(--on-dark); font-size: 12px; letter-spacing: 0.2em; padding: 3px 8px; background: var(--shade); }
+.cover-lid__cap { display: block; margin: 0; padding: 8px 24px 10px; border-bottom: 1px solid var(--momi); }
+/* スマホ：栞ひもは短く、名前にかからない。封はふたの上（注記にはかけない） */
+.page-letter .cover-ribbon { top: 100%; left: auto; right: 40px; height: 28px; background: var(--ha-700); }
+.page-letter .sheet--cover .card__top { position: absolute; top: 70px; right: 16px; z-index: 3; margin: 0; }
+.sheet--cover .card__top .stamp { width: 64px; height: 64px; filter: drop-shadow(0 6px 8px var(--shade)); }
+.page-letter .sheet--cover .card__veg { margin-top: 36px; font-family: var(--mincho); font-weight: 500; font-size: 44px; line-height: 1.25; letter-spacing: 0.08em; }
+.page-letter .sheet--cover .card__veg .fraunces { font-size: 20px; letter-spacing: 0; }
+.page-letter .sheet--cover { box-shadow: 6px 6px 0 -1px var(--kinari-2), 6px 6px 0 0 var(--momi), 0 44px 80px -44px var(--shade); }
+.page-letter .sheet:not(.sheet--cover) { box-shadow: 0 1px 0 var(--momi), 0 30px 60px -40px var(--shade); }
+
+/* 封を開けている間：ボタンの場所は残し、ボタンだけを消す（表紙は縮まない） */
+.cover-actions.is-leaving .btn { opacity: 0; pointer-events: none; transition: opacity 160ms var(--ease-std); }
+
+/* 便箋の見出し：本人の言葉と同じ明朝の系で、一段大きく静かに */
+html[lang='ja'] .page-letter .sheet__title { font-family: var(--mincho); font-weight: 500; font-size: 24px; letter-spacing: 0.14em; }
+.next-bite__count { letter-spacing: 0.04em; font-family: var(--gothic); font-size: 13px; }
+
+@media (min-width: 768px) {
+  .cover-lid { margin: -40px -48px 0; }
+  .page-letter .cover-band { height: 220px; padding: 22px 48px; }
+  .cover-lid__cap { padding: 10px 48px 12px; }
+  .page-letter .sheet--cover .card__top { top: 172px; right: 48px; }
+  .sheet--cover .card__top .stamp { width: 92px; height: 92px; }
+  .page-letter .cover-ribbon { right: 168px; height: 96px; }
+  html[lang='ja'] .page-letter .sheet__title { font-size: 30px; }
+  html[lang='en'] .page-letter .sheet__title { font-size: 30px; }
+
+  /* 栞：いま読んでいる便箋の右上の縁に挟む（位置は letter.js が便箋から測る） */
+  .shiori {
+    left: var(--shiori-x, -40px);
+    top: var(--shiori-top, 0px);
+    height: calc(72px + var(--p, 0) * 96px);
+    transform: none;
+    background: var(--ha);
+    transition: height var(--dur-l) var(--ease-std), opacity var(--dur-m) var(--ease-std);
+  }
+}
+
+@media (min-width: 1024px) {
+  /* 表紙だけ、便箋より広い箱のふた。画面の下まで満たす */
+  .page-letter .sheet--cover {
+    margin-inline: -100px;
+    min-height: calc(100svh - var(--chrome-h) - 61px - 64px);
+  }
+  .page-letter .sheet--cover > .card__top { margin-top: 0; }
+  .page-letter .sheet--cover .card__veg { margin-top: 44px; font-size: clamp(72px, 6vw, 96px); line-height: 1.15; }
+  .page-letter .sheet--cover .card__veg .fraunces { display: inline-block; font-size: 28px; margin-left: 12px; }
+  .page-letter .sheet--cover .card__who { font-size: 18px; margin-top: 10px; }
+  .page-letter .sheet--cover .card__teaser { font-size: 28px; margin: 28px 0 24px; }
+  .page-letter .sheet--cover .cover-actions { flex-direction: row; flex-wrap: wrap; align-items: stretch; }
+  .page-letter .sheet--cover .cover-hint { flex-basis: 100%; }
+  .page-letter .sheet--cover .cover-actions .btn { width: auto; flex: 1 1 0; min-height: 64px; }
+}
+
+/* ---------- ③→④：カードのふたが、そのまま手紙のふたになる ---------- */
+.page-choose .card__photo, .page-letter .cover-band { view-transition-name: vt-lid; }
+::view-transition-group(vt-lid) { animation-duration: 460ms; animation-timing-function: var(--ease-out); }
+::view-transition-old(vt-lid), ::view-transition-new(vt-lid) { height: 100%; object-fit: cover; }
