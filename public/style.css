@@ -1496,7 +1496,7 @@ html[lang='en'] .page-top .door__title { font-family: var(--fraunces); font-weig
   background: var(--tsuchi);
 }
 .cover-band__img { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; object-fit: cover; }
-.page-letter .cover-band .mono { position: relative; z-index: 2; color: var(--on-dark); font-size: 12px; letter-spacing: 0.2em; padding: 3px 8px; background: var(--shade); }
+.page-letter .cover-band .mono { position: relative; z-index: 2; color: var(--on-dark); font-size: 13px; letter-spacing: 0.2em; padding: 3px 8px; background: color-mix(in srgb, var(--tsuchi) 82%, transparent); }
 .cover-lid__cap { display: block; margin: 0; padding: 8px 24px 10px; border-bottom: 1px solid var(--momi); }
 /* スマホ：栞ひもは短く、名前にかからない。封はふたの上（注記にはかけない） */
 .page-letter .cover-ribbon { top: 100%; left: auto; right: 40px; height: 28px; background: var(--ha-700); }
@@ -1538,7 +1538,7 @@ html[lang='ja'] .page-letter .sheet__title { font-family: var(--mincho); font-we
 @media (min-width: 1024px) {
   /* 表紙だけ、便箋より広い箱のふた。画面の下まで満たす */
   .page-letter .sheet--cover {
-    margin-inline: -100px;
+    margin-inline: -36px; /* 左の目次・右の「次のひと口へ」に重ならない幅 */
     min-height: calc(100svh - var(--chrome-h) - 61px - 64px);
   }
   .page-letter .sheet--cover > .card__top { margin-top: 0; }
@@ -1550,11 +1550,6 @@ html[lang='ja'] .page-letter .sheet__title { font-family: var(--mincho); font-we
   .page-letter .sheet--cover .cover-hint { flex-basis: 100%; }
   .page-letter .sheet--cover .cover-actions .btn { width: auto; flex: 1 1 0; min-height: 64px; }
 }
-
-/* ---------- ③→④：カードのふたが、そのまま手紙のふたになる ---------- */
-.page-choose .card__photo, .page-letter .cover-band { view-transition-name: vt-lid; }
-::view-transition-group(vt-lid) { animation-duration: 460ms; animation-timing-function: var(--ease-out); }
-::view-transition-old(vt-lid), ::view-transition-new(vt-lid) { height: 100%; object-fit: cover; }
 
 /* ③の副題もトップと同じ明朝の見出しの段に */
 @media (min-width: 1024px) {
