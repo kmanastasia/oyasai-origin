@@ -183,7 +183,10 @@ function coverView() {
   const { meta, verified } = letter;
   const teaser = letter.teaser;
   const translated = teaser && letter.translations[teaser.id];
-  return h('section', { class: `sheet sheet--cover${unsealing ? ' is-unsealing' : ''}`, 'data-section': 'cover' },
+  // 開いたあとは、書き出しの便箋に同じ言葉が続くので、表紙の一言はたたむ（言葉は変えない・表示だけ）
+  const folded = opened && !unsealing;
+  const teaserBelow = folded && teaser && letter.land.some((item) => item.id === teaser.id);
+  return h('section', { class: `sheet sheet--cover${unsealing ? ' is-unsealing' : ''}${folded ? ' is-opened' : ''}`, 'data-section': 'cover' },
     // 個包装のふた：③と同じ質感の写真（イメージ）に手紙の番号。すぐ下に必ず注記。作り手・町・畑の写真としては見せない
     h('figure', { class: 'cover-lid' },
       h('div', { class: 'cover-band' },
@@ -195,7 +198,7 @@ function coverView() {
       sealStamp(`${unsealing ? ' stamp--open' : ''}${opened && !unsealing ? ' stamp--gone' : ''}`)),
     h('h1', { class: 'card__veg' }, h('span', { class: 'mincho', lang: 'ja', text: meta.vegetable.ja }), ' ', h('span', { class: 'fraunces', lang: 'en', text: meta.vegetable.en })),
     h('p', { class: 'card__who', text: `${pair(meta.farmer)}／${pair(meta.town)}` }),
-    teaser
+    teaser && !teaserBelow
       ? en() && translated?.text
         ? h('div', { class: 'card__teaser' }, translationTag([translated]), h('p', { class: 'en-main', lang: 'en', text: `“${translated.text}”` }), h('p', { class: 'jp-sub', lang: 'ja', text: `「${teaser.quote}」` }))
         : h('blockquote', { class: 'card__teaser mincho', lang: 'ja', text: `「${teaser.quote}」` })
