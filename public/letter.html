@@ -8,6 +8,22 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Shippori+Mincho+B1:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="/style.css">
+<!-- ③↔④だけ、画面の移り変わりをつなぐ（動きを減らす設定では使わない）。①②とトップには置かない -->
+<style>@media (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }</style>
+<script>
+// 移り変わりが進まない環境（動きが止められている）では、すぐ終えて新しい画面をそのまま出す。どんな環境でも 0.9 秒で終える。
+addEventListener('pagereveal', function (event) {
+  var transition = event.viewTransition;
+  if (!transition) return;
+  var done = false;
+  transition.finished.finally(function () { done = true; });
+  setTimeout(function () {
+    var moving = document.getAnimations().some(function (a) { return String(a.effect && a.effect.pseudoElement || '').indexOf('::view-transition') === 0 && a.currentTime > 0; });
+    if (!done && !moving) transition.skipTransition();
+  }, 80);
+  setTimeout(function () { if (!done) transition.skipTransition(); }, 900);
+});
+</script>
 </head>
 <body class="reader page-letter">
 <!-- アイコン：Lucide（ISC。LICENSES/lucide.txt）。xmlns は書かない（HTML の中なので SVG として読まれる） -->
@@ -28,6 +44,6 @@
 <main id="root" class="column"></main>
 <div id="next"></div>
 <p id="sr-live" class="visually-hidden" aria-live="polite"></p>
-<script type="module" src="/letter.js"></script>
+<script type="module" blocking="render" src="/letter.js"></script>
 </body>
 </html>

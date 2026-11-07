@@ -117,3 +117,4 @@ export function releaseIfStalled(els, finish) {
     if (run && !(run.currentTime > 0)) finish();
   }, 80);
 }
+

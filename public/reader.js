@@ -9,7 +9,14 @@ let routeCurrent = 0;
 
 function loadLang() {
   const fromUrl = new URLSearchParams(location.search).get('lang');
-  if (fromUrl === 'en' || fromUrl === 'ja') return fromUrl;
+  if (fromUrl === 'en' || fromUrl === 'ja') {
+    try {
+      localStorage.setItem(STORAGE_KEY, fromUrl); // ?lang= で来ても、次の画面で言語が戻らないように
+    } catch {
+      // 保存できなくても、この画面はその言語で出す。
+    }
+    return fromUrl;
+  }
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved === 'en' || saved === 'ja') return saved;
@@ -97,14 +104,51 @@ function renderRoute() {
   }));
 }
 
-export async function startReader({ route = 0 } = {}) {
-  const { strings } = await api('ui-strings');
-  dictionary = new Map(strings.map((s) => [s.key, s]));
+// 画面の言葉は、同じタブで一度読んだら sessionStorage に置き、次の画面ではすぐに帯と流れの表示を出す（裏で新しくする）。
+const STRINGS_KEY = 'oyasai-ui-strings';
+const readSession = (key) => {
+  try {
+    return JSON.parse(sessionStorage.getItem(key) ?? 'null');
+  } catch {
+    return null;
+  }
+};
+const writeSession = (key, value) => {
+  try {
+    sessionStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    // 保存できなくても、画面はそのまま出す。
+  }
+};
+export const hasStrings = () => dictionary.size > 0;
+
+export function startReader({ route = 0 } = {}) {
   lang = loadLang();
   routeCurrent = route;
   document.documentElement.lang = lang;
-  renderChrome();
+  const cached = readSession(STRINGS_KEY);
+  if (Array.isArray(cached) && cached.length) {
+    dictionary = new Map(cached.map((s) => [s.key, s]));
+    renderChrome();
+  }
+  const fresh = api('ui-strings').then(({ strings }) => {
+    writeSession(STRINGS_KEY, strings);
+    const changed = JSON.stringify(strings) !== JSON.stringify(cached);
+    dictionary = new Map(strings.map((s) => [s.key, s]));
+    if (changed) renderChrome();
+    return changed;
+  });
+  if (hasStrings()) {
+    fresh.catch(() => {});
+    return Promise.resolve(false);
+  }
+  return fresh;
 }
+
+// ③で読んだ手紙を④に渡す（④の表紙を、読み込みを待たずに出すため）
+const LETTER_KEY = 'oyasai-letter';
+export const cachedLetter = () => readSession(LETTER_KEY);
+export const cacheLetter = (data) => writeSession(LETTER_KEY, data);
 
 // EN で訳文を出すところには、必ず枠線タグと確認状態を一緒に出す。
 export function translationTag(translations) {

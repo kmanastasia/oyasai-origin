@@ -1,5 +1,5 @@
 import { api, h, icon, motionProbe } from './common.js';
-import { checkTag, getLang, onLangChange, sealStamp, startReader, t, translationTag } from './reader.js';
+import { checkTag, cacheLetter, cachedLetter, getLang, hasStrings, onLangChange, sealStamp, startReader, t, translationTag } from './reader.js';
 
 const root = document.getElementById('root');
 let letter = null;
@@ -76,7 +76,8 @@ function render() {
   root.replaceChildren(...head, makerHead(), letterCard(), h('div', { class: 'slots' }, letter.meta.slots.map(slot)), h('p', { class: 'choose__order', text: t('choose.order') }));
 }
 
-// 動きを減らす設定・隠れたタブ・動きが止まっている環境では幕を出さない（一覧を隠さない）。
+// 最初の訪問だけ、カードの写真にかかった掛け紙（紙と帯）が横へすべって外れる。文字とラベルにはかけない。
+// 動きを減らす設定・隠れたタブ・動きが止まっている環境では出さない。
 function showOpening(motion) {
   const params = new URLSearchParams(location.search);
   let seen = false;
@@ -88,29 +89,26 @@ function showOpening(motion) {
   }
   if (seen && !params.has('opening')) return;
   if (!motion) return;
-  let closed = false;
-  const close = () => {
-    if (closed) return;
-    closed = true;
-    removeEventListener('keydown', close);
-    overlay.classList.add('is-leaving');
-    setTimeout(() => overlay.remove(), 340);
-  };
-  const overlay = h('div', { class: 'opening', 'aria-hidden': 'true', onclick: close },
-    h('p', { class: 'opening__core', text: t('core') }),
-    h('p', { class: 'opening__sub', lang: getLang() === 'en' ? 'ja' : 'en', text: getLang() === 'en' ? '日本のお野菜を世界へ。' : 'Japanese vegetables, to the world.' }));
-  overlay.addEventListener('animationend', (event) => {
-    if (event.target === overlay) overlay.remove();
-  });
-  addEventListener('keydown', close, { once: true });
-  document.body.append(overlay);
-  setTimeout(() => overlay.remove(), 2700); // アニメーションが進まない環境でも手紙を隠したままにしない
+  const photo = root.querySelector('.card__photo');
+  if (!photo) return;
+  const wrap = h('span', { class: 'unwrap', 'aria-hidden': 'true' });
+  wrap.addEventListener('animationend', () => wrap.remove());
+  photo.append(wrap);
+  setTimeout(() => wrap.remove(), 1400); // 動きが進まない環境でも、写真を隠したままにしない
 }
 
 const live = motionProbe(); // 読み込みを待つあいだに確かめておく
-const [, data] = await Promise.all([startReader({ route: 1 }), api('letter').catch(() => null)]);
+const ready = startReader({ route: 1 });
+const early = cachedLetter();
+if (hasStrings() && early?.letter) {
+  ({ letter } = early);
+  render(); // 前に読んだ手紙があれば、待たずにすぐ出す
+}
+const [, data] = await Promise.all([ready, api('letter').catch(() => null)]);
 onLangChange(render);
-if (data) ({ letter } = data);
-else failed = true;
+if (data) {
+  ({ letter } = data);
+  cacheLetter(data);
+} else if (!letter) failed = true;
 render(); // 一覧とラベルは、動きの確かめを待たずにすぐ出す
 showOpening(await live);

@@ -1,5 +1,5 @@
 import { api, h, icon, motionProbe, releaseIfStalled } from './common.js';
-import { checkTag, getLang, onLangChange, sealStamp, startReader, t, translationTag } from './reader.js';
+import { checkTag, cachedLetter, getLang, hasStrings, onLangChange, sealStamp, startReader, t, translationTag } from './reader.js';
 
 const root = document.getElementById('root');
 const voiceRoot = document.getElementById('voice');
@@ -514,19 +514,32 @@ onLangChange(() => {
   if (key) root.querySelector(`[data-section="${key}"]`)?.scrollIntoView({ block: 'start' });
 });
 
-// 最初の描画は動きの確かめを待たない。答えは「封を開ける」を押すころには出ている。
-motionProbe().then((ok) => { motionOk = ok; });
-const [, data] = await Promise.all([startReader({ route: 2 }), api('letter').catch(() => null)]);
-if (data) {
+const useLetter = (data) => {
   letter = data.letter;
   offer = data.offer;
-} else {
+  chapters = letter.chapters.filter((c) => c.items.length > 0);
+};
+
+// 最初の描画は動きの確かめを待たない。答えは「封を開ける」を押すころには出ている。
+motionProbe().then((ok) => { motionOk = ok; });
+const ready = startReader({ route: 2 });
+const early = cachedLetter();
+if (hasStrings() && early?.letter && early?.offer) {
+  useLetter(early);
+  renderBody(); // ③から来たときは、表紙を読み込みを待たずに出す
+}
+const [, data] = await Promise.all([ready, api('letter').catch(() => null)]);
+if (data?.letter) {
+  const changed = JSON.stringify(data) !== JSON.stringify(early);
+  useLetter(data);
+  if (changed && !opened) renderBody();
+} else if (data) {
+  letter = null; // 封が取り下げられていた
+  root.replaceChildren();
+} else if (!letter) {
   root.replaceChildren(h('p', { class: 'state', role: 'alert', text: t('choose.error') }));
 }
-if (letter) {
-  chapters = letter.chapters.filter((c) => c.items.length > 0);
-  renderBody();
-} else if (!root.hasChildNodes()) {
+if (!letter && !root.hasChildNodes()) {
   root.replaceChildren(
     h('p', { class: 'state', text: t('choose.empty') }),
     h('a', { class: 'btn btn--ghost', href: '/keep', text: t('choose.start') }));

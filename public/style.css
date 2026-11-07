@@ -1151,3 +1151,30 @@ body:has(.next-bite) .column { padding-bottom: calc(var(--next-h) + 24px + env(s
 /* ===== ② 封をしました：③④と同じ朱の封（SVG）。動きなし ===== */
 .stamp--seal { width: 132px; height: 132px; font-size: 52px; animation: none; }
 .stamp__ring { fill: none; stroke: var(--shiro); stroke-opacity: 0.4; stroke-width: 0.35; }
+
+/* ===== ③↔④の受け渡し（View Transitions。choose.html と letter.html の中だけで有効） ===== */
+/* 新しい画面は最初の1枚から全部見える（薄くしない・古い画面と重ねない）。中身がわずかに上がって落ち着くだけ。
+   帯と掛け紙は動かさない */
+.page-choose .chrome, .page-letter .chrome { view-transition-name: vt-chrome; }
+::view-transition-group(vt-chrome), ::view-transition-new(vt-chrome) { animation: none; }
+::view-transition-old(vt-chrome), ::view-transition-old(root) { animation: none; opacity: 0; }
+::view-transition-new(root) { animation: vt-rise 380ms var(--ease-out) both; }
+@keyframes vt-rise { from { transform: translateY(8px); } }
+
+/* ③の最初の訪問：写真にかかった掛け紙（紙と帯）が横へ外れる。注記と文字にはかけない */
+.card__photo { position: relative; }
+.unwrap {
+  position: absolute;
+  inset: 0;
+  background: var(--kinari-2) url('/img/paper-grain.png') 0 0 / 192px;
+  border-right: 1px solid var(--momi);
+  animation: unwrap 700ms var(--ease-std) 250ms forwards;
+  pointer-events: none;
+}
+.unwrap::before { content: ''; position: absolute; top: 0; bottom: 0; left: 18%; width: 22px; background: var(--kogecha); }
+.unwrap::after { content: ''; position: absolute; top: 0; bottom: 0; left: calc(18% + 26px); width: 1px; background: var(--kogecha); opacity: 0.5; }
+@keyframes unwrap { to { transform: translateX(105%); } }
+
+/* 表紙の下にずらした紙は影で描く（受け渡しの名前を持つと、::after が便箋の上に来てしまうため） */
+.page-letter .sheet--cover::after, .page-letter .sheet--cover:last-child::after { content: none; }
+.page-letter .sheet--cover { box-shadow: 6px 6px 0 -1px var(--kinari-2), 6px 6px 0 0 var(--momi); }
