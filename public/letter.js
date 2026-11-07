@@ -25,6 +25,7 @@ let speakingItem = null; // 読み上げ中の項目の id
 let speechRun = 0; // 止めた読み上げの知らせを、次の読み上げと取り違えないための番号
 let closingOpen = false;
 let actionDone = false;
+let justOpened = false; // 申込カードを今開いたときだけ、下から入る
 
 const en = () => getLang() === 'en';
 const pair = (value) => (en() ? value.en : value.ja);
@@ -208,10 +209,24 @@ function chapterView(chapter, index) {
 
 /* ---- 結び：言語で出し分ける。どちらも押すと「見本」で止まる ---- */
 
+function enterOffer() {
+  if (!justOpened) return '';
+  justOpened = false;
+  return ' offer--enter';
+}
+
+// 申込カードを開いたら、カードの見出しへフォーカスを移す
+function openOffer() {
+  closingOpen = true;
+  justOpened = !noMotion();
+  renderBody();
+  root.querySelector('.offer__name')?.focus({ preventScroll: true });
+}
+
 function originCard() {
   const total = offer.breakdown.reduce((sum, part) => sum + part.yen, 0);
-  return h('div', { class: 'offer' },
-    h('h3', { class: 'offer__name', text: t('close.jp.product') }),
+  return h('div', { class: `offer${enterOffer()}` },
+    h('h3', { class: 'offer__name', tabindex: '-1', text: t('close.jp.product') }),
     h('p', { class: 'offer__contents', text: t('close.jp.contents', { no: letter.meta.no }) }),
     h('p', { class: 'offer__price', text: offer.price_display }),
     h('p', { class: 'offer__share', text: offer.farmer_share_display }),
@@ -246,14 +261,14 @@ function closingJp() {
     h('p', { class: 'closing__sub', text: t('close.jp.sub') }),
     closingOpen
       ? originCard()
-      : h('button', { class: 'btn btn--ghost', type: 'button', onclick: () => { closingOpen = true; renderBody(); }, text: t('close.jp.button') }),
+      : h('button', { class: 'btn btn--ghost', type: 'button', onclick: openOffer, text: t('close.jp.button') }),
     h('p', { class: 'closing__keep', text: t('close.jp.keep') }),
   ];
 }
 
 function visitCard() {
-  return h('div', { class: 'offer' },
-    h('h3', { class: 'offer__name fraunces', text: t('close.en.title') }),
+  return h('div', { class: `offer${enterOffer()}` },
+    h('h3', { class: 'offer__name fraunces', tabindex: '-1', text: t('close.en.title') }),
     h('p', { class: 'offer__contents', text: t('close.en.body') }),
     actionDone
       ? h('p', { class: 'offer__done', role: 'status', text: t('close.en.done') })
@@ -285,7 +300,7 @@ function closingEn() {
     visitSnsView(),
     closingOpen
       ? visitCard()
-      : h('button', { class: 'btn btn--ghost', type: 'button', onclick: () => { closingOpen = true; renderBody(); }, text: t('close.en.button') }),
+      : h('button', { class: 'btn btn--ghost', type: 'button', onclick: openOffer, text: t('close.en.button') }),
     h('p', { class: 'closing__keep', text: t('close.en.ship') }),
   ];
 }

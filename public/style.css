@@ -952,3 +952,55 @@ body:has(.next-bite) .column { padding-bottom: calc(120px + env(safe-area-inset-
 
 /* JP｜EN の前に言語のアイコン（飾り） */
 .lang .icon { width: 16px; height: 16px; margin-right: 2px; color: var(--shiro); opacity: 0.7; }
+
+/* ===== ④の結び：一筆箋 ===== */
+.sheet--closing { padding-bottom: 40px; }
+.closing__line { font-size: 21px; line-height: 1.9; margin: 32px 0 12px; max-width: 22em; padding: 20px 0; border-top: 1px solid var(--momi); border-bottom: 1px solid var(--momi); }
+html[lang='en'] .closing__line { font-size: 22px; line-height: 1.5; }
+.closing__sub { margin-bottom: 28px; }
+
+/* 申込カード：売り場ではなく、一筆箋・納品書の形 */
+.offer { background: var(--shiro-2); border-top: 1px solid var(--momi); border-bottom: 1px solid var(--momi); padding: 20px 16px; margin-top: 4px; }
+.offer::before { content: ''; display: block; height: 1px; margin: -21px -16px 20px; background: var(--kogecha); }
+.offer__name:focus { outline: none; }
+.offer__name:focus-visible { outline: 2px solid var(--ha); outline-offset: 4px; }
+.offer__price { font-family: var(--mincho); font-weight: 500; font-size: 26px; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+.offer__share { font-weight: 500; color: var(--ha); }
+.bar__legend li { font-variant-numeric: tabular-nums; }
+@media (prefers-reduced-motion: no-preference) {
+  .offer--enter { animation: offer-in 420ms var(--ease-out) both; }
+}
+@keyframes offer-in { from { transform: translateY(10px); } }
+
+/* 味ことば：いちばん記憶に残る言葉を、便箋の真ん中に */
+.item--flavor { text-align: center; padding: 48px 0 40px; }
+.item--flavor .word__head { flex-direction: column; align-items: center; gap: 10px; }
+.word { font-size: clamp(30px, 8.2vw, 48px); letter-spacing: 0.1em; word-break: keep-all; text-wrap: balance; }
+.item--flavor .item__foot { justify-content: center; }
+.item--flavor .word__romaji { order: -1; }
+@media (min-width: 768px) {
+  .item--flavor { padding: 64px 0 56px; }
+  .word { font-size: 48px; letter-spacing: 0.14em; }
+}
+
+/* 便箋の下の余白をそろえ、確認のタグの折り返しを整える（字の大きさは変えない） */
+.sheet > .item:last-child { padding-bottom: 0; }
+.tag-line, .band--inline { text-wrap: balance; word-break: auto-phrase; }
+
+/* 栞は便箋の外側の余白に（帯やラベルの上に重ねない） */
+.shiori-track { right: max(9px, calc(50vw - var(--sheet-w, 342px) / 2 - 15px)); }
+
+/* ②の選ぶボタン：選んだものは淡い緑の地とチェック（CSS の線2本）。動きなし */
+.together__btn, .audience__btn { position: relative; border-color: color-mix(in srgb, var(--momi), var(--haicha) 50%); }
+.together__btn[aria-pressed='true'], .audience__btn[aria-pressed='true'] { background: var(--ha-050); }
+.together__btn[aria-pressed='true']::before, .audience__btn[aria-pressed='true']::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 14px;
+  width: 6px;
+  height: 11px;
+  border: solid var(--ha);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
