@@ -12,7 +12,7 @@ const calm = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 let motionOk = true; // 動きが止まっている環境では false（読み込みのときに一度だけ確かめる）
 const noMotion = () => calm() || document.hidden || !motionOk;
 const APPEAR_MS = 1300; // 文字が現れ終わる時間より少し長く
-const SEAL_MS = 540; // 封が離れきってから便箋を出す（表紙の高さは、便箋が出るのと同じ時に一度だけ変わる）
+const SEAL_MS = 620; // 封が離れきってから便箋を出す（表紙の高さは、便箋が出るのと同じ時に一度だけ変わる）
 
 let letter = null;
 let offer = null;
@@ -215,7 +215,7 @@ function coverView() {
 
 function landView() {
   if (letter.land.length === 0) return null;
-  return h('section', { class: 'sheet sheet--soil sheet--land', 'data-section': 'land' },
+  return h('section', { class: `sheet sheet--soil sheet--land${entering.has('land') ? ' sheet--enter' : ''}`, style: '--s:0', 'data-section': 'land' },
     h('p', { class: 'mono sheet__no', text: `LAND ${pad(1)}｜${pad(letter.land.length)}` }),
     h('h2', { class: 'sheet__title', tabindex: '-1' }, t('letter.opening'), ' ', h('span', { class: 'tag-note', text: t('town.tag') })),
     itemsTag(letter.land),
@@ -224,7 +224,7 @@ function landView() {
 
 function chapterView(chapter, index) {
   const isSpeaking = speaking === index;
-  return h('section', { class: 'sheet sheet--bite', 'data-section': `bite-${index}`, id: `bite-${index}` },
+  return h('section', { class: `sheet sheet--bite${entering.has(`bite-${index}`) ? ' sheet--enter' : ''}`, style: `--s:${entering.has('land') ? 1 : 0}`, 'data-section': `bite-${index}`, id: `bite-${index}` },
     h('p', { class: 'mono sheet__no', text: `BITE ${pad(index + 1)}｜${pad(chapters.length)}` }),
     h('h2', { class: 'sheet__title', tabindex: '-1', text: t(`bite.${chapter.kind}`) }),
     itemsTag(chapter.items),
@@ -293,7 +293,7 @@ function closingJp() {
     h('p', { class: 'sheet__no closing__eyebrow', text: t('close.jp.eyebrow') }),
     h('div', { class: 'closing__sign' },
       h('p', { class: `closing__line mincho${appear('closing')}`, text: t('close.jp.line', { farmer: letter.meta.farmer.ja }) }),
-      sealStamp(' stamp--sign')),
+      sealStamp(` stamp--sign${entering.has('closing') ? ' stamp--press' : ''}`)),
     h('p', { class: 'closing__sub', text: t('close.jp.sub') }),
     closingOpen
       ? originCard()
@@ -366,10 +366,10 @@ function renderBody() {
 }
 
 // アニメーションが進まない環境でも本文が消えたままにならないよう、時間が来たら必ず外す。
-const finishAppear = (els) => els.forEach((el) => el.classList.remove('appear'));
+const finishAppear = (els) => els.forEach((el) => el.classList.remove('appear', 'sheet--enter', 'stamp--press'));
 
 function settleAppear() {
-  const moving = [...root.querySelectorAll('.appear')];
+  const moving = [...root.querySelectorAll('.appear, .sheet--enter, .stamp--press')];
   if (moving.length === 0) return;
   setTimeout(() => finishAppear(moving), APPEAR_MS);
   releaseIfStalled(moving, () => finishAppear(moving));
@@ -575,7 +575,7 @@ document.addEventListener('click', (event) => {
   if (event.clientY > innerHeight / 2) next();
 });
 document.addEventListener('visibilitychange', () => {
-  if (document.hidden) finishAppear(root.querySelectorAll('.appear'));
+  if (document.hidden) finishAppear(root.querySelectorAll('.appear, .sheet--enter, .stamp--press'));
 });
 addEventListener('pagehide', () => canSpeak && speechSynthesis.cancel());
 
