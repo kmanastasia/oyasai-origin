@@ -1,5 +1,5 @@
 import { api, h, icon, labelText, motionProbe, releaseIfStalled } from './common.js';
-import { checkTag, beforeLangChange, cachedLetter, getLang, hasStrings, onLangChange, sealStamp, startReader, t, translationTag, warmFonts } from './reader.js';
+import { checkTag, beforeLangChange, cachedLetter, getLang, hasStrings, onLangChange, sealStamp, startReader, t, translationTag } from './reader.js';
 
 const root = document.getElementById('root');
 const voiceRoot = document.getElementById('voice');
@@ -681,9 +681,7 @@ const ready = startReader({ route: 2 });
 const early = cachedLetter();
 if (hasStrings() && early?.letter && early?.offer) {
   useLetter(early);
-  // ③から来たときは、④の字の書体がそろうのを少しだけ（最長 0.5 秒）待ってから描く。移り変わりの途中で代わりの書体に揺れない
-  if (/\/choose/.test(document.referrer)) await Promise.race([Promise.all(warmFonts(letter)()), new Promise((r) => setTimeout(r, 500))]);
-  renderBody(); // 表紙を読み込みを待たずに出す
+  renderBody(); // ③から来たときは、表紙を読み込みを待たずに出す（最初の描画の前には何も待たない。待つと空の便箋で移り変わりが始まる）
 }
 const [, data] = await Promise.all([ready, api('letter').catch(() => null)]);
 if (data?.letter) {

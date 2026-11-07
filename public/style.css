@@ -2221,7 +2221,7 @@ html[lang='ja'] .page-top .top__core .glyph { display: inline-block; letter-spac
   .page-top .top__lid {
     display: flex;
     margin: 0;
-    height: clamp(400px, 56svh, 500px);
+    height: clamp(400px, 54svh, 480px);
     padding: 28px 24px 48px;
     background-image: none;
   }
@@ -2247,7 +2247,7 @@ html[lang='ja'] .page-top .top__core .glyph { display: inline-block; letter-spac
   /* 封：日本語はふたの左下（見出しの右の列と重ならない）、英語は右上（見出しは下にある） */
   .page-top .top__seal { left: 16px; bottom: 52px; width: 84px; height: 84px; }
   html[lang='en'] .page-top .top__seal { left: auto; right: 20px; top: 24px; bottom: auto; }
-  .page-top .top__body { display: block; padding-top: 50px; }
+  .page-top .top__body { display: block; padding-top: 40px; } /* 390×844 で 2 つ目の扉の頭が最初の画面に入る */
   .page-top .section-eyebrow { margin-bottom: 12px; }
 }
 @media (max-width: 1023px) and (prefers-reduced-motion: no-preference) {
@@ -2484,3 +2484,6 @@ html[lang='ja'] .page-top .top__core .glyph { display: inline-block; letter-spac
 /* いちばん下の便箋のずらした紙も影で描く（::after の下の紙は、滑り出す動きの間に便箋の上へ来てしまうため。表紙と同じ理由） */
 .page-letter .sheet:last-child::after { content: none; }
 .page-letter .sheet:not(.sheet--cover):last-child { box-shadow: 6px 6px 0 -1px var(--kinari-2), 6px 6px 0 0 var(--momi), 0 30px 60px -40px var(--shade); }
+/* 注記は移り変わりの間も薄くならない：古い絵は出さず、新しい注記を最初の一枚から濃いまま（大きさだけが落ち着く） */
+::view-transition-old(vt-cap) { animation: none; opacity: 0; }
+::view-transition-new(vt-cap) { animation: none; opacity: 1; mix-blend-mode: normal; }
