@@ -595,3 +595,22 @@ html[lang='en'] .top .lead-line { line-height: 1.45; }
 /* 足もとの SNS：行き先が決まるまで押せない文字と「準備中」 */
 .top__sns { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--momi); font-size: 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
 .top__sns-text { color: var(--ink); }
+
+/* ===== 文字組み（日本語の組版に寄せる） ===== */
+/* かなの詰めはゴシックの UI だけ。明朝の見出しと本人の言葉は詰めない（一字一句をそのまま見せる） */
+.band, .kakegami, .route, .door, .btn, .section-eyebrow, .tag-line, .card__small, .card__who, .steps, .top__sns {
+  font-feature-settings: "palt";
+}
+
+/* 和文と欧文のあいだに自然な隙間（「にんじん Carrot」「QR からは」） */
+body { text-autospace: normal; }
+
+/* 本人の言葉と本文：行頭禁則を強め、句読点は行末にぶら下げる（ぶら下げは Safari のみ） */
+.quote, .seal-quote, .card__teaser, .closing__line, .lead-line {
+  line-break: strict;
+  hanging-punctuation: allow-end;
+}
+
+/* 見出し：行の長さをそろえ、かっこの前の空きを詰める */
+.top__core, .lead-line, .sheet__title { text-wrap: balance; }
+.card__who, .sheet__title, .door__title { text-spacing-trim: trim-start; }
