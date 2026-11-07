@@ -1949,3 +1949,41 @@ html[lang='en'] .next-bite__count { letter-spacing: 0.02em; }
   /* 栞ひもは便箋の上の縁から下がる（写真の上を通る。注記の字には重ならない右寄せ） */
   .page-letter .cover-ribbon { top: -8px; height: calc(100% + 104px); z-index: 2; box-shadow: 2px 0 0 color-mix(in srgb, var(--tsuchi) 25%, transparent); }
 }
+
+/* =====================================================================
+   第5版：①残す・②封をする も手紙の紙の言葉で（日本語だけ・字は変えない・お知らせはそのまま）
+   ===================================================================== */
+@media (min-width: 900px) { .tool .source { top: calc(var(--chrome-h) + 16px); max-height: calc(100vh - var(--chrome-h) - 32px); } }
+.tool-h1 { font-family: var(--mincho); font-weight: 700; font-size: 28px; letter-spacing: 0.08em; }
+/* 原文：生成りの便箋に、ずらした下の紙。段落の番号は野菜の色 */
+.source {
+  padding: 24px 24px 12px;
+  background: var(--kinari) url('/img/paper-grain.png') 0 0 / 192px;
+  border: 1px solid var(--momi);
+  box-shadow: 6px 6px 0 -1px var(--kinari-2), 6px 6px 0 0 var(--momi);
+}
+.source .tool-h2 { font-family: var(--mincho); font-size: 17px; letter-spacing: 0.1em; padding-bottom: 10px; margin-bottom: 14px; border-bottom: 1px solid var(--momi); }
+.source__id { color: var(--veg); }
+.source mark { background: var(--wakaba); border-bottom-color: var(--ha); }
+/* 分けた項目：便箋の小さなカード。分類は葉の小さな札 */
+.unit { background: var(--shiro) url('/img/paper-grain.png') 0 0 / 192px; border: 1px solid var(--momi); box-shadow: 0 1px 0 var(--momi), 0 18px 30px -26px var(--shade); }
+.unit.is-active { border-color: var(--ha); box-shadow: inset 4px 0 0 var(--ha), 0 18px 30px -26px var(--shade); }
+.unit__body { padding: 16px 20px; }
+.unit__cat { background: var(--ha-700); color: var(--on-dark); border-radius: 2px; letter-spacing: 0.12em; }
+.unit__quote { font-size: 19px; }
+/* 理由が語られていない項目：赤鉛筆の書き込みのように、左に野菜の色の線（点線の枠はやめる） */
+.unit--missing { border: 1px solid var(--momi); }
+.unit__missing { padding: 6px 0 6px 12px; border-left: 3px solid var(--veg-500); }
+.questions { border: 1px solid var(--momi); border-top: 4px solid var(--ha); background: var(--shiro); box-shadow: 0 18px 30px -26px var(--shade); }
+/* ②：確かめる一枚は便箋。封をしたあとは大きな朱の封を便箋に押す */
+.seal-card { background: var(--shiro) url('/img/paper-grain.png') 0 0 / 192px; border: 1px solid var(--momi); box-shadow: 6px 6px 0 -1px var(--kinari-2), 6px 6px 0 0 var(--momi); padding: 28px 24px; }
+.seal-quote { font-size: 24px; }
+.seal-done {
+  padding: 48px 24px 40px;
+  background: var(--shiro) url('/img/paper-grain.png') 0 0 / 192px;
+  border: 1px solid var(--momi);
+  box-shadow: 6px 6px 0 -1px var(--kinari-2), 6px 6px 0 0 var(--momi), 0 40px 70px -44px var(--shade);
+}
+.seal-done .stamp--seal { width: 168px; height: 168px; filter: drop-shadow(0 10px 14px var(--shade)); }
+.seal-done__msg { font-family: var(--mincho); font-size: 24px; letter-spacing: 0.06em; text-wrap: balance; }
+@media (min-width: 768px) { .seal-done .stamp--seal { width: 200px; height: 200px; } }

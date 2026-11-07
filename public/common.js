@@ -86,6 +86,9 @@ export function toolBands(extra) {
     h('div', { class: `band${extra ? ' band--stack' : ''}`, role: 'note' },
       h('span', { class: 'band__line' }, labelText('【架空】の農家・デモ')),
       extra ? h('span', { class: 'band__line' }, labelText(extra)) : null),
+    // ③④と同じ掛け紙（①②は日本語だけなので、言語の切り替えは置かない）
+    h('header', { class: 'kakegami kakegami--tool' },
+      h('a', { class: 'kakegami__name', href: '/', lang: 'en', text: 'OYASAI ORIGIN' })),
   ];
 }
 
