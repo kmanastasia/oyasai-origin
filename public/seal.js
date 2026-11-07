@@ -136,10 +136,19 @@ function reviewView() {
   ];
 }
 
+// ③④と同じ朱の封（SVG）。①②は動かさないので、押す動きは付けない。
+function sealStamp() {
+  const el = h('div', { class: 'stamp stamp--big stamp--seal', 'aria-hidden': 'true' });
+  const template = document.getElementById('tpl-stamp');
+  if (template) el.append(template.content.firstElementChild.cloneNode(true));
+  else el.textContent = '封';
+  return el;
+}
+
 function sealedView() {
   return [
     h('div', { class: 'seal-done' },
-      h('div', { class: 'stamp stamp--big stamp--press', 'aria-hidden': 'true', text: '封' }),
+      sealStamp(),
       h('p', { class: 'seal-done__msg', role: 'status', text: '封をしました。いつでも取り下げられます。' }),
       // 見本なので、実際には何も送らない。
       h('p', { class: 'seal-done__sub', text: '届いた形は、あとで本人にお送りします（見本・まだ送りません）' }),

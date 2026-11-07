@@ -19,29 +19,29 @@ function teaserView() {
   return h('blockquote', { class: 'card__teaser mincho', lang: 'ja', text: `「${letter.teaser.quote}」` });
 }
 
-// カードの頭：質感の写真（イメージ）と、その下に必ず注記。作り手・町・畑の写真としては見せない。
-function cardPhoto() {
-  return [
+// カードの頭：質感の写真（イメージ）と、そのすぐ下に必ず注記。箱のふたとして置き、作り手・町・畑の写真としては見せない。
+function cardLid() {
+  return h('figure', { class: 'card__lid' },
     h('div', { class: 'card__photo' },
       h('img', { src: '/img/texture-sprouts.jpg', alt: '', width: '1200', height: '675', decoding: 'async' })),
-    h('p', { class: 'photo__cap card__cap', text: t('photo.caption') }),
-  ];
+    h('figcaption', { class: 'photo__cap card__cap', text: t('photo.caption') }));
 }
 
 function letterCard() {
   const { meta, verified } = letter;
   return h('article', { class: 'card card--letter' },
-    cardPhoto(),
-    h('div', { class: 'card__top' },
-      h('span', { class: 'mono', text: meta.no }),
-      sealStamp()),
-    h('h2', { class: 'card__veg' }, h('span', { class: 'mincho', lang: 'ja', text: meta.vegetable.ja }), ' ', h('span', { class: 'fraunces', lang: 'en', text: meta.vegetable.en })),
-    h('p', { class: 'card__who', text: `${pair(meta.farmer)}／${pair(meta.town)}` }),
-    teaserView(),
-    checkTag(letter),
-    h('p', { class: 'card__small', text: t('verified', verified) }),
-    verified.dropped > 0 ? h('p', { class: 'card__small', text: t('verified.dropped', { n: verified.dropped }) }) : null,
-    h('a', { class: 'btn btn--primary btn--tall', href: '/letter' }, h('span', { text: t('choose.open') }), icon('arrow')));
+    cardLid(),
+    h('div', { class: 'card__body' },
+      h('div', { class: 'card__top' },
+        h('span', { class: 'mono', text: meta.no }),
+        sealStamp()),
+      h('h2', { class: 'card__veg' }, h('span', { class: 'mincho', lang: 'ja', text: meta.vegetable.ja }), ' ', h('span', { class: 'fraunces', lang: 'en', text: meta.vegetable.en })),
+      h('p', { class: 'card__who', text: `${pair(meta.farmer)}／${pair(meta.town)}` }),
+      teaserView(),
+      checkTag(letter),
+      h('p', { class: 'card__small', text: t('verified', verified) }),
+      verified.dropped > 0 ? h('p', { class: 'card__small', text: t('verified.dropped', { n: verified.dropped }) }) : null,
+      h('a', { class: 'btn btn--primary btn--tall', href: '/letter' }, h('span', { text: t('choose.open') }), icon('arrow'))));
 }
 
 // 作り手ごとの見出し（今は1人）。名前はデータのまま（架空）を付けて出す。
@@ -73,7 +73,7 @@ function render() {
       h('a', { class: 'btn btn--ghost', href: '/keep', text: t('choose.start') }));
     return;
   }
-  root.replaceChildren(...head, makerHead(), letterCard(), ...letter.meta.slots.map(slot), h('p', { class: 'choose__order', text: t('choose.order') }));
+  root.replaceChildren(...head, makerHead(), letterCard(), h('div', { class: 'slots' }, letter.meta.slots.map(slot)), h('p', { class: 'choose__order', text: t('choose.order') }));
 }
 
 // 動きを減らす設定・隠れたタブ・動きが止まっている環境では幕を出さない（一覧を隠さない）。
