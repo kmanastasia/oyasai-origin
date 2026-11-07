@@ -14,6 +14,18 @@
   --fraunces: 'Fraunces', Georgia, serif;
   --mono: 'DM Mono', ui-monospace, Menlo, monospace;
   --chrome-h: 68px;
+  /* 同じ色相の濃淡だけ（新しい色は足さない） */
+  --kinari-2: #E6DBC5;
+  --shiro-2: #FBF8F1;
+  --ha-700: #3E5724;
+  --ha-100: #E3E8D5;
+  --ha-050: #F0F2E8;
+  --tsuchi-2: #2A221B;
+  /* 動きの決まりごと */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-std: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur-s: 180ms;
+  --dur-m: 400ms;
 }
 
 * { box-sizing: border-box; }
@@ -72,9 +84,15 @@ button, a.btn { font-family: inherit; }
 }
 
 .kakegami__name {
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: 0.14em;
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 12px 0 0;
+  font-family: var(--mincho);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  color: var(--shiro);
   text-decoration: none;
 }
 
@@ -266,7 +284,7 @@ html[lang='en'] .sheet__title { font-family: var(--fraunces); font-weight: 600; 
   position: absolute;
   inset: 0 -12px;
   z-index: 0;
-  background: rgba(78, 107, 45, 0.12);
+  background: var(--ha-050);
   border-left: 3px solid var(--ha);
   opacity: 0;
   transition: opacity 0.2s ease-out;
@@ -416,7 +434,7 @@ body:has(.next-bite) .column { padding-bottom: calc(104px + env(safe-area-inset-
 .notice { margin-bottom: 12px; padding: 8px 12px; background: var(--kinari); border-left: 3px solid var(--kogecha); font-size: 14px; }
 
 .draft-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-bottom: 16px; }
-.badge { padding: 2px 10px; background: var(--ha); color: #fff; font-size: 14px; font-weight: 500; border-radius: 4px; }
+.badge { padding: 2px 10px; background: var(--ha-100); color: var(--ha-700); font-size: 14px; font-weight: 500; border-radius: 4px; }
 .draft-head__sub { font-size: 14px; color: var(--haicha); }
 
 .dropped { margin-bottom: 16px; padding: 12px 16px; border: 1px solid var(--ink); font-size: 14px; }
@@ -430,7 +448,7 @@ body:has(.next-bite) .column { padding-bottom: calc(104px + env(safe-area-inset-
 .source { padding: 16px; background: var(--kinari); border: 1px solid var(--momi); }
 .source__p { display: grid; grid-template-columns: 36px 1fr; gap: 4px; margin-bottom: 12px; font-family: var(--mincho); font-size: 15px; line-height: 1.8; }
 .source__id { padding-top: 4px; }
-.source mark { background: var(--chui); color: inherit; }
+.source mark { background: var(--ha-100); color: inherit; border-bottom: 2px solid var(--ha); padding: 0 1px; } /* 注意黄は架空・見本・仮だけ */
 
 .units { display: grid; gap: 12px; }
 .unit { background: #fff; border: 1px solid var(--momi); }
@@ -622,3 +640,51 @@ body { text-autospace: normal; }
 html[lang='en'] .top__core { font-size: 24px; line-height: 1.35; }
 html[lang='en'] .lead-line { font-size: 17px; line-height: 1.5; margin-bottom: 12px; }
 html[lang='en'] .door { padding: 18px 24px; gap: 4px; }
+
+/* ===== 磨き：触れたときの手ざわり（受け取る側だけ。①②は動かさない） ===== */
+.reader .btn, .reader .door, .next-bite, .lang__btn {
+  transition: transform var(--dur-s) var(--ease-std), background-color var(--dur-s) var(--ease-std), border-color var(--dur-s) var(--ease-std), opacity var(--dur-s) var(--ease-std);
+}
+.reader .btn:not(:disabled):active, .reader .door:active { transform: translateY(1px) scale(0.985); }
+.reader .btn--primary:not(:disabled):active, .reader .door--primary:active { background: var(--ha-700); border-color: var(--ha-700); }
+.reader .btn--ghost:not(:disabled):active { background: var(--ha-050); }
+.lang__btn:hover { opacity: 1; }
+
+@media (hover: hover) {
+  .reader .btn--primary:not(:disabled):hover, .reader .door--primary:hover { background: var(--ha-700); border-color: var(--ha-700); }
+  .reader .btn--ghost:not(:disabled):hover { background: var(--ha-050); }
+  .reader .door:hover { transform: translateY(-2px); }
+  .reader .door:not(.door--primary):hover { border-color: var(--ha-700); }
+}
+
+/* 暗い面（掛け紙・次のひと口へ）の上では、フォーカスの枠を生成りの色に */
+.kakegami :focus-visible { outline: 2px solid var(--shiro); outline-offset: -3px; }
+.next-bite:focus-visible { outline: 3px solid var(--shiro); outline-offset: -6px; }
+.kakegami__name { text-decoration: underline 1px rgba(248, 243, 232, 0.28); text-underline-offset: 7px; }
+
+/* 出典は信頼の情報なので、ほかの小ラベルより一段読みやすく */
+.item__foot .mono { font-size: 13px; letter-spacing: 0.06em; color: var(--kogecha); }
+
+/* 読み上げソフトだけに伝える文 */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ===== 表示ラベルの守り：架空・見本・合成音声・Translated by Claude・仮 は、動かさない・薄くしない ===== */
+.band, .tag-note, .tag-line, .tr-tag, .voice-bar, .offer__done, .photo__cap {
+  opacity: 1 !important;
+  animation: none !important;
+  transition: none !important;
+  transform: none !important;
+  visibility: visible !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+}
