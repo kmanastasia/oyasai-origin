@@ -571,7 +571,7 @@ html[lang='en'] .top .lead-line { line-height: 1.45; }
 .door--primary { background: var(--ha); border-color: var(--ha); color: var(--shiro); }
 .door__for { font-size: 14px; font-weight: 500; opacity: 0.85; }
 .door__title { font-size: 20px; font-weight: 700; line-height: 1.5; word-break: auto-phrase; }
-.door__title::after { content: ' →'; }
+.door__title::after { content: '\00a0→'; } /* 矢印だけが次の行に落ちないように */
 .door__sub, .door__meta { font-size: 14px; opacity: 0.9; }
 .door__for, .door__sub, .door__meta, .door__node { line-height: 1.5; }
 
@@ -614,3 +614,8 @@ body { text-autospace: normal; }
 /* 見出し：行の長さをそろえ、かっこの前の空きを詰める */
 .top__core, .lead-line, .sheet__title { text-wrap: balance; }
 .card__who, .sheet__title, .door__title { text-spacing-trim: trim-start; }
+
+/* EN のトップも 390×844 の1画面に収める（英語は扉の見出しが2行になるぶん、上を詰める） */
+html[lang='en'] .top__core { font-size: 24px; line-height: 1.35; }
+html[lang='en'] .lead-line { font-size: 17px; line-height: 1.5; margin-bottom: 12px; }
+html[lang='en'] .door { padding: 18px 24px; gap: 4px; }
