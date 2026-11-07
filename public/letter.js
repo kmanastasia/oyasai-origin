@@ -12,13 +12,14 @@ const calm = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 let motionOk = true; // 動きが止まっている環境では false（読み込みのときに一度だけ確かめる）
 const noMotion = () => calm() || document.hidden || !motionOk;
 const APPEAR_MS = 1300; // 文字が現れ終わる時間より少し長く
-const SEAL_MS = 800; // 封がほどける時間。スクロールと文字はこのあとに始める
+const SEAL_MS = 380; // 封が離れはじめてから便箋を出すまで。判子の動き（500ms）と重ねる
 
 let letter = null;
 let offer = null;
 let chapters = [];
 let opened = false;
 let unsealing = false; // 封がほどけている間
+let unsealEnds = 0; // 判子の動きが終わる時刻。それまでは表紙を描き直さない（動きが最初に戻るため）
 let entering = new Set(); // 今回の描画で現れる区画。ここの本文だけが静かに現れる
 let revealed = 0; // 開いている便箋の数。chapters.length + 1 で結びまで。
 let speaking = null; // 読み上げ中の便箋の番号
@@ -323,7 +324,8 @@ function closingView() {
 
 function renderBody() {
   if (!letter || (unsealing && root.querySelector('.stamp--open'))) return; // 描き直すと封の動きが最初に戻る
-  const sections = [coverView()];
+  const moving = root.querySelector('.sheet--cover.is-unsealing');
+  const sections = [moving && opened && !unsealing && performance.now() < unsealEnds ? moving : coverView()];
   if (opened && !unsealing) {
     sections.push(landView(), ...chapters.slice(0, revealed).map(chapterView));
     if (atClosing()) sections.push(closingView());
@@ -458,8 +460,25 @@ function showFirstSheets() {
   if (!noMotion()) entering = new Set(['land', 'bite-0']);
   renderBody();
   const target = letter.land.length ? root.querySelector('[data-section="land"]') : document.getElementById('bite-0');
-  target?.scrollIntoView({ behavior: calm() ? 'auto' : 'smooth', block: 'start' });
+  if (noMotion()) target?.scrollIntoView({ behavior: 'auto', block: 'start' });
+  else if (target) glide(target.getBoundingClientRect().top + scrollY - innerHeight * 0.4);
   announce(letter.land.length ? 'land' : 'bite-0');
+}
+
+// 便箋の見出しが画面の 4 割の高さに来るところまで、短く静かに送る（標準のなめらかスクロールより短い距離と時間）
+function glide(to) {
+  const from = scrollY;
+  const end = Math.max(0, Math.min(to, document.documentElement.scrollHeight - innerHeight));
+  if (Math.abs(end - from) < 2) return;
+  const start = performance.now();
+  const ease = (x) => 1 - (1 - x) ** 3;
+  const step = (now) => {
+    const p = Math.min(1, (now - start) / 480);
+    scrollTo(0, from + (end - from) * ease(p));
+    if (p < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+  setTimeout(() => scrollTo(0, end), 700); // rAF が止まっていても、行き先には着く
 }
 
 // 読み上げは押した瞬間に始める。遅らせるのはスクロールと文字だけ。
@@ -473,6 +492,7 @@ function openLetter(thenListen) {
     return;
   }
   unsealing = true;
+  unsealEnds = performance.now() + 560;
   renderBody();
   if (thenListen && canSpeak) speak(0);
   setTimeout(showFirstSheets, SEAL_MS);

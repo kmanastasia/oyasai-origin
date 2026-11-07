@@ -1223,3 +1223,18 @@ body:has(.next-bite) .column { padding-bottom: calc(var(--next-h) + 24px + env(s
   .top .door__for { font-size: 15px; }
 }
 @keyframes ink-fill-v { from { background-position: 0 100%; } to { background-position: 100% 0; } }
+
+/* ===== ④ 封を開ける：判子が離れ、帯がわずかに上がり、栞ひもが揺れる（重ねて動く）。ラベルは動かさない ===== */
+.stamp--open { animation-duration: 500ms; }
+@media (prefers-reduced-motion: no-preference) {
+  .sheet--cover.is-unsealing .cover-band { animation: band-lift 400ms var(--ease-std) 120ms both; }
+  .sheet--cover.is-unsealing .cover-ribbon { transform-origin: top center; animation: ribbon-swing 520ms var(--ease-std) 120ms both; }
+}
+@keyframes band-lift { 50% { transform: translateY(-4px); } }
+@keyframes ribbon-swing { 40% { transform: rotate(-6deg); } 100% { transform: rotate(0deg); } }
+
+/* 読み上げの印：左の線が上から伸びる（下の色は静かに出る） */
+.item::after { content: ''; position: absolute; top: 0; bottom: 0; left: -12px; width: 3px; background: var(--ha); transform: scaleY(0); transform-origin: top; transition: transform 300ms var(--ease-out); pointer-events: none; z-index: 1; }
+.item::before { border-left: 0; transition: opacity var(--dur-s) var(--ease-std); }
+.item.is-speaking::after { transform: scaleY(1); }
+.sheet__title + .item::after { top: -8px; }
