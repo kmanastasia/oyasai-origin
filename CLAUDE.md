@@ -4,9 +4,9 @@
 コードはすべて 2026-11-02 12:00 以降に作る。
 
 ## 正の仕様（private/ にある。公開しない）
-- 画面：`private/specs/uiux_spec.md`（v4）
-- サービス・データの形：`private/specs/service_spec.md`（v4）
-- 範囲・優先度・削る順：`private/specs/ops_rulings_v4.md`（R19〜R31。ほかの文書より優先）
+- 画面：`private/specs/uiux_spec_v5.md`（v5）
+- サービス・データの形・デモの範囲：`private/specs/service_spec_v5.md`（v5。ほかの文書より優先）
+- v5 に書いていないことは v4（`uiux_spec.md`・`service_spec.md`・`ops_rulings_v4.md`）のまま
 - 見た目の土台：`private/specs/design_spec.md`
 
 ## 公開しないもの（必ず守る）
@@ -14,8 +14,8 @@
 - 仕様から実装に必要な事実（画面・データの形・表示の約束）だけを使う。
 - コミットや push の前に `git status` を見て、`private/`・`.env`・動画が入っていないことを確かめる（`npm run verify` でも確かめる）。
 
-## 画面（4つ）
-①残す `/keep` ②封をする `/seal` ③えらぶ `/choose` ④手紙 `/letter`。①②は日本語のみ。③④と結びは JP/EN 切り替え。
+## 画面（入口＋4つ）
+入口のトップ `/`（読む／書く）。①残す `/keep` ②封をする `/seal` ③えらぶ `/choose` ④手紙 `/letter`。①②は日本語のみ。トップ・③④と結びは JP/EN 切り替え。
 
 ## 必ず守ること
 - 農家の言葉は一字も直さない。quote は原文に完全一致するものだけ。照合は `npm run verify`。
@@ -24,7 +24,7 @@
 - Claude に本文・方言・土地の歴史を書かせない。Claude がするのは、分類・段落番号の割り当て・英訳だけ。
 - 「架空」「見本」「合成音声・架空の語り手」「Translated by Claude」「仮」の表示を消さない。
 - 読み上げはブラウザ標準（speechSynthesis）だけ。外部の音声サービス・音声ファイル・声の複製は使わない。skip_speech の部分は読まない。
-- 決済・申し込み・入力フォーム・外部リンクは作らない。押しても「見本」の表示で止まる。
+- 決済・申し込み・入力フォーム・外部リンクは作らない。押しても「見本」の表示で止まる。例外は「おやさい旅」の SNS へのリンク1か所だけ（2026-11-07 Karen 決定）。
 - 使わない：Streamlit、チャット UI、ログイン、録音。
 
 ## Claude の機能の使い分け（README にも同じ表を置く）
