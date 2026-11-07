@@ -62,23 +62,39 @@ function markSpeaking() {
   }
 }
 
-// 本当に見えている帯：上は掛け紙と読み上げの表示の下、下は「次のひと口へ」の上
+// 本当に見えている帯：上は掛け紙と読み上げの表示の下、下は「次のひと口へ」の上（画面に固定されているときだけ）
 function visibleBand() {
   const chrome = document.getElementById('chrome')?.getBoundingClientRect().bottom ?? 0;
   const voice = voiceRoot.firstElementChild ? voiceRoot.getBoundingClientRect().bottom : 0;
   const bar = nextRoot.firstElementChild;
-  const barTop = bar && !bar.classList.contains('is-tucked') ? bar.getBoundingClientRect().top : innerHeight;
+  const barTop = bar && getComputedStyle(bar).position === 'fixed' ? bar.getBoundingClientRect().top : innerHeight;
   return { top: Math.max(chrome, voice) + 12, bottom: Math.min(innerHeight, barTop) - 12 };
+}
+
+// 文書の中での上端。現れる動き（transform）の途中でも、落ち着いたあとの位置を返す
+function docTop(el) {
+  let y = 0;
+  for (let n = el; n; n = n.offsetParent) y += n.offsetTop;
+  return y;
 }
 
 // 読んでいる項目が帯の外なら、帯の真ん中（入りきらなければ頭）へ寄せる
 function keepInView(el) {
-  const box = el.getBoundingClientRect();
+  const top = docTop(el) - scrollY;
+  const height = el.offsetHeight;
   const band = visibleBand();
-  if (box.top >= band.top && box.bottom <= band.bottom) return;
+  if (top >= band.top && top + height <= band.bottom) return;
   const room = band.bottom - band.top;
-  const to = scrollY + box.top - band.top - Math.max(0, (room - box.height) / 2);
+  const to = scrollY + top - band.top - Math.max(0, (room - height) / 2);
   if (noMotion()) scrollTo(0, to);
+  else glide(to);
+}
+
+// 便箋の頭を、掛け紙（と読み上げの表示）の 24px 下に
+function scrollToSection(el) {
+  if (!el) return;
+  const to = docTop(el) - (visibleBand().top + 12);
+  if (noMotion()) scrollTo(0, Math.max(0, to));
   else glide(to);
 }
 
@@ -398,31 +414,13 @@ function renderNext() {
   h('span', { class: 'next-bite__label', text: label }),
   toClosing ? null : h('span', { class: 'next-bite__count', 'aria-hidden': 'true', text: t('letter.nextCount', { n: revealed + 1, total: chapters.length }) }),
   icon('arrow')));
-  tucked = false;
 }
 
-// スマホ：読み進めて下へ送っている間は「次のひと口へ」をしまい、戻るか便箋の終わりで出す（動きを減らす設定では出したまま）
-let tucked = false;
-let lastY = scrollY;
-let handAt = 0; // 指・ホイール・キーで動かしたときだけしまう（「次へ」の自動スクロールではしまわない）
+// 「次のひと口へ」はしまわない：スマホ・タブレットでは便箋の足もとに紙の札として置かれ（本文に重ならない）、
+// パソコンでは便箋の列の外の縦の札。指・ホイール・キーで動かした時刻だけ覚えておく（言語の切り替えの位置合わせのため）
+let handAt = 0;
 for (const type of ['touchmove', 'wheel', 'keydown']) addEventListener(type, () => { handAt = Date.now(); }, { passive: true });
-function tuckNext() {
-  const bar = nextRoot.firstElementChild;
-  const y = scrollY;
-  const down = y > lastY + 4;
-  const up = y < lastY - 4;
-  if (down || up) lastY = y;
-  if (!bar) return;
-  const wide = matchMedia('(min-width: 768px)').matches;
-  const atEnd = innerHeight + y >= document.documentElement.scrollHeight - 80;
-  const byHand = Date.now() - handAt < 700;
-  const want = !wide && !noMotion() && !atEnd && (down && byHand ? true : up ? false : tucked);
-  if (want !== tucked) {
-    tucked = want;
-    bar.classList.toggle('is-tucked', tucked);
-  }
-}
-addEventListener('scroll', () => { tuckNext(); markIndex(); placeShiori(); }, { passive: true });
+addEventListener('scroll', () => { markIndex(); placeShiori(); }, { passive: true });
 addEventListener('resize', () => placeShiori(), { passive: true });
 
 /* ---- 便箋の目次（パソコン）：開いた便箋だけ。いまの便箋を緑に。移動だけで、新しい文はない ---- */
@@ -474,9 +472,6 @@ function announce(sectionKey) {
   else live.textContent = t('letter.opening');
 }
 
-function scrollToId(id) {
-  document.getElementById(id)?.scrollIntoView({ behavior: calm() ? 'auto' : 'smooth', block: 'start' });
-}
 
 function next() {
   if (!opened || unsealing || atClosing()) return;
@@ -487,7 +482,7 @@ function next() {
   revealed += 1;
   if (!noMotion()) entering.add(atClosing() ? 'closing' : `bite-${revealed - 1}`);
   renderBody();
-  scrollToId(atClosing() ? 'closing' : `bite-${revealed - 1}`);
+  scrollToSection(document.getElementById(atClosing() ? 'closing' : `bite-${revealed - 1}`));
   announce(atClosing() ? 'closing' : `bite-${revealed - 1}`);
 }
 
@@ -500,8 +495,7 @@ function showFirstSheets() {
   const target = letter.land.length ? root.querySelector('[data-section="land"]') : document.getElementById('bite-0');
   const spoken = speakingItem && root.querySelector(`[data-item-id="${speakingItem}"]`);
   if (spoken) keepInView(spoken); // 声で読むときは、読んでいる項目へ
-  else if (noMotion()) target?.scrollIntoView({ behavior: 'auto', block: 'start' });
-  else if (target) glide(target.getBoundingClientRect().top + scrollY - innerHeight * 0.4);
+  else scrollToSection(target); // 書き出しの便箋の頭を掛け紙の下に（表紙は上へ送り出す）
   announce(letter.land.length ? 'land' : 'bite-0');
 }
 
@@ -576,7 +570,7 @@ function placeShiori() {
   const top = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--chrome-h')) || 68;
   const band = section.querySelector(':scope > .band'); // 結びの「仮」の帯には決して重ねない
   const from = band ? band.getBoundingClientRect().bottom : box.top - 6;
-  shiori.style.setProperty('--shiori-x', `${Math.round(box.right - 56)}px`);
+  shiori.style.setProperty('--shiori-x', `${Math.round(box.right - 58)}px`); // 右の縁から 48px（表紙の栞ひもと同じ）
   shiori.style.setProperty('--shiori-top', `${Math.round(Math.max(from, top - 6))}px`);
 }
 

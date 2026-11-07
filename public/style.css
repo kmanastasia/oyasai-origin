@@ -2348,3 +2348,112 @@ html[lang='ja'] .page-top .top__core .glyph { display: inline-block; letter-spac
   /* 英語：大きな Fraunces の一行を左の段に */
   html[lang='en'] .page-letter .sheet--closing .closing__line { font-size: clamp(32px, 2.8vw, 40px); line-height: 1.18; letter-spacing: -0.01em; max-width: none; margin: 0; padding: 0; border: 0; }
 }
+
+/* =====================================================================
+   第6版 ④ 読む間：固定の帯が本文と表示に重ならない
+   次のひと口へ：スマホ・タブレットでは便箋の足もとに下がる紙の札（流れの中に置く。固定しない）。
+   パソコン（1200px 以上）は便箋の列の外、右の段の縦の札。読み上げの表示は下に細い墨の線。
+   読み上げ中の印は、野菜の色の細い線と、紙の色に近い薄い下敷き
+   ===================================================================== */
+/* 読み上げの表示：下に線。本文はその下から始まる（重なって切れた字が描き損ないに見えない） */
+.voice-bar { border-bottom: 1px solid var(--line-ink); }
+/* 読み上げ中の印：線は野菜の色、下敷きは紙に近い薄さ（土の便箋は萌黄の線と一段明るい面） */
+.page-letter .sheet--bite .item::before { background: color-mix(in srgb, var(--veg-100) 50%, var(--shiro)); }
+.page-letter .sheet--bite .item::after { background: var(--veg); }
+.page-letter .sheet--soil .item::after { background: var(--moegi); }
+/* 添え書きの出どころの札：薄い字ではなく墨で */
+.word__by { color: var(--ink); border-color: var(--ink); }
+.page-letter .item--flavor .word__by { border-color: var(--ink); }
+
+/* 紙の札（共通の見た目） */
+.next-bite {
+  background: var(--shiro) url('/img/paper-grain.png') 0 0 / 192px;
+  color: var(--ink);
+  border: 1px solid var(--momi);
+  border-radius: 0;
+  box-shadow: 0 1px 0 var(--momi), 0 18px 30px -26px var(--shade);
+  outline: 0;
+}
+.next-bite::before { display: none; }
+.next-bite .icon { color: var(--ha-700); }
+.next-bite__count { color: var(--haicha); }
+.next-bite:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.next-bite:active { background-color: var(--ha-050); }
+@media (hover: hover) { .next-bite:hover { background-color: var(--ha-050); } }
+
+/* スマホ・タブレット：便箋の足もとに下がる札。便箋の幅より少し狭く、上に葉の太い線（紙から下がる舌） */
+@media (max-width: 1199px) {
+  .page-letter #next { max-width: calc(var(--sheet-w, 432px) + 48px); margin: -44px auto 0; padding: 0 24px 40px; }
+  .page-letter #next:empty { display: none; }
+  .next-bite {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    transform: none;
+    width: calc(100% - 32px);
+    margin: 0 16px;
+    height: auto;
+    min-height: 64px;
+    padding: 14px 20px;
+    justify-content: space-between;
+    gap: 12px;
+    border-top: 3px solid var(--ha);
+    font-size: 17px;
+  }
+  /* 折り返した紙の角 */
+  .next-bite::after { content: ''; position: absolute; right: -1px; bottom: -1px; width: 18px; height: 18px; background: linear-gradient(135deg, transparent 0 50%, var(--kinari-2) 50% 100%); pointer-events: none; }
+  .next-bite:active { transform: translateY(1px); }
+  html { scroll-padding-bottom: 24px; }
+  body:has(.next-bite) .column { padding-bottom: 0; }
+  .page-letter .sheet { scroll-margin-bottom: 24px; }
+}
+@media (min-width: 768px) and (max-width: 1199px) {
+  .page-letter #next { margin-top: -40px; }
+  .next-bite { width: calc(100% - 64px); margin: 0 32px; }
+}
+
+/* ---------- パソコン（1200px 以上）：12 列の格子。掛け紙の左端・目次・便箋・次のひと口へ・栞がひとつの格子に乗る ---------- */
+@media (min-width: 1200px) {
+  :root {
+    --gap: 24px;
+    --col: calc((var(--wrap) - 11 * var(--gap)) / 12);
+    --sheet-x: calc(var(--edge) + 3 * (var(--col) + var(--gap)));   /* 便箋は 4〜10 列目 */
+    --sheet-w: calc(7 * var(--col) + 6 * var(--gap));
+  }
+  .page-letter .column { max-width: none; width: var(--sheet-w); margin: 0 0 0 var(--sheet-x); padding-left: 0; padding-right: 0; }
+  .page-letter .sheet--cover, html[lang] .page-letter .sheet--closing { margin-inline: 0; }
+  /* 目次：1〜3 列目。野菜の名は墨で（野菜の色はいまの項目だけ） */
+  .sheet-index:not(:empty) { left: var(--edge); width: calc(3 * var(--col) + 2 * var(--gap)); column-gap: 16px; }
+  .sheet-index__veg { color: var(--ink); font-size: 40px; letter-spacing: 0.12em; }
+  /* 次のひと口へ：11〜12 列目の足もとの縦の札 */
+  .next-bite {
+    left: calc(var(--sheet-x) + var(--sheet-w) + var(--gap));
+    right: auto;
+    bottom: 40px;
+    width: auto;
+    min-width: 0;
+    max-width: calc(2 * var(--col) + var(--gap));
+    height: auto;
+    padding: 22px 16px;
+    border-radius: 0;
+    border-left: 3px solid var(--ha);
+    transform: none;
+    box-shadow: 0 1px 0 var(--momi), 0 18px 30px -26px var(--shade);
+  }
+  html[lang='ja'] .next-bite { writing-mode: vertical-rl; flex-direction: row; padding: 24px 16px; font-size: 18px; letter-spacing: 0.2em; border-left: 0; border-top: 3px solid var(--ha); }
+  html[lang='ja'] .next-bite__count { border-block-start-color: var(--momi); }
+  html[lang='en'] .next-bite { flex-direction: column; align-items: flex-start; padding: 16px 18px; text-align: left; width: calc(2 * var(--col) + var(--gap)); }
+  .next-bite:active { transform: translateY(1px); }
+  body:has(.next-bite) .column { padding-bottom: 96px; }
+}
+
+/* ---------- 表紙の栞ひもと朱の封：ひもは右の縁から 48px（便箋の栞と同じ列）。注記の下から下がり、写真と注記の字を横切らない。封はその左 ---------- */
+@media (min-width: 768px) {
+  .page-letter .cover-ribbon { top: 100%; right: 48px; height: 120px; z-index: 2; box-shadow: none; }
+  .page-letter .sheet--cover .card__top { right: 152px; }
+}
+@media (min-width: 1200px) {
+  html[lang='en'] .next-bite { border-radius: 0; }
+  /* 読み上げ中は、目次の柱も読み上げの表示の下から始める */
+  body:has(.voice-bar) .sheet-index:not(:empty) { top: calc(var(--chrome-h) + var(--voice-h, 53px) + 32px); }
+}
