@@ -1987,3 +1987,22 @@ html[lang='en'] .next-bite__count { letter-spacing: 0.02em; }
 .seal-done .stamp--seal { width: 168px; height: 168px; filter: drop-shadow(0 10px 14px var(--shade)); }
 .seal-done__msg { font-family: var(--mincho); font-size: 24px; letter-spacing: 0.06em; text-wrap: balance; }
 @media (min-width: 768px) { .seal-done .stamp--seal { width: 200px; height: 200px; } }
+
+/* ---------- 第5版 ④：ふたの写真が届くまでの地は、写真の平均に近い葉と土の色（平らな緑が急に写真に変わらない） ---------- */
+.page-letter .cover-band { background-color: color-mix(in srgb, var(--ha-700) 55%, var(--tsuchi)); }
+
+/* ---------- 第5版 ④ 結び（パソコン・日本語）：便箋の列いっぱいの土の一枚。縦の一行を大きく真ん中に、朱の封で結ぶ ---------- */
+@media (min-width: 1024px) {
+  html[lang='ja'] .page-letter .sheet--closing {
+    max-width: none;
+    margin-inline: -36px;
+    min-height: calc(100svh - var(--chrome-h) - 48px);
+    display: flex;
+    flex-direction: column;
+    padding: 0 64px 48px;
+  }
+  html[lang='ja'] .page-letter .sheet--closing > .band--inline, html[lang='ja'] .page-letter .sheet--closing > .band { margin: 0 -64px 32px; padding-inline: 64px; }
+  html[lang='ja'] .closing__sign { flex: 1; align-items: center; gap: 32px; margin: 24px 0 32px; }
+  html[lang='ja'] .closing__sign .closing__line { font-size: 40px; max-height: 13em; padding: 8px 32px; letter-spacing: 0.2em; }
+  html[lang='ja'] .stamp--sign { width: 88px; height: 88px; align-self: flex-end; }
+}

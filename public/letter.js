@@ -190,7 +190,7 @@ function coverView() {
     // 個包装のふた：③と同じ質感の写真（イメージ）に手紙の番号。すぐ下に必ず注記。作り手・町・畑の写真としては見せない
     h('figure', { class: 'cover-lid' },
       h('div', { class: 'cover-band' },
-        h('img', { class: 'cover-band__img', src: '/img/texture-sprouts.jpg', alt: '', width: '1200', height: '675', decoding: 'async' }),
+        h('img', { class: 'cover-band__img', src: '/img/texture-sprouts.jpg', alt: '', width: '1200', height: '675', decoding: 'sync', fetchpriority: 'high' }),
         h('span', { class: 'mono', text: `${t('route.letter')} · ${meta.no}` })),
       h('figcaption', { class: 'photo__cap cover-lid__cap', text: t('photo.caption') }),
       h('span', { class: 'cover-ribbon', 'aria-hidden': 'true' })),

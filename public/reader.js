@@ -66,9 +66,13 @@ async function softenSwap() {
   if (!(await motionProbe())) return;
   const root = document.getElementById('root');
   const moving = [...(root?.querySelectorAll(SWAP_TEXT) ?? [])].filter((el) => !el.matches(LABELS) && !el.querySelector(LABELS) && !el.closest(LABELS) && !LABEL_WORDS.test(el.textContent));
+  // 長さと緩急は CSS の決まりごと（--dur-m・--ease-out）から読む。見出しが空白にならないよう、薄い墨から始める
+  const css = getComputedStyle(document.documentElement);
+  const duration = parseFloat(css.getPropertyValue('--dur-m')) || 400;
+  const easing = css.getPropertyValue('--ease-out').trim() || 'ease-out';
   const runs = moving.map((el) => el.animate(
-    [{ opacity: 0, transform: 'translateY(4px)' }, { opacity: 1, transform: 'none' }],
-    { duration: 280, easing: 'cubic-bezier(0, 0, 0.2, 1)' }));
+    [{ opacity: 0.35, transform: 'translateY(4px)' }, { opacity: 1, transform: 'none' }],
+    { duration, easing }));
   const finish = () => runs.forEach((run) => run.finish());
   setTimeout(() => { if (runs.length && !(runs[0].currentTime > 0)) finish(); }, 80); // 動きが止められていたら、すぐ出す
   setTimeout(finish, 600); // どんな環境でも、言葉を隠したままにしない
