@@ -1,3 +1,8 @@
+/* 文字の代わり（webfont が届くまで・届かないとき）：欧文だけ幅を Zen Kaku Gothic New に合わせ、組みが崩れないように */
+@font-face { font-family: 'Zen Kaku Gothic New fb'; src: local('HiraginoSans-W3'), local('Hiragino Sans W3'); font-weight: 400; size-adjust: 87%; unicode-range: U+0000-024F, U+2000-206F, U+2190-21FF; }
+@font-face { font-family: 'Zen Kaku Gothic New fb'; src: local('HiraginoSans-W5'), local('Hiragino Sans W5'); font-weight: 500; size-adjust: 87%; unicode-range: U+0000-024F, U+2000-206F, U+2190-21FF; }
+@font-face { font-family: 'Zen Kaku Gothic New fb'; src: local('HiraginoSans-W6'), local('Hiragino Sans W6'); font-weight: 700; size-adjust: 87%; unicode-range: U+0000-024F, U+2000-206F, U+2190-21FF; }
+
 :root {
   --kinari: #EFE6D4;
   --shiro: #F8F3E8;
@@ -10,7 +15,7 @@
   --chui: #E8B83A;
   --tsuchi: #1B1612;
   --mincho: 'Shippori Mincho B1', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
-  --gothic: 'Zen Kaku Gothic New', 'Hiragino Sans', 'Yu Gothic', sans-serif;
+  --gothic: 'Zen Kaku Gothic New', 'Zen Kaku Gothic New fb', 'Hiragino Sans', 'Yu Gothic', sans-serif;
   --fraunces: 'Fraunces', Georgia, serif;
   --mono: 'DM Mono', ui-monospace, Menlo, monospace;
   --chrome-h: 68px;
@@ -1178,3 +1183,43 @@ body:has(.next-bite) .column { padding-bottom: calc(var(--next-h) + 24px + env(s
 /* 表紙の下にずらした紙は影で描く（受け渡しの名前を持つと、::after が便箋の上に来てしまうため） */
 .page-letter .sheet--cover::after, .page-letter .sheet--cover:last-child::after { content: none; }
 .page-letter .sheet--cover { box-shadow: 6px 6px 0 -1px var(--kinari-2), 6px 6px 0 0 var(--momi); }
+
+/* ===== トップ：見出しは筆で墨を置くように濃くなる（最初の1枚から薄い墨で読める。透明にはしない） ===== */
+@media (prefers-reduced-motion: no-preference) {
+  .page-top .top__core.appear, .page-top .top__lid .lead-line.appear {
+    --ink-c: var(--ink);
+    color: transparent;
+    background-image: linear-gradient(to bottom right, var(--ink-c) 50%, color-mix(in srgb, var(--ink-c) 32%, transparent) 50%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: ink-fill 1000ms var(--ease-out) both;
+    animation-delay: calc(var(--i, 0) * 260ms);
+  }
+}
+@keyframes ink-fill { from { background-position: 100% 100%; } to { background-position: 0 0; } }
+
+/* スマホのトップ：掛け紙の細い帯（焦げ茶 4px と内側の生成りの線）。高さは上の余白から出す */
+.column.top { position: relative; }
+@media (max-width: 1023px) {
+  .column.top { padding-top: 8px; }
+  .column.top::before { content: ''; display: block; height: 4px; margin: 0 0 12px; background: var(--kogecha); box-shadow: inset 0 -1px 0 rgba(248, 243, 232, 0.45); }
+}
+/* 読む扉は個包装：下にずらした紙を1枚重ねる。書く扉は1本の線だけ */
+.door--primary { box-shadow: 3px 3px 0 -1px var(--kinari-2), 3px 3px 0 0 var(--momi); }
+.door:not(.door--primary) { border-color: color-mix(in srgb, var(--ink), var(--momi) 35%); }
+
+@media (min-width: 1024px) {
+  /* パソコン：縦組みの見出しは右の列から墨が入る */
+  .page-top .top__lid { --ink-c: var(--shiro); }
+  .page-top .top__lid .top__core.appear, .page-top .top__lid .lead-line.appear { --ink-c: var(--shiro); }
+  html[lang='ja'] .page-top .top__lid .top__core.appear, html[lang='ja'] .page-top .top__lid .lead-line.appear {
+    background-image: linear-gradient(to bottom left, var(--ink-c) 50%, color-mix(in srgb, var(--ink-c) 32%, transparent) 50%);
+    animation-name: ink-fill-v;
+  }
+  /* 文字の大きさの段（14/16/20/26/34/48/64）。扉の見出しはスマホより小さくしない */
+  .top .door__title { font-size: 28px; }
+  .top .door__sub, .top .door__meta { font-size: 15px; }
+  .top .door__for { font-size: 15px; }
+}
+@keyframes ink-fill-v { from { background-position: 0 100%; } to { background-position: 100% 0; } }
