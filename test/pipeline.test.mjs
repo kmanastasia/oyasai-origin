@@ -79,6 +79,17 @@ test('demo は API キーがあっても通信せず、最後まで動く', asyn
   assert.equal(requests.length, 0);
 });
 
+test('「本人と一緒に見ている」の値は、封をした原本に残る', async () => {
+  configure({ demo: true, runtimeDir });
+  const draft = await createDraft(transcript);
+  const { published } = await sealLetter(allYes(draft));
+  assert.equal(published.checked_with_farmer, false);
+  const again = await sealLetter(allYes(draft), true);
+  assert.equal(again.published.checked_with_farmer, true);
+  assert.ok(again.published.entries.every((e) => e.checked_with_farmer === true));
+  assert.equal(requests.length, 0);
+});
+
 test('demo に別の文字起こしを貼ると、通信せず次にすることを添えて止める', async () => {
   configure({ demo: true, runtimeDir });
   await assert.rejects(createDraft('みなみ：別の話です。'), (error) => error.next.includes('聞き取りの見本'));

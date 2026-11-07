@@ -23,6 +23,15 @@
   { "key": "route.choose", "ja": "えらぶ", "en": "Choose", "en_reviewed_by": null },
   { "key": "route.letter", "ja": "手紙", "en": "Letter", "en_reviewed_by": null },
 
+  { "key": "seal.operator", "ja": "運営者が封をします（登録のとき、本人から任されています）", "en": "", "en_reviewed_by": null },
+  { "key": "seal.together", "ja": "本人と一緒に見ている", "en": "", "en_reviewed_by": null },
+  { "key": "seal.together.no", "ja": "いいえ", "en": "", "en_reviewed_by": null },
+  { "key": "seal.together.yes", "ja": "はい", "en": "", "en_reviewed_by": null },
+  { "key": "seal.done.sent", "ja": "届いた形は、あとで本人にお送りします", "en": "", "en_reviewed_by": null },
+  { "key": "seal.done.demo", "ja": "（見本・まだ送りません）", "en": "", "en_reviewed_by": null },
+  { "key": "seal.bridge", "ja": "ここから先は、読む方の画面です", "en": "", "en_reviewed_by": null },
+  { "key": "seal.done.view", "ja": "できあがりを見る", "en": "", "en_reviewed_by": null },
+
   { "key": "choose.heading", "ja": "届いている手紙", "en": "Letters for you", "en_reviewed_by": null },
   { "key": "choose.open", "ja": "この手紙を開く", "en": "Open this letter", "en_reviewed_by": null },
   { "key": "choose.slot", "ja": "まだ封をしていない手紙", "en": "A letter not yet sealed", "en_reviewed_by": null },

@@ -40,9 +40,14 @@ const ROUTES = {
   'GET /api/draft': async () => ({ draft: await getDraft(), demo: isDemo() }),
   'POST /api/draft': async (req) => ({ draft: await createDraft((await readBody(req)).transcript) }),
   'POST /api/seal': async (req) => {
-    const { decisions } = await readBody(req);
-    const { letter, published } = await sealLetter(Array.isArray(decisions) ? decisions : []);
-    return { sealed: true, chapters: letter.chapters.map((c) => c.items.length), archive_only: published.entries.filter((e) => e.reply === 'archive_only').length };
+    const { decisions, checked_with_farmer: checkedWithFarmer } = await readBody(req);
+    const { letter, published } = await sealLetter(Array.isArray(decisions) ? decisions : [], checkedWithFarmer === true);
+    return {
+      sealed: true,
+      chapters: letter.chapters.map((c) => c.items.length),
+      archive_only: published.entries.filter((e) => e.reply === 'archive_only').length,
+      checked_with_farmer: published.checked_with_farmer,
+    };
   },
   'POST /api/unseal': async () => {
     await unsealLetter();

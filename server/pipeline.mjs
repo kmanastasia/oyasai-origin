@@ -123,7 +123,7 @@ async function collectTranslations(outward) {
   }
 }
 
-export async function sealLetter(decisions) {
+export async function sealLetter(decisions, checkedWithFarmer = false) {
   const draft = await getDraft();
   if (!draft) {
     throw new UserError('封をする下書きがありません。', '①残す で「手紙の下書きにする」を押してから、もう一度開いてください。');
@@ -131,7 +131,7 @@ export async function sealLetter(decisions) {
   const previous = await readJsonIfExists(`${runtimeDir}published.json`);
   const version = (previous?.archive_version ?? 0) + 1;
   const { skip_speech_ids: skipSpeechIds } = await readJson(`${dataDir}speech.json`);
-  const published = sealArchive(draft, decisions, undefined, version, skipSpeechIds);
+  const published = sealArchive(draft, decisions, undefined, version, skipSpeechIds, checkedWithFarmer === true);
   const outward = published.entries.filter(isOutward);
   const sample = await isSampleTranscript(draft.paragraphs);
 

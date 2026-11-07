@@ -473,7 +473,28 @@ body:has(.next-bite) .column { padding-bottom: calc(104px + env(safe-area-inset-
 .seal-summary li { padding: 12px 0; border-bottom: 1px solid var(--momi); }
 .seal-done { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 32px 0; text-align: center; }
 .seal-done__msg { font-size: 22px; font-weight: 700; }
-.seal-done__sub { font-size: 18px; }
+.seal-done__sub { font-size: 18px; word-break: auto-phrase; }
+
+/* ②の先頭：点線の枠は「運営者が代理・任されて」の意味。色は使わない */
+.seal-head { display: flex; flex-direction: column; gap: 12px; }
+.seal-fixed { padding: 10px 14px; border: 1px dashed var(--ink); font-size: 18px; line-height: 1.6; word-break: auto-phrase; }
+.together { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.together legend { grid-column: 1 / -1; padding: 0; margin-bottom: 6px; font-size: 18px; font-weight: 500; }
+.together__btn {
+  min-height: 56px;
+  background: #fff;
+  border: 1px solid var(--momi);
+  border-radius: 4px;
+  color: var(--ink);
+  font: inherit;
+  font-size: 18px;
+  cursor: pointer;
+}
+.together__btn[aria-pressed='true'] { border: 3px solid var(--ha); font-weight: 700; }
+
+/* 封のあとの橋：ここから先は読む方の画面 */
+.seal-bridge { padding: 12px 14px; border: 1px dashed var(--ink); font-size: 18px; text-align: center; }
+.btn__to { margin-left: 10px; font-family: var(--mono); font-size: 11px; opacity: 0.85; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-delay: 0ms !important; transition: none !important; }

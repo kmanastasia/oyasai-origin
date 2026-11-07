@@ -88,6 +88,23 @@ test('手紙の本文は原文のまま', () => {
   for (const item of letter.chapters.flatMap((c) => c.items)) assert.ok(text.includes(item.quote));
 });
 
+test('「本人と一緒に見ている」は封の結果に残り、既定は「いいえ」。確認の仕方は変えない', () => {
+  const plain = sealArchive(draft, allYes());
+  assert.equal(plain.checked_with_farmer, false);
+  assert.ok(plain.entries.every((e) => e.checked_with_farmer === false));
+  const together = sealArchive(draft, allYes(), undefined, 1, [], true);
+  assert.equal(together.checked_with_farmer, true);
+  assert.ok(together.entries.every((e) => e.checked_with_farmer === true));
+  assert.deepEqual(together.entries.map((e) => e.confirmed_by), plain.entries.map((e) => e.confirmed_by));
+  // 真偽値の true だけを「はい」とみなす
+  assert.equal(sealArchive(draft, allYes(), undefined, 1, [], 'yes').checked_with_farmer, false);
+  // 受け取る側のデータは、どちらでも同じ
+  const at = '2000-01-01T00:00:00.000Z';
+  assert.deepEqual(
+    buildPublicLetter(sealArchive(draft, allYes(), at, 1, [], true), assignment, translations, meta),
+    buildPublicLetter(sealArchive(draft, allYes(), at, 1, [], false), assignment, translations, meta));
+});
+
 test('味ことばは読み上げない', () => {
   const sealed = sealArchive(draft, allYes());
   assert.ok(sealed.entries.filter((e) => e.tags.includes('味ことば')).every((e) => e.skip_speech));

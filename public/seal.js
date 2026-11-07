@@ -17,6 +17,8 @@ let phase = 'cards';
 let result = null;
 let error = null;
 let demo = false;
+// 本人が横で一緒に見ているか。既定は「いいえ」。封の結果に checked_with_farmer として残る。
+let checkedWithFarmer = false;
 
 const farmerName = () => draft.paragraphs[0]?.speaker ?? '作り手';
 
@@ -28,11 +30,30 @@ function decide(entry, reply) {
   render();
 }
 
+// ②の先頭。固定タグは消せない・選べない。「本人と一緒に見ている」は入力欄ではなく2択のボタン。
+function headView() {
+  return h('div', { class: 'seal-head' },
+    h('p', { class: 'seal-fixed', role: 'note', text: '運営者が封をします（登録のとき、本人から任されています）' }),
+    h('fieldset', { class: 'together' },
+      h('legend', { class: 'together__q', text: '本人と一緒に見ている' }),
+      [[false, 'いいえ'], [true, 'はい']].map(([value, label]) => h('button', {
+        class: 'together__btn',
+        type: 'button',
+        'aria-pressed': String(checkedWithFarmer === value),
+        onclick: () => {
+          checkedWithFarmer = value;
+          render();
+        },
+        text: label,
+      }))));
+}
+
 function cardView() {
   const entry = draft.entries[index];
   const current = decisions.get(entry.id);
   const disclosure = current?.disclosure ?? DEFAULT_DISCLOSURE[entry.category];
   return [
+    headView(),
     h('p', { class: 'seal-count', text: `${farmerName()}さんの手紙 ${index + 1}／${draft.entries.length}` }),
     h('h1', { class: 'tool-h1', text: '封をする前に' }),
     h('section', { class: 'seal-card' },
@@ -76,6 +97,7 @@ function reviewView() {
   const replies = [...decisions.values()];
   const count = (reply) => replies.filter((d) => d.reply === reply).length;
   return [
+    headView(),
     h('h1', { class: 'tool-h1', text: '封をする前に' }),
     h('ul', { class: 'seal-summary' },
       h('li', { text: `手紙に入れる：${count('yes')}件` }),
@@ -91,7 +113,7 @@ function reviewView() {
         error = null;
         render();
         try {
-          result = await api('seal', { decisions: replies });
+          result = await api('seal', { decisions: replies, checked_with_farmer: checkedWithFarmer });
           phase = 'sealed';
         } catch (e) {
           error = e;
@@ -119,8 +141,13 @@ function sealedView() {
     h('div', { class: 'seal-done' },
       h('div', { class: 'stamp stamp--big stamp--press', 'aria-hidden': 'true', text: '封' }),
       h('p', { class: 'seal-done__msg', role: 'status', text: '封をしました。いつでも取り下げられます。' }),
+      // 見本なので、実際には何も送らない。
+      h('p', { class: 'seal-done__sub', text: '届いた形は、あとで本人にお送りします（見本・まだ送りません）' }),
       result.archive_only > 0 ? h('p', { class: 'seal-done__sub', text: `残すだけにした ${result.archive_only}件は、外に出ません。` }) : null),
-    h('a', { class: 'btn btn--primary btn--big', href: '/choose', text: '③ 食べる人に届く手紙を見る →' }),
+    h('p', { class: 'seal-bridge', text: 'ここから先は、読む方の画面です' }),
+    h('a', { class: 'btn btn--primary btn--big', href: '/choose' },
+      h('span', { text: 'できあがりを見る' }),
+      h('span', { class: 'btn__to', text: '→ ③' })),
     h('button', {
       class: 'btn btn--ghost btn--big',
       type: 'button',

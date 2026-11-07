@@ -111,7 +111,8 @@ for (const entry of checked.entries) {
 }
 for (const s of readJson('data/ui_strings.json')) {
   if (!s.ja && !s.en) enProblems.push(`ui_strings の ${s.key} が空です。`);
-  if (!s.key.startsWith('close.jp') && !s.en && s.key !== 'voice.enNote') enProblems.push(`ui_strings の ${s.key} に英語がありません。`);
+  // ②封をする（seal.）と JP の結び（close.jp）は日本語のみ
+  if (!s.key.startsWith('close.jp') && !s.key.startsWith('seal.') && !s.en && s.key !== 'voice.enNote') enProblems.push(`ui_strings の ${s.key} に英語がありません。`);
 }
 report('英語訳の漏れ', enProblems, `${enProblems.length}件`);
 
