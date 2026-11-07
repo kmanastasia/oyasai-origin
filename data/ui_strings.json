@@ -50,6 +50,7 @@
   { "key": "letter.open", "ja": "封を開ける", "en": "Open the letter", "en_reviewed_by": null },
   { "key": "letter.hint", "ja": "手元にお野菜があれば、一口ずつどうぞ。なくても読めます。", "en": "If you have the vegetable at hand, one bite at a time. You can read without it, too.", "en_reviewed_by": null },
   { "key": "letter.next", "ja": "次のひと口へ", "en": "Next bite", "en_reviewed_by": null },
+  { "key": "letter.nextCount", "ja": "つぎは {n}／{total}", "en": "{n} of {total}", "en_reviewed_by": null },
   { "key": "letter.toClosing", "ja": "結びへ", "en": "To the closing", "en_reviewed_by": null },
   { "key": "letter.opening", "ja": "書き出し", "en": "Opening", "en_reviewed_by": null },
   { "key": "letter.source", "ja": "出典 {ref}", "en": "Source {ref}", "en_reviewed_by": null },

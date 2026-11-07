@@ -72,10 +72,18 @@ export const makerRoute = (current) => routeBar({
   home: '← トップ',
 });
 
+// 表示ラベルの文字：【架空】のような括弧の組は、行の途中で割らない。短い文は「。」の後で折る（文字は変えない。折る位置だけ）。
+export function labelText(text) {
+  return String(text).split(/(?<=。)/).filter(Boolean).map((sentence) => {
+    const parts = sentence.split(/(【[^】]*】)/).filter(Boolean).map((part) => (part.startsWith('【') ? h('span', { class: 'nobr', text: part }) : part));
+    return sentence.length <= 20 ? h('span', { class: 'nobr' }, parts) : parts;
+  });
+}
+
 export function toolBands(extra) {
   return [
-    h('div', { class: 'band', role: 'note', text: '【架空】の農家・デモ' }),
-    extra ? h('div', { class: 'band band--sub', role: 'note', text: extra }) : null,
+    h('div', { class: 'band', role: 'note' }, labelText('【架空】の農家・デモ')),
+    extra ? h('div', { class: 'band band--sub', role: 'note' }, labelText(extra)) : null,
   ];
 }
 

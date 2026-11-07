@@ -1,5 +1,5 @@
 // 受け取る側（トップ・③④）の共通部分：注意帯・掛け紙の帯・JP｜EN・流れの表示。
-import { api, h, icon, motionProbe, routeBar } from './common.js';
+import { api, h, icon, labelText, motionProbe, routeBar } from './common.js';
 
 const STORAGE_KEY = 'oyasai-lang';
 let dictionary = new Map();
@@ -82,7 +82,7 @@ function renderChrome() {
     text: label,
   });
   root.replaceChildren(
-    h('div', { class: 'band', role: 'note', text: t('band.fiction') }),
+    h('div', { class: 'band', role: 'note' }, labelText(t('band.fiction'))),
     h('header', { class: 'kakegami' },
       h('a', { class: 'kakegami__name', href: '/', lang: 'en', text: 'OYASAI ORIGIN' }),
       h('div', { class: 'lang', role: 'group', 'aria-label': 'JP / EN' }, icon('languages'), toggle('ja', 'JP'), h('span', { class: 'lang__sep', 'aria-hidden': 'true', text: '｜' }), toggle('en', 'EN')))
@@ -143,6 +143,19 @@ export function startReader({ route = 0 } = {}) {
     return Promise.resolve(false);
   }
   return fresh;
+}
+
+// ④で使う字の書体を、③にいる間に先に読んでおく（④に移ったとき、代わりの書体から入れ替わって字が揺れないように）。
+// 読むのは字の形だけで、画面には何も足さない。
+export function warmFonts(extra = '') {
+  const text = [...dictionary.values()].map((s) => `${s.ja}${s.en}`).join('') + extra;
+  const run = () => {
+    for (const face of ['400 16px "Zen Kaku Gothic New"', '500 16px "Zen Kaku Gothic New"', '700 16px "Zen Kaku Gothic New"', '500 16px "Shippori Mincho B1"', '700 16px "Shippori Mincho B1"']) {
+      document.fonts?.load(face, text).catch(() => {});
+    }
+  };
+  if ('requestIdleCallback' in window) requestIdleCallback(run, { timeout: 1200 });
+  else setTimeout(run, 300);
 }
 
 // ③で読んだ手紙を④に渡す（④の表紙を、読み込みを待たずに出すため）
