@@ -1,5 +1,5 @@
 import { api, h } from './common.js';
-import { getLang, onLangChange, startReader, t, translationTag } from './reader.js';
+import { checkTag, getLang, onLangChange, startReader, t, translationTag } from './reader.js';
 
 const root = document.getElementById('root');
 const voiceRoot = document.getElementById('voice');
@@ -160,7 +160,7 @@ function coverView() {
         ? h('div', { class: 'card__teaser' }, translationTag([translated]), h('p', { class: 'en-main', lang: 'en', text: `“${translated.text}”` }), h('p', { class: 'jp-sub', lang: 'ja', text: `「${teaser.quote}」` }))
         : h('blockquote', { class: 'card__teaser mincho', lang: 'ja', text: `「${teaser.quote}」` })
       : null,
-    h('p', { class: 'card__small', text: t('check.done') }),
+    checkTag(letter),
     h('p', { class: 'card__small', text: t('verified', verified) }),
     !opened
       ? h('div', { class: 'cover-actions' },

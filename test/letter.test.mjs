@@ -98,11 +98,16 @@ test('「本人と一緒に見ている」は封の結果に残り、既定は�
   assert.deepEqual(together.entries.map((e) => e.confirmed_by), plain.entries.map((e) => e.confirmed_by));
   // 真偽値の true だけを「はい」とみなす
   assert.equal(sealArchive(draft, allYes(), undefined, 1, [], 'yes').checked_with_farmer, false);
-  // 受け取る側のデータは、どちらでも同じ
+  // 受け取る側のデータは、③④の確認のタグを切り替える印のほかは、どちらでも同じ
   const at = '2000-01-01T00:00:00.000Z';
-  assert.deepEqual(
-    buildPublicLetter(sealArchive(draft, allYes(), at, 1, [], true), assignment, translations, meta),
-    buildPublicLetter(sealArchive(draft, allYes(), at, 1, [], false), assignment, translations, meta));
+  const seen = buildPublicLetter(sealArchive(draft, allYes(), at, 1, [], true), assignment, translations, meta);
+  const proxy = buildPublicLetter(sealArchive(draft, allYes(), at, 1, [], false), assignment, translations, meta);
+  assert.equal(seen.checked_with_farmer, true);
+  assert.equal(proxy.checked_with_farmer, false);
+  assert.deepEqual({ ...seen, checked_with_farmer: null }, { ...proxy, checked_with_farmer: null });
+  // 印のない古い封の結果は「運営者が代理」として扱う
+  const { checked_with_farmer: _omit, ...older } = sealArchive(draft, allYes(), at, 1, [], true);
+  assert.equal(buildPublicLetter(older, assignment, translations, meta).checked_with_farmer, false);
 });
 
 test('味ことばは読み上げない', () => {

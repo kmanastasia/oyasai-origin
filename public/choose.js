@@ -1,5 +1,5 @@
 import { api, h } from './common.js';
-import { getLang, onLangChange, startReader, t, translationTag } from './reader.js';
+import { checkTag, getLang, onLangChange, startReader, t, translationTag } from './reader.js';
 
 const root = document.getElementById('root');
 let letter = null;
@@ -28,7 +28,7 @@ function letterCard() {
     h('h2', { class: 'card__veg' }, h('span', { class: 'mincho', lang: 'ja', text: meta.vegetable.ja }), ' ', h('span', { class: 'fraunces', lang: 'en', text: meta.vegetable.en })),
     h('p', { class: 'card__who', text: `${pair(meta.farmer)}／${pair(meta.town)}` }),
     teaserView(),
-    h('p', { class: 'card__small', text: t('check.done') }),
+    checkTag(letter),
     h('p', { class: 'card__small', text: t('verified', verified) }),
     verified.dropped > 0 ? h('p', { class: 'card__small', text: t('verified.dropped', { n: verified.dropped }) }) : null,
     h('a', { class: 'btn btn--primary btn--tall', href: '/letter', text: t('choose.open') }));
