@@ -353,6 +353,9 @@ body:has(.next-bite) .column { padding-bottom: calc(104px + env(safe-area-inset-
 .closing__line { font-size: 17px; line-height: 1.8; margin: 8px 0; }
 .closing__sub { font-size: 14px; margin-bottom: 20px; }
 .closing__keep { font-size: 14px; color: var(--haicha); margin-top: 12px; }
+.closing__operator { font-size: 14px; line-height: 1.6; margin: 0 0 12px; padding-left: 12px; border-left: 3px solid var(--kogecha); }
+.closing__sns { margin-bottom: 20px; font-size: 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+.closing__sns-text { color: var(--ink); }
 .closing__back { display: inline-block; margin-top: 24px; padding: 10px 0; font-size: 14px; }
 
 .offer { border: 0; padding: 16px 16px 20px; background: var(--kinari); }

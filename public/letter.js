@@ -263,12 +263,21 @@ function visitCard() {
       }));
 }
 
+// おやさい旅の SNS は行き先が決まるまで、押せない文字と「準備中」だけ。リンクにしない（トップの足もとと同じ）。
+function visitSnsView() {
+  return h('p', { class: 'closing__sns' },
+    h('span', { class: 'closing__sns-text', text: t('visit.sns') }),
+    h('span', { class: 'tag-note', text: t('sns.pending') }));
+}
+
 function closingEn() {
   return [
     h('p', { class: 'band band--inline', role: 'note', text: t('close.en.band') }),
     h('p', { class: 'mono sheet__no', text: t('close.en.eyebrow') }),
     h('p', { class: `closing__line fraunces${appear('closing')}`, text: t('close.en.line') }),
     h('p', { class: 'closing__sub', text: t('close.en.sub') }),
+    h('p', { class: 'closing__operator', text: t('visit.operator') }),
+    visitSnsView(),
     closingOpen
       ? visitCard()
       : h('button', { class: 'btn btn--ghost', type: 'button', onclick: () => { closingOpen = true; renderBody(); }, text: t('close.en.button') }),

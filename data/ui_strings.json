@@ -93,5 +93,7 @@
   { "key": "close.en.title", "ja": "", "en": "OYASAI TRIP — a farm visit led by Karen", "en_reviewed_by": null },
   { "key": "close.en.body", "ja": "", "en": "A journey to visit farmers like the one who wrote this letter, together. Walk the field, then eat with the people who grew it.", "en_reviewed_by": null },
   { "key": "close.en.notify", "ja": "", "en": "Tell me when trips open (sample)", "en_reviewed_by": null },
-  { "key": "close.en.done", "ja": "", "en": "Sample only. Nothing was sent. No email is collected.", "en_reviewed_by": null }
+  { "key": "close.en.done", "ja": "", "en": "Sample only. Nothing was sent. No email is collected.", "en_reviewed_by": null },
+  { "key": "visit.operator", "ja": "", "en": "The operator arranges the visit with the maker.", "en_reviewed_by": null },
+  { "key": "visit.sns", "ja": "", "en": "OYASAI TRIP (social) ↗ opens an external site", "en_reviewed_by": null }
 ]
