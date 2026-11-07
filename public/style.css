@@ -1773,3 +1773,24 @@ html .reader .sheet--soil .sheet__title { color: var(--on-dark); }
   .band--stack .band__line { padding: 0 14px; line-height: 28px; }
   .band--stack .band__line + .band__line { border-top: 0; border-left: 1px solid var(--line-ink); }
 }
+
+/* =====================================================================
+   第4版：トップ（スマホ）にも土の写真のふた。すぐ下に必ず注記。扉は紙が持ち上がるように入る
+   ===================================================================== */
+@media (max-width: 1023px) {
+  .page-top .top__lid {
+    background:
+      radial-gradient(120% 140% at 100% 0%, color-mix(in srgb, var(--ha-700) 50%, transparent), transparent 62%),
+      linear-gradient(180deg, color-mix(in srgb, var(--tsuchi-2) 62%, transparent), color-mix(in srgb, var(--tsuchi) 82%, transparent)),
+      var(--tsuchi) url('/img/texture-soil.jpg') center / cover;
+    margin-bottom: 0;
+  }
+  .page-top .top__lid::before { content: none; }
+  .page-top .top__cap { display: block; margin: 0 0 18px; padding: 6px 0 0; }
+}
+
+/* 扉：最初の1回だけ、紙が少し持ち上がって置かれる（透明からは始めない。止まっていても読める） */
+@media (prefers-reduced-motion: no-preference) {
+  .page-top .door.appear { animation: door-in var(--dur-l) var(--ease-out) backwards; animation-delay: calc(380ms + (var(--i, 3) - 3) * 90ms); }
+}
+@keyframes door-in { from { transform: translateY(16px); box-shadow: 0 0 0 var(--momi); } }
