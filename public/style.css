@@ -543,10 +543,17 @@ body:has(.next-bite) .column { padding-bottom: calc(104px + env(safe-area-inset-
 .route__who { font-weight: 500; }
 .route__steps { display: flex; gap: 12px; list-style: none; margin: 0; padding: 0; }
 .route__step.is-current { color: var(--ink); font-weight: 700; border-bottom: 2px solid var(--ha); min-height: 44px; display: inline-flex; align-items: center; }
+/* 390px でも各ラベルの途中では折らない。狭い端末では組の間でだけ折り返す */
+.route__home, .route__who, .route__step { white-space: nowrap; }
 
 /* ===== トップ：2つの扉（390×844 で1画面に収める） ===== */
-.column.top { padding-bottom: 24px; }
+/* 字の大きさ・扉の余白と間は仕様の値のまま。上の余白と行の高さだけを詰める。
+   EN は見出しと副題が2行になるので、扉が2つとも1画面に入るよう行の高さを少し詰める */
+.column.top { padding-top: 24px; padding-bottom: 24px; }
 .top__core { font-size: 28px; line-height: 1.5; letter-spacing: 0.04em; margin-bottom: 8px; }
+.top .lead-line { margin-bottom: 16px; }
+html[lang='en'] .top__core { line-height: 1.3; }
+html[lang='en'] .top .lead-line { line-height: 1.45; }
 
 .door {
   display: flex;
@@ -566,6 +573,7 @@ body:has(.next-bite) .column { padding-bottom: calc(104px + env(safe-area-inset-
 .door__title { font-size: 20px; font-weight: 700; line-height: 1.5; }
 .door__title::after { content: ' →'; }
 .door__sub, .door__meta { font-size: 14px; opacity: 0.9; }
+.door__for, .door__sub, .door__meta, .door__node { line-height: 1.5; }
 
 /* 道の印：丸 24px と名前を一組にし、組の途中では折らない。組の間に 20px の細い線 */
 .door__path { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 0; margin: 2px 0; }

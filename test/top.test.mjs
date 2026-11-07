@@ -52,3 +52,24 @@ test('トップの足もとの SNS は押せない文字と「準備中」だけ
   assert.equal(strings.get('sns.pending').ja, '準備中');
   assert.doesNotMatch(JSON.stringify([strings.get('top.sns'), strings.get('sns.pending')]), /https?:/);
 });
+
+// 390×844 の調整（T5）：詰めたのは余白と行の高さだけ。仕様で決まった値はそのまま。
+test('390×844 の調整は仕様の値を変えず、流れの表示はラベルの途中で折らない', () => {
+  const css = read('public/style.css');
+  const rule = (selector) => {
+    const at = css.indexOf(`\n${selector} {`);
+    assert.ok(at >= 0, `${selector} の指定がありません`);
+    return css.slice(at, css.indexOf('}', at));
+  };
+  const door = rule('.door');
+  assert.match(door, /padding: 24px;/);
+  assert.match(door, /margin-bottom: 16px;/);
+  assert.match(door, /border-radius: 4px;/);
+  assert.match(rule('.top__core'), /font-size: 28px;/);
+  assert.match(rule('.lead-line'), /font-size: 20px;/);
+  assert.match(rule('.door__title'), /font-size: 20px;/);
+  assert.match(rule('.door__sub, .door__meta'), /font-size: 14px;/);
+  assert.match(rule('.route__home, .route__who, .route__step'), /white-space: nowrap;/);
+  // ③の副題（.lead-line）を変えないよう、トップの調整は .top の下だけに置く
+  assert.match(css, /\n\.top \.lead-line \{ margin-bottom: 16px; \}/);
+});
