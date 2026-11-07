@@ -1758,3 +1758,18 @@ html .reader .sheet--soil .sheet__title { color: var(--on-dark); }
 @media (min-width: 1200px) {
   .sheet-index:not(:empty) { left: max(32px, calc(var(--edge) - 136px)); width: calc(50% - var(--sheet-w) / 2 - max(32px, calc(var(--edge) - 136px)) - 40px); }
 }
+
+/* =====================================================================
+   第4版：お知らせの形をそろえる（注意黄の面は、どれも左に墨の太い線。飾りの色面と見分けられる）
+   ===================================================================== */
+.band, .voice-bar, .offer__done { box-shadow: inset 4px 0 0 var(--ink); }
+.tag-note { box-shadow: inset 3px 0 0 var(--ink); padding-left: 9px; }
+.band__line { display: block; }
+.band--stack { display: flex; flex-direction: column; align-items: center; line-height: 1.5; padding: 4px 16px; }
+.band--stack .band__line { padding: 2px 0; }
+.band--stack .band__line + .band__line { border-top: 1px solid var(--line-ink); }
+@media (min-width: 768px) {
+  .band--stack { flex-direction: row; justify-content: center; gap: 0; min-height: 28px; padding: 0 16px; }
+  .band--stack .band__line { padding: 0 14px; line-height: 28px; }
+  .band--stack .band__line + .band__line { border-top: 0; border-left: 1px solid var(--line-ink); }
+}

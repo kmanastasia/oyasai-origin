@@ -80,10 +80,12 @@ export function labelText(text) {
   });
 }
 
+// ①②の帯：架空の表示と、農家役の表示を1本の帯にまとめる（2本の帯を重ねない）。字の大きさはどちらも今までどおり
 export function toolBands(extra) {
   return [
-    h('div', { class: 'band', role: 'note' }, labelText('【架空】の農家・デモ')),
-    extra ? h('div', { class: 'band band--sub', role: 'note' }, labelText(extra)) : null,
+    h('div', { class: `band${extra ? ' band--stack' : ''}`, role: 'note' },
+      h('span', { class: 'band__line' }, labelText('【架空】の農家・デモ')),
+      extra ? h('span', { class: 'band__line' }, labelText(extra)) : null),
   ];
 }
 
