@@ -445,7 +445,8 @@ function renderIndex() {
   chapters.slice(0, revealed).forEach((chapter, i) => entries.push([`bite-${i}`, t(`bite.${chapter.kind}`)]));
   if (atClosing()) entries.push(['closing', t('letter.index.closing')]);
   indexRoot.setAttribute('aria-label', t('letter.index'));
-  indexRoot.replaceChildren(h('p', { class: 'sheet-index__no mono', lang: 'en', text: letter.meta.no }),
+  indexRoot.replaceChildren(h('p', { class: 'sheet-index__veg mincho', lang: 'ja', 'aria-hidden': 'true', text: letter.meta.vegetable.ja }),
+    h('p', { class: 'sheet-index__no mono', lang: 'en', text: letter.meta.no }),
     h('ol', {}, entries.map(([key, label], i) => h('li', {},
       h('button', {
         type: 'button',

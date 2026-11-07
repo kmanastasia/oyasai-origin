@@ -1717,3 +1717,44 @@ html[lang='en'] .page-letter .sheet--bite .sheet__title { font-size: 34px; line-
   html[lang='en'] .page-letter .sheet--bite .sheet__title { font-size: 44px; }
 }
 html .reader .sheet--soil .sheet__title { color: var(--on-dark); }
+
+/* =====================================================================
+   第4版：④ パソコンの組み（表紙のボタンは最初の画面の中に。次のひと口へは便箋の列の足もとに。左は目次の柱）
+   ===================================================================== */
+.sheet-index__veg { display: none; }
+@media (min-width: 1024px) {
+  .page-letter .cover-band { height: 168px; }
+  .page-letter .sheet--cover .card__top { top: 124px; }
+  .page-letter .sheet--cover .card__veg { margin-top: 28px; }
+  .page-letter .sheet--cover .card__teaser { margin: 18px 0 14px; }
+  .page-letter .sheet--cover .cover-actions { margin-top: 16px; }
+}
+@media (min-width: 1200px) {
+  /* 次のひと口へ：便箋と同じ幅で、列の足もとに */
+  .next-bite {
+    left: calc(50% - var(--sheet-w) / 2);
+    width: var(--sheet-w);
+    max-width: none;
+    bottom: 24px;
+    justify-content: center;
+    gap: 16px;
+    box-shadow: 0 18px 36px -20px var(--shade);
+  }
+  body:has(.next-bite) .column { padding-bottom: calc(var(--next-h) + 64px); }
+
+  /* 目次の柱：野菜の名を縦に大きく。いまの項目は野菜の色 */
+  .sheet-index:not(:empty) { top: calc(var(--chrome-h) + 40px); display: grid; grid-template-columns: auto 1fr; column-gap: 20px; align-items: start; }
+  .sheet-index__veg { display: block; grid-row: 1 / span 2; writing-mode: vertical-rl; font-size: 56px; line-height: 1; letter-spacing: 0.14em; color: var(--veg); margin: 0; }
+  .sheet-index__no { grid-column: 2; }
+  .sheet-index ol { grid-column: 2; }
+}
+@media (min-width: 1024px) {
+  .page-letter .cover-band { height: 148px; }
+  .page-letter .sheet--cover .card__top { top: 104px; }
+  .page-letter .sheet--cover .card__veg { margin-top: 20px; }
+  html[lang='en'] .page-letter .sheet--cover .card__teaser, html[lang='en'] .page-letter .sheet--cover .card__teaser .en-main { font-size: 24px; line-height: 1.5; }
+  .page-letter .sheet--cover .cover-hint { order: 3; }
+}
+@media (min-width: 1200px) {
+  .sheet-index:not(:empty) { left: max(32px, calc(var(--edge) - 136px)); width: calc(50% - var(--sheet-w) / 2 - max(32px, calc(var(--edge) - 136px)) - 40px); }
+}
