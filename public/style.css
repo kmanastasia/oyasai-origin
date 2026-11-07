@@ -1763,7 +1763,7 @@ html .reader .sheet--soil .sheet__title { color: var(--on-dark); }
 /* =====================================================================
    第4版：お知らせの形をそろえる（注意黄の面は、どれも左に墨の太い線。飾りの色面と見分けられる）
    ===================================================================== */
-.band, .voice-bar, .offer__done { box-shadow: inset 4px 0 0 var(--ink); }
+.voice-bar, .offer__done { box-shadow: inset 4px 0 0 var(--ink); }
 .tag-note { box-shadow: inset 3px 0 0 var(--ink); padding-left: 9px; }
 .band__line { display: block; }
 .band--stack { display: flex; flex-direction: column; align-items: center; line-height: 1.5; padding: 4px 16px; }
@@ -2159,3 +2159,126 @@ html[lang='en'] .reader.page-top .top__doors .door .door__for { font-size: 11px;
   .reader.page-top .top__doors .door .door__go::after { right: -30px; bottom: -26px; width: 26px; height: 26px; }
   @media (hover: hover) { .reader.page-top .top__doors .door:hover .door__go::before { width: 88px; } }
 }
+
+/* =====================================================================
+   第6版（2026-11-07）：トップを一枚の絵に
+   土はふたの縁まで満ち、縦組みの見出しが画面の高さを貫く。ふたの縁に大きな朱の封（封をして届く手紙、の印）。
+   現れ方は 1.6 秒の一続き：土がわずかに寄る → 見出しに一字ずつ墨が入る → 扉が置かれる → 封が押される。
+   どれも透明からは始めず、動きが止まっていれば最初の見た目のまま（releaseIfStalled が .appear を外す）
+   ===================================================================== */
+/* 帯の左の太い線はやめる（紙の縁の描き損ないに見える）。札と読み上げの表示の線はそのまま */
+.page-top .top__hero { position: relative; top: 0; isolation: isolate; }
+/* ふた：写真は ::before（寄る動きのため）、土の色と葉の光は ::after。字はその上 */
+.page-top .top__lid { position: relative; isolation: isolate; width: 100%; background-image: none; background-color: var(--tsuchi); overflow: hidden; }
+.page-top .top__lid::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background: var(--tsuchi) url('/img/texture-soil.jpg') center / cover;
+  transform-origin: 50% 40%;
+}
+.page-top .top__lid::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border: 0;
+  border-radius: 0;
+  background:
+    radial-gradient(80% 60% at 100% 0%, color-mix(in srgb, var(--ha) 38%, transparent), transparent 70%),
+    linear-gradient(180deg, color-mix(in srgb, var(--tsuchi) 24%, transparent), color-mix(in srgb, var(--tsuchi) 80%, transparent) 78%);
+  transform: none;
+  animation: none;
+}
+/* 写真の注記：ふたの下の縁に、生成りの帯で（写真のすぐ下・常に見える） */
+.page-top .top__cap { position: absolute; left: 0; bottom: 0; z-index: 2; display: block; margin: 0; padding: 7px 14px 7px 24px; background: var(--kinari); color: var(--ink); }
+/* 朱の封：ふたの縁に押す（③④と同じ印） */
+.page-top .top__seal { position: absolute; z-index: 3; width: 96px; height: 96px; --tilt: -8deg; filter: drop-shadow(0 10px 14px var(--shade)); }
+.page-top .top__seal .stamp__char { font-size: 16px; }
+.page-top .top__seal::after { content: ''; position: absolute; inset: -8px; border-radius: 50%; border: 2px solid var(--shu); opacity: 0; pointer-events: none; }
+
+/* 現れ方（動きがあるときだけ）。字は薄い墨から（透明にはしない） */
+@media (prefers-reduced-motion: no-preference) {
+  .page-top .top__lid.appear::before { animation: lid-settle 1600ms var(--ease-out) both; }
+  .page-top .top__core.appear .glyph { display: inline-block; animation: glyph-in 560ms var(--ease-out) both; animation-delay: calc(220ms + var(--g, 0) * 55ms); }
+  .page-top .top__seal.appear { animation: seal-press 520ms var(--ease-out) 1040ms both; }
+  .page-top .top__seal.appear::after { animation: seal-ring 700ms var(--ease-out) 1180ms both; }
+  .page-top .door.appear { animation-delay: calc(640ms + (var(--i, 3) - 3) * 120ms); }
+}
+@keyframes lid-settle { from { transform: scale(1.06); } }
+@keyframes glyph-in { from { opacity: 0.3; transform: translateY(0.12em); } }
+@keyframes seal-press { from { transform: rotate(var(--tilt)) scale(1.2); opacity: 0.5; } 60% { transform: rotate(var(--tilt)) scale(0.96); opacity: 1; } to { transform: rotate(var(--tilt)) scale(1); } }
+@keyframes seal-ring { from { opacity: 0.55; transform: scale(0.82); } to { opacity: 0; transform: scale(1.32); } }
+/* 縦組みの見出しの字は、縦に並んだまま */
+.page-top .top__core .glyph { display: inline-block; }
+/* 縦組みでも字は inline-block（translate が効く）。字間は字の大きさに合わせて margin で足す */
+html[lang='ja'] .page-top .top__core .glyph { display: inline-block; letter-spacing: 0; margin-block-end: 0.06em; }
+
+/* ---------- スマホ・タブレット：画面いっぱいの土のふた。見出しは右の縁に縦組み、封は左下の縁 ---------- */
+@media (max-width: 1023px) {
+  .page-top .top__hero { display: block; margin: 0 -24px; }
+  .page-top .top__lid {
+    display: flex;
+    margin: 0;
+    height: clamp(400px, 56svh, 500px);
+    padding: 28px 24px 48px;
+    background-image: none;
+  }
+  .page-top .top__lid::before { content: ''; }
+  .page-top .top__lid::after {
+    content: '';
+    left: 0; right: 0; top: 0; bottom: 0;
+    height: auto;
+    background:
+      radial-gradient(120% 140% at 100% 0%, color-mix(in srgb, var(--ha-700) 50%, transparent), transparent 62%),
+      linear-gradient(180deg, color-mix(in srgb, var(--tsuchi-2) 50%, transparent), color-mix(in srgb, var(--tsuchi) 82%, transparent));
+  }
+  /* 萌黄の線はふたの下の縁（左から引かれる） */
+  .page-top .top__hero::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; height: 3px; background: var(--moegi); transform-origin: left; }
+  html[lang='ja'] .page-top .top__lid { writing-mode: vertical-rl; flex-direction: row; align-items: flex-start; justify-content: flex-start; }
+  html[lang='ja'] .page-top .top__core { font-size: clamp(40px, 12.4vw, 52px); line-height: 1.34; letter-spacing: 0.06em; margin: 0; margin-block-end: 18px; text-wrap: nowrap; }
+  /* 副題は見出しの左に縦組み。縦組みでは inline-start が上なので、見出しより少し下から始める。高さは枠いっぱい（1字ずつの列に崩れない） */
+  html[lang='ja'] .page-top .top__lid .lead-line { position: absolute; top: calc(28px + 2.4em); bottom: 64px; right: calc(24px + 2.7em * 1.34 + 18px); writing-mode: vertical-rl; font-size: 16px; letter-spacing: 0.2em; line-height: 1.6; margin: 0; padding: 0; border: 0; --h: 52px; }
+  html[lang='ja'] .page-top .top__lid .lead-line { right: calc(24px + 2 * 1.34 * clamp(40px, 12.4vw, 52px) + 18px); }
+  html[lang='en'] .page-top .top__lid { flex-direction: column; justify-content: flex-end; padding-bottom: 72px; }
+  html[lang='en'] .page-top .top__core { font-size: clamp(34px, 9.4vw, 40px); margin-bottom: 10px; }
+  .page-top .top__cap { right: auto; left: 0; max-width: 100%; padding: 7px 14px 7px 24px; }
+  /* 封：日本語はふたの左下（見出しの右の列と重ならない）、英語は右上（見出しは下にある） */
+  .page-top .top__seal { left: 16px; bottom: 52px; width: 84px; height: 84px; }
+  html[lang='en'] .page-top .top__seal { left: auto; right: 20px; top: 24px; bottom: auto; }
+  .page-top .top__body { display: block; padding-top: 50px; }
+  .page-top .section-eyebrow { margin-bottom: 12px; }
+}
+@media (max-width: 1023px) and (prefers-reduced-motion: no-preference) {
+  .page-top .top__hero::after { animation: draw-line var(--dur-l) var(--ease-out) 520ms both; }
+  .page-top .top__lid::after { animation: none; }
+}
+
+/* ---------- パソコン：左は画面の端から縁までの土。右は扉。封は二つの面の境に ---------- */
+@media (min-width: 1024px) {
+  .page-top .column.top {
+    max-width: none;
+    padding: 0;
+    column-gap: 0;
+    grid-template-columns: minmax(0, 46fr) minmax(0, 54fr);
+    min-height: calc(100svh - var(--chrome-h));
+  }
+  .page-top .top__hero { height: auto; min-height: max(640px, calc(100svh - var(--chrome-h))); gap: 0; box-shadow: none; }
+  .page-top .top__lid { border-radius: 0; box-shadow: none; padding: 56px 120px 64px 48px; }
+  html[lang='ja'] .page-top .top__core { font-size: clamp(60px, calc((100svh - var(--chrome-h) - 150px) / 8.6), 112px); line-height: 1.32; letter-spacing: 0.1em; }
+  html[lang='ja'] .page-top .top__lid .lead-line { font-size: clamp(18px, 0.7vw + 10px, 22px); margin-inline-start: 3.5em; }
+  html[lang='en'] .page-top .top__lid { padding-bottom: 88px; }
+  html[lang='en'] .page-top .top__core { font-size: clamp(52px, 3.4vw + 14px, 84px); }
+  .page-top .top__cap { padding: 8px 16px 8px 48px; }
+  .page-top .top__seal { right: -72px; top: 36%; width: 144px; height: 144px; }
+  .page-top .top__seal .stamp__char { font-size: 17px; }
+  .page-top .top__body { padding: 44px var(--edge) 36px 96px; }
+  .page-top .top__doors { margin-top: 20px; }
+  /* 扉の番号は薄い色ではなく、線で描いた数字（読む＝葉、書く＝墨） */
+  .reader.page-top .top__doors .door::after { color: transparent; -webkit-text-stroke: 1.5px var(--ha); font-weight: 400; }
+  .reader.page-top .top__doors .door:not(.door--primary)::after { color: transparent; -webkit-text-stroke: 1.5px var(--ink); }
+  .reader.page-top .top__doors .door:hover::after, .reader.page-top .top__doors .door:active::after { color: transparent; -webkit-text-stroke: 1.5px color-mix(in srgb, var(--on-dark) 55%, transparent); }
+}
+/* ふた自体は薄くならない（動くのは中の写真と字だけ） */
+.page-top .top__lid.appear { animation: none; }

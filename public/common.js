@@ -129,7 +129,7 @@ export function icon(name) {
 // 動きを始めたあとで止められた（currentTime が進まない）ときは、すぐ最後の見た目にする。
 export function releaseIfStalled(els, finish) {
   setTimeout(() => {
-    const run = els.flatMap((el) => el.getAnimations?.() ?? [])[0];
+    const run = els.flatMap((el) => el.getAnimations?.({ subtree: true }) ?? [])[0]; // 中の字や擬似要素の動きも数える
     if (run && !(run.currentTime > 0)) finish();
   }, 80);
 }

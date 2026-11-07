@@ -1,9 +1,9 @@
 // トップ：だれが来ても同じ入口。することで分けた「読む／書く」の2つの扉だけを置く。
 import { h, icon, motionProbe, releaseIfStalled } from './common.js';
-import { getLang, onLangChange, startReader, t } from './reader.js';
+import { getLang, onLangChange, sealStamp, startReader, t } from './reader.js';
 
 const root = document.getElementById('root');
-const ENTER_MS = 1300; // 現れ終わる時間より少し長く
+const ENTER_MS = 1900; // 現れ終わる時間より少し長く（土 → 見出しの字 → 扉 → 封の順に 1.6 秒）
 let entered = false; // 現れる動きは最初の1回だけ。言語を切り替えてもくり返さない
 let motion = false;
 
@@ -43,20 +43,31 @@ function coreHeading() {
   const text = t('core');
   const at = text.indexOf('を');
   const parts = getLang() === 'ja' && at > 0 ? [text.slice(0, at + 1), h('br'), text.slice(at + 1)] : [text];
-  return h('h1', { class: `top__core mincho${enter()}`, style: '--i:0' }, parts);
+  return h('h1', { class: `top__core mincho${enter()}`, style: '--i:0' }, parts.map(glyphs));
+}
+
+// 見出しの字をひとつずつ（英語は語ごとに）包む。墨が一字ずつ入る動きのため。文字は変えない
+let glyphNo = 0;
+function glyphs(part) {
+  if (typeof part !== 'string') return part;
+  const units = getLang() === 'ja' ? [...part] : part.split(/(\s+)/).filter(Boolean);
+  return units.map((unit) => (/^\s+$/.test(unit) ? unit : h('span', { class: 'glyph', style: `--g:${glyphNo++}`, text: unit })));
 }
 
 const enter = () => (motion && !entered ? ' appear' : '');
 
 function render() {
   document.title = 'OYASAI ORIGIN';
+  glyphNo = 0;
   root.replaceChildren(
-    // 左：箱のふた（パソコンでは土の質感の上に縦組み。スマホでは今までどおり上から）
+    // 左：箱のふた。画面の端まで土の質感、その上に縦組みの見出し。ふたの縁に大きな朱の封（この手紙は封をして届く、の印）。
+    // 写真の注記はふたの下の縁に、生成りの帯で必ず見せる
     h('div', { class: 'top__hero' },
-      h('div', { class: 'top__lid' },
+      h('div', { class: `top__lid${enter()}` },
         coreHeading(),
         h('p', { class: `lead-line${enter()}`, style: '--i:1', text: t('subtitle') })),
-      h('p', { class: 'photo__cap top__cap', text: t('photo.caption') })),
+      h('p', { class: 'photo__cap top__cap', text: t('photo.caption') }),
+      sealStamp(` top__seal${enter()}`)),
     // 右：扉と足もと
     h('div', { class: 'top__body' },
       h('p', { class: `section-eyebrow${enter()}`, style: '--i:2', text: t('top.ask') }),
