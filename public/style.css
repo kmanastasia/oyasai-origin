@@ -2006,3 +2006,11 @@ html[lang='en'] .next-bite__count { letter-spacing: 0.02em; }
   html[lang='ja'] .closing__sign .closing__line { font-size: 40px; max-height: 13em; padding: 8px 32px; letter-spacing: 0.2em; }
   html[lang='ja'] .stamp--sign { width: 88px; height: 88px; align-self: flex-end; }
 }
+
+/* ---------- 第5版 ③（パソコン）：ふたの写真を低くし、ほかの手紙（NO.002・003）が最初の画面にのぞくように。注記は写真のすぐ下のまま ---------- */
+@media (min-width: 1024px) {
+  .page-choose .card__lid .card__photo { height: 104px; aspect-ratio: auto; }
+  .page-choose .lead-line { margin-bottom: 20px; }
+}
+/* ② 封をしましたの一文は、言葉の切れ目で折る */
+.seal-done__msg { word-break: auto-phrase; max-width: 16em; }
