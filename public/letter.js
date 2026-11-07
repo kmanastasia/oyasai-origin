@@ -215,7 +215,7 @@ function coverView() {
 
 function landView() {
   if (letter.land.length === 0) return null;
-  return h('section', { class: 'sheet', 'data-section': 'land' },
+  return h('section', { class: 'sheet sheet--soil sheet--land', 'data-section': 'land' },
     h('p', { class: 'mono sheet__no', text: `LAND ${pad(1)}｜${pad(letter.land.length)}` }),
     h('h2', { class: 'sheet__title', tabindex: '-1' }, t('letter.opening'), ' ', h('span', { class: 'tag-note', text: t('town.tag') })),
     itemsTag(letter.land),
@@ -224,7 +224,7 @@ function landView() {
 
 function chapterView(chapter, index) {
   const isSpeaking = speaking === index;
-  return h('section', { class: 'sheet', 'data-section': `bite-${index}`, id: `bite-${index}` },
+  return h('section', { class: 'sheet sheet--bite', 'data-section': `bite-${index}`, id: `bite-${index}` },
     h('p', { class: 'mono sheet__no', text: `BITE ${pad(index + 1)}｜${pad(chapters.length)}` }),
     h('h2', { class: 'sheet__title', tabindex: '-1', text: t(`bite.${chapter.kind}`) }),
     itemsTag(chapter.items),
@@ -297,7 +297,7 @@ function closingJp() {
     h('p', { class: 'closing__sub', text: t('close.jp.sub') }),
     closingOpen
       ? originCard()
-      : h('button', { class: 'btn btn--ghost', type: 'button', onclick: openOffer, text: t('close.jp.button') }),
+      : h('button', { class: 'btn btn--primary', type: 'button', onclick: openOffer, text: t('close.jp.button') }),
     h('p', { class: 'closing__keep', text: t('close.jp.keep') }),
   ];
 }
@@ -336,13 +336,13 @@ function closingEn() {
     visitSnsView(),
     closingOpen
       ? visitCard()
-      : h('button', { class: 'btn btn--ghost', type: 'button', onclick: openOffer, text: t('close.en.button') }),
+      : h('button', { class: 'btn btn--primary', type: 'button', onclick: openOffer, text: t('close.en.button') }),
     h('p', { class: 'closing__keep', text: t('close.en.ship') }),
   ];
 }
 
 function closingView() {
-  return h('section', { class: 'sheet sheet--closing', 'data-section': 'closing', id: 'closing', tabindex: '-1' },
+  return h('section', { class: 'sheet sheet--soil sheet--closing', 'data-section': 'closing', id: 'closing', tabindex: '-1' },
     en() ? closingEn() : closingJp(),
     h('a', { class: 'closing__back', href: '/choose', text: t('letter.backToList') }));
 }

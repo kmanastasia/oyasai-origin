@@ -1629,3 +1629,91 @@ html[lang='ja'] .page-letter .sheet__title { font-family: var(--mincho); font-we
 #voice .voice-bar { position: static; }
 html:has(.voice-bar) { scroll-padding-top: calc(var(--chrome-h) + var(--voice-h, 53px) + 16px); }
 body.page-letter:has(.voice-bar) .sheet, body.page-letter:has(.voice-bar) #closing, body.page-letter:has(.voice-bar) .item { scroll-margin-top: calc(var(--chrome-h) + var(--voice-h, 53px) + 16px); }
+
+/* =====================================================================
+   第4版：④の便箋は3つの面。書き出しと結びは深い土、ひと口は和紙、味ことばは若葉の札
+   ===================================================================== */
+
+/* 土の便箋：写真ではなく、計算で作った粒と、萌黄のかすかな光。字は生成り（17.5:1）、添え書きは 11:1 */
+.reader .sheet--soil {
+  --haicha: var(--on-dark-2);
+  color: var(--on-dark);
+  background-color: var(--tsuchi);
+  background-image:
+    radial-gradient(90% 70% at 100% 0%, color-mix(in srgb, var(--ha-700) 45%, transparent), transparent 70%),
+    url('/img/paper-grain.png');
+  background-size: auto, 160px;
+  background-blend-mode: normal, soft-light;
+  border-color: var(--tsuchi);
+}
+.page-letter .sheet--soil::before { content: none; }
+.reader .sheet--soil .sheet__no { color: var(--moegi); }
+.reader .sheet--soil .sheet__no::after { background: var(--moegi) !important; }
+.sheet--soil .item { border-top-color: var(--line-dark); }
+.sheet--soil .item__foot .mono { color: var(--moegi); }
+.sheet--soil .item__reason, .sheet--soil .closing__operator { border-left-color: var(--moegi); }
+.sheet--soil .item::before { background: var(--tsuchi-2); }
+.sheet--soil .item::after { background: var(--moegi); }
+.sheet--soil .tr-tag__by { border-color: var(--on-dark-2); }
+.sheet--soil .tag-status { color: var(--on-dark); border-color: var(--on-dark-2); }
+.sheet--soil .closing__sns-text { color: var(--on-dark); }
+.sheet--soil .closing__line { border-color: var(--line-dark); }
+.sheet--soil .closing__back { color: var(--moegi); }
+.sheet--soil .btn--ghost { color: var(--on-dark); border-color: var(--on-dark-2); }
+.reader .sheet--soil .btn--ghost:not(:disabled):active { background: var(--tsuchi-2); }
+@media (hover: hover) { .reader .sheet--soil .btn--ghost:not(:disabled):hover { background: var(--tsuchi-2); border-color: var(--moegi); } }
+/* 注意黄の札と帯は、どの面の上でも墨の字（11:1） */
+.tag-note, .band, .offer__done, .voice-bar { color: var(--ink); }
+/* 申込カードは土の上に置いた明るい一筆箋（中は元の色の組） */
+.sheet--soil .offer { --haicha: var(--haicha-ink); color: var(--ink); border: 0; box-shadow: 0 24px 48px -28px color-mix(in srgb, black 70%, transparent); }
+.sheet--soil .offer :focus-visible { outline-color: var(--focus); }
+/* 結びの畝：萌黄の細い線を2本（CSS で描いた畑の筋） */
+.sheet--closing .closing__eyebrow::after {
+  content: '';
+  display: block;
+  width: 96px;
+  height: 7px;
+  margin-top: 14px;
+  background: linear-gradient(var(--moegi), var(--moegi)) 0 0 / 100% 1px no-repeat, linear-gradient(var(--moegi), var(--moegi)) 0 100% / 64% 1px no-repeat !important;
+}
+html[lang='en'] .sheet--closing .sheet__no::after { content: none; }
+
+/* ひと口の便箋：見出しを大きな明朝に。番号は野菜の色 */
+html[lang='ja'] .page-letter .sheet--bite .sheet__title { font-size: 40px; line-height: 1.3; letter-spacing: 0.12em; margin-bottom: 24px; }
+html[lang='en'] .page-letter .sheet--bite .sheet__title { font-size: 34px; line-height: 1.15; letter-spacing: -0.01em; font-weight: 400; }
+.page-letter .sheet--land .sheet__title { font-size: 28px; }
+
+/* 味ことばの札：若葉の地に、葉の太い罫（墨の字 15.4:1） */
+.page-letter .item--flavor {
+  margin: 12px 0;
+  padding: 40px 20px 32px;
+  background: var(--ha-050);
+  border-top: 4px solid var(--ha);
+}
+.page-letter .item--flavor + .item { border-top: 0; }
+.page-letter .item--flavor .word__by { border-color: color-mix(in srgb, var(--ha) 40%, var(--ha-050)); }
+.page-letter .item--flavor::before { inset: 0; }
+
+@media (min-width: 1200px) {
+  :root { --sheet-w: 720px; }
+  /* 日本語のひと口：見出しは左の段に縦組み（大きな明朝）。本文は右の段 */
+  html[lang='ja'] .page-letter .sheet--bite { display: grid; grid-template-columns: 64px minmax(0, 1fr); column-gap: 40px; align-content: start; }
+  html[lang='ja'] .page-letter .sheet--bite > * { grid-column: 2; }
+  html[lang='ja'] .page-letter .sheet--bite > .sheet__title {
+    grid-column: 1;
+    grid-row: 1 / span 40;
+    align-self: start;
+    position: sticky;
+    top: calc(var(--chrome-h) + 32px);
+    writing-mode: vertical-rl;
+    font-size: 52px;
+    line-height: 1.2;
+    letter-spacing: 0.18em;
+    margin: 0;
+    padding-block: 4px;
+    border-inline-start: 0;
+  }
+  html[lang='ja'] .page-letter .sheet--bite > .sheet__title + .item, html[lang='ja'] .page-letter .sheet--bite > .sheet__no + .sheet__title + * { margin-top: 0; }
+  html[lang='en'] .page-letter .sheet--bite .sheet__title { font-size: 44px; }
+}
+html .reader .sheet--soil .sheet__title { color: var(--on-dark); }
