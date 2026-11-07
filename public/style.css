@@ -1005,3 +1005,6 @@ html[lang='en'] .closing__line { font-size: 22px; line-height: 1.5; }
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
 }
+
+/* 結びの見出し（日本語）：明朝の小さな「畑より」 */
+.closing__eyebrow { font-family: var(--mincho); font-size: 14px; letter-spacing: 0.3em; color: var(--haicha); }

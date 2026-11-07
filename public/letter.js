@@ -256,7 +256,7 @@ function originCard() {
 function closingJp() {
   return [
     h('p', { class: 'band band--inline', role: 'note', text: t('close.jp.band') }),
-    h('p', { class: 'mono sheet__no', lang: 'en', text: t('close.jp.eyebrow') }),
+    h('p', { class: 'sheet__no closing__eyebrow', text: t('close.jp.eyebrow') }),
     h('p', { class: `closing__line mincho${appear('closing')}`, text: t('close.jp.line', { farmer: letter.meta.farmer.ja }) }),
     h('p', { class: 'closing__sub', text: t('close.jp.sub') }),
     closingOpen
