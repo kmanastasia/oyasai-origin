@@ -1132,15 +1132,22 @@ body:has(.next-bite) .column { padding-bottom: calc(var(--next-h) + 24px + env(s
 .card__lid .card__cap { margin: 0; padding: 8px 24px 10px; }
 .slots .slot:last-child { margin-bottom: 24px; }
 
+/* カードの中の2つのまとまり。スマホでは今までどおり上から並ぶ */
+.card__meta, .card__main { display: contents; }
+
 @media (min-width: 1024px) {
   .page-choose .column { max-width: calc(var(--wrap) + 96px); padding: 40px 48px 64px; }
-  .page-choose .card--letter { display: grid; grid-template-columns: 5fr 7fr; padding: 0; }
-  .page-choose .card__lid { display: flex; flex-direction: column; margin: 0; border-bottom: 0; border-right: 1px solid var(--momi); }
-  .page-choose .card__lid .card__photo { flex: 1; height: auto; min-height: 240px; margin: 0; }
-  .page-choose .card__lid .card__cap { padding: 10px 24px 12px; border-top: 1px solid var(--momi); }
-  .page-choose .card__body { padding: 40px 48px; }
+  /* パソコン：写真はカードの頭の帯のまま（ふた）。その下で、左に名前、右に一言と開くボタン */
+  .page-choose .card--letter { padding: 0; }
+  .page-choose .card__lid { margin: 0; }
+  .page-choose .card__lid .card__photo { height: 160px; }
+  .page-choose .card__lid .card__cap { padding: 10px 48px 12px; }
+  .page-choose .card__body { display: grid; grid-template-columns: 5fr 7fr; column-gap: 56px; padding: 32px 48px 40px; }
+  .page-choose .card__meta, .page-choose .card__main { display: block; }
+  .page-choose .card__main { padding-left: 28px; border-left: 1px solid var(--momi); margin-left: -28px; }
+  .page-choose .card__main .card__teaser { margin-top: 4px; }
   .page-choose .card__veg { font-size: 40px; font-family: var(--mincho); font-weight: 500; letter-spacing: 0.08em; }
-  .page-choose .card__veg .fraunces { font-size: 22px; }
+  .page-choose .card__veg .fraunces { display: block; font-size: 22px; }
   .page-choose .card__teaser { font-size: 22px; }
   .page-choose .card .btn--tall { max-width: 420px; }
   .slots { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
@@ -1242,8 +1249,8 @@ body:has(.next-bite) .column { padding-bottom: calc(var(--next-h) + 24px + env(s
 /* ===== 流れの表示：番号はトップの扉と同じ線の丸。下線は今いるところと、指を載せたときだけ ===== */
 .route a { text-decoration: none; gap: 6px; }
 .route__here { display: inline-flex; align-items: center; gap: 6px; }
-.route a > span:last-child { text-decoration: underline 1px transparent; text-underline-offset: 6px; transition: text-decoration-color var(--dur-s) var(--ease-std); }
-.route a:hover > span:last-child, .route a:focus-visible > span:last-child { text-decoration-color: currentColor; text-decoration-thickness: 2px; }
+.reader .route a > span:last-child { text-decoration: underline 1px transparent; text-underline-offset: 6px; transition: text-decoration-color var(--dur-s) var(--ease-std); }
+.route a:hover > span:last-child, .route a:focus-visible > span:last-child { text-decoration: underline;  text-decoration-color: currentColor; text-decoration-thickness: 2px; }
 .route__home { text-decoration: underline 1px var(--momi) !important; text-underline-offset: 6px; }
 .route__no { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border: 1px solid currentColor; border-radius: 50%; font-family: var(--mono); font-size: 11px; line-height: 1; }
 .route__step.is-current .route__no { background: var(--ink); border-color: var(--ink); color: var(--shiro); }

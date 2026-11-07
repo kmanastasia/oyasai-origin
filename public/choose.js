@@ -32,16 +32,18 @@ function letterCard() {
   return h('article', { class: 'card card--letter' },
     cardLid(),
     h('div', { class: 'card__body' },
-      h('div', { class: 'card__top' },
-        h('span', { class: 'mono', text: meta.no }),
-        sealStamp()),
-      h('h2', { class: 'card__veg' }, h('span', { class: 'mincho', lang: 'ja', text: meta.vegetable.ja }), ' ', h('span', { class: 'fraunces', lang: 'en', text: meta.vegetable.en })),
-      h('p', { class: 'card__who', text: `${pair(meta.farmer)}／${pair(meta.town)}` }),
-      teaserView(),
-      checkTag(letter),
-      h('p', { class: 'card__small', text: t('verified', verified) }),
-      verified.dropped > 0 ? h('p', { class: 'card__small', text: t('verified.dropped', { n: verified.dropped }) }) : null,
-      h('a', { class: 'btn btn--primary btn--tall', href: '/letter' }, h('span', { text: t('choose.open') }), icon('arrow'))));
+      h('div', { class: 'card__meta' },
+        h('div', { class: 'card__top' },
+          h('span', { class: 'mono', text: meta.no }),
+          sealStamp()),
+        h('h2', { class: 'card__veg' }, h('span', { class: 'mincho', lang: 'ja', text: meta.vegetable.ja }), ' ', h('span', { class: 'fraunces', lang: 'en', text: meta.vegetable.en })),
+        h('p', { class: 'card__who', text: `${pair(meta.farmer)}／${pair(meta.town)}` })),
+      h('div', { class: 'card__main' },
+        teaserView(),
+        checkTag(letter),
+        h('p', { class: 'card__small', text: t('verified', verified) }),
+        verified.dropped > 0 ? h('p', { class: 'card__small', text: t('verified.dropped', { n: verified.dropped }) }) : null,
+        h('a', { class: 'btn btn--primary btn--tall', href: '/letter' }, h('span', { text: t('choose.open') }), icon('arrow')))));
 }
 
 // 作り手ごとの見出し（今は1人）。名前はデータのまま（架空）を付けて出す。
