@@ -1,4 +1,4 @@
-import { CATEGORY, api, errorBox, h, makerRoute, toolBands } from './common.js';
+import { CATEGORY, api, errorBox, h, labelText, makerRoute, toolBands } from './common.js';
 
 const root = document.getElementById('root');
 document.getElementById('chrome').replaceChildren(...toolBands().filter(Boolean));
@@ -83,7 +83,8 @@ function resultView() {
   const missing = draft.entries.filter((e) => e.missing_reason).length;
   return [
     draft.notice ? h('p', { class: 'notice', role: 'status', text: draft.notice }) : null,
-    draft.is_placeholder ? h('p', { class: 'notice', role: 'status', text: 'この文字起こしは【仮】です。本番の文字起こしに差し替えます。' }) : null,
+    // 【仮】の表示：ほかの表示（架空・見本）と同じ注意黄の面に墨の線。【仮】は行の途中で割らない
+    draft.is_placeholder ? h('p', { class: 'notice notice--label', role: 'status' }, labelText('この文字起こしは【仮】です。本番の文字起こしに差し替えます。')) : null,
     h('div', { class: 'draft-head' },
       h('h2', { class: 'tool-h1', text: '手紙の下書き' }),
       h('p', { class: 'badge', text: `引用 ${draft.entries.length}/${draft.total} 照合済み` }),

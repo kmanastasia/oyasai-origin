@@ -19,6 +19,7 @@ let offer = null;
 let chapters = [];
 let opened = false;
 let unsealing = false; // 封がほどけている間
+let coverVars = ''; // 封を開ける直前の表紙の高さ（ボタンの段・一言・表紙）。たたむ動きの出発点にする
 let entering = new Set(); // 今回の描画で現れる区画。ここの本文だけが静かに現れる
 let revealed = 0; // 開いている便箋の数。chapters.length + 1 で結びまで。
 let speaking = null; // 読み上げ中の便箋の番号
@@ -186,7 +187,7 @@ function coverView() {
   // 開いたあとは、書き出しの便箋に同じ言葉が続くので、表紙の一言はたたむ（言葉は変えない・表示だけ）
   const folded = opened && !unsealing;
   const teaserBelow = folded && teaser && letter.land.some((item) => item.id === teaser.id);
-  return h('section', { class: `sheet sheet--cover${unsealing ? ' is-unsealing' : ''}${folded ? ' is-opened' : ''}`, 'data-section': 'cover' },
+  return h('section', { class: `sheet sheet--cover${unsealing ? ' is-unsealing' : ''}${folded ? ' is-opened' : ''}`, 'data-section': 'cover', style: unsealing ? coverVars : null },
     // 個包装のふた：③と同じ質感の写真（イメージ）に手紙の番号。すぐ下に必ず注記。作り手・町・畑の写真としては見せない
     h('figure', { class: 'cover-lid' },
       h('div', { class: 'cover-band' },
@@ -539,9 +540,18 @@ function openLetter(thenListen) {
     return;
   }
   unsealing = true;
+  coverVars = measureCover();
   renderBody();
   if (thenListen && canSpeak) speak(0);
   setTimeout(showFirstSheets, SEAL_MS);
+}
+
+// 封を開ける直前に、表紙・ボタンの段・一言の高さを測っておく。たたむ動きはこの高さから 0 へ（ボタンや言葉を透明にはしない）
+function measureCover() {
+  const cover = root.querySelector('.sheet--cover');
+  if (!cover) return '';
+  const px = (el) => `${Math.round(el?.offsetHeight ?? 0)}px`;
+  return `--cover-h:${px(cover)};--actions-h:${px(cover.querySelector('.cover-actions'))};--teaser-h:${px(cover.querySelector('.card__teaser'))}`;
 }
 
 // 栞の長さは開いた便箋の数だけで決める。戻っても縮まない。

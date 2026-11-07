@@ -1534,8 +1534,8 @@ html[lang='en'] .page-top .door__title { font-family: var(--fraunces); font-weig
 .page-letter .sheet--cover { box-shadow: 6px 6px 0 -1px var(--kinari-2), 6px 6px 0 0 var(--momi), 0 44px 80px -44px var(--shade); }
 .page-letter .sheet:not(.sheet--cover) { box-shadow: 0 1px 0 var(--momi), 0 30px 60px -40px var(--shade); }
 
-/* 封を開けている間：ボタンの場所は残し、ボタンだけを消す（表紙は縮まない） */
-.cover-actions.is-leaving .btn { opacity: 0; pointer-events: none; transition: opacity var(--dur-s) var(--ease-std); }
+/* 封を開けている間：ボタンは押せない（見た目のたたみ方は第5版の決まりごとで） */
+.cover-actions.is-leaving .btn { pointer-events: none; }
 
 /* 便箋の見出し：本人の言葉と同じ明朝の系で、一段大きく静かに */
 html[lang='ja'] .page-letter .sheet__title { font-family: var(--mincho); font-weight: 500; font-size: 24px; letter-spacing: 0.14em; }
@@ -1887,12 +1887,18 @@ html .reader .sheet--soil .sheet__title { color: var(--on-dark); }
 /* ---------- 第5版 ④：開いたあとの表紙は短い頭書き（名前・作り手・確認のタグ・注記はそのまま） ---------- */
 .page-letter .sheet--cover.is-opened { min-height: 0; padding-bottom: 28px; }
 .page-letter .sheet--cover.is-opened > :last-child { margin-bottom: 0; }
-/* 封を開けている間：ボタンの段は下へ沈みながらたたまれる（ボタンを透明から出すことはしない） */
+/* 封を開けている間（判子が持ち上がるのと同じ拍）：ボタンの段と表紙の一言は、測っておいた高さから下へ沈みながらたたまれ、
+   表紙の下の縁がそれに合わせて上がる。透明にするものはない。動きが止まっていれば最初の見た目（ボタンも一言も見える）のまま */
 @media (prefers-reduced-motion: no-preference) {
   .cover-actions.is-leaving { overflow: hidden; animation: actions-fold var(--dur-m) var(--ease-std) var(--dur-xs) both; }
-  .cover-actions.is-leaving .btn { transform: translateY(12px); transition: opacity var(--dur-s) var(--ease-std), transform var(--dur-m) var(--ease-std); }
+  .cover-actions.is-leaving .btn, .cover-actions.is-leaving .cover-hint { animation: actions-sink var(--dur-m) var(--ease-std) var(--dur-xs) both; }
+  .sheet--cover.is-unsealing .card__teaser { overflow: hidden; animation: teaser-fold var(--dur-m) var(--ease-std) var(--dur-xs) both; }
+  .page-letter .sheet--cover.is-unsealing { animation: cover-close var(--dur-m) var(--ease-std) var(--dur-xs) both; }
 }
-@keyframes actions-fold { from { max-height: 260px; } to { max-height: 0; margin-top: 0; } }
+@keyframes actions-fold { from { max-height: var(--actions-h, 260px); } to { max-height: 0; margin-top: 0; } }
+@keyframes actions-sink { to { transform: translateY(28px); } }
+@keyframes teaser-fold { from { max-height: var(--teaser-h, 240px); } to { max-height: 0; margin-block: 0; } }
+@keyframes cover-close { from { min-height: var(--cover-h, 0px); } to { min-height: 0px; } }
 
 /* ---------- 第5版 ④：味ことば。言葉が札の端に触れない（字は変えない） ---------- */
 .page-letter .item--flavor { padding-inline: 24px; container-type: inline-size; }
@@ -2014,3 +2020,142 @@ html[lang='en'] .next-bite__count { letter-spacing: 0.02em; }
 }
 /* ② 封をしましたの一文は、言葉の切れ目で折る */
 .seal-done__msg { word-break: auto-phrase; max-width: 16em; }
+
+/* ---------- 第5版 ④ 結び（パソコン・英語）：日本語と同じ、便箋の列いっぱいの土の一枚。一行は大きな Fraunces で真ん中の高さに ---------- */
+@media (min-width: 1024px) {
+  html[lang='en'] .page-letter .sheet--closing {
+    max-width: none;
+    margin-inline: -36px;
+    min-height: calc(100svh - var(--chrome-h) - 48px);
+    display: flex;
+    flex-direction: column;
+    padding: 0 64px 48px;
+  }
+  html[lang='en'] .page-letter .sheet--closing > .band--inline, html[lang='en'] .page-letter .sheet--closing > .band { margin: 0 -64px 32px; padding-inline: 64px; }
+  html[lang='en'] .page-letter .sheet--closing .closing__line { font-size: 44px; line-height: 1.2; letter-spacing: -0.01em; max-width: 15em; margin: auto 0; padding: 36px 0; }
+  html[lang='en'] .page-letter .sheet--closing .closing__sub { font-size: 18px; margin-top: 24px; }
+}
+
+/* ---------- 第5版 ①②：点線の枠（管理画面の名残）をやめ、お知らせは表示の形に ---------- */
+/* ① 保存データのお知らせは生成りの紙に墨の線。【仮】の表示は、ほかの表示と同じ注意黄に墨の線（字の大きさは 14px のまま）。2本は1つの束に */
+.notice { padding: 10px 14px; background: var(--kinari-2); border-left: 4px solid var(--ink); line-height: 1.6; }
+.notice + .notice { margin-top: -12px; border-top: 1px solid var(--line-ink); }
+.notice--label { background: var(--chui); color: var(--ink); font-weight: 500; }
+/* ② 運営者が封をする一文・理由がない印・封のあとの橋：点線をやめ、細い罫の一筆箋に */
+.seal-fixed { border: 1px solid var(--momi); background: var(--shiro) url('/img/paper-grain.png') 0 0 / 192px; font-family: var(--mincho); font-size: 17px; letter-spacing: 0.04em; padding: 12px 16px; }
+.seal-missing { border: 0; border-left: 3px solid var(--veg-500); padding: 6px 0 6px 12px; font-size: 17px; }
+.seal-bridge {
+  position: relative;
+  margin-top: 36px;
+  padding: 14px 16px 12px;
+  border: 1px solid var(--momi);
+  background: var(--kinari-2);
+  font-family: var(--mincho);
+  font-size: 17px;
+  letter-spacing: 0.08em;
+}
+.seal-bridge::before { content: ''; position: absolute; left: 50%; top: -28px; width: 1px; height: 28px; background: var(--ha); }
+
+/* =====================================================================
+   第5版 トップ：扉を2通の手紙（個包装）の形に
+   左に掛け紙の帯（前置き「手紙を読む方へ」を縦に）、右上に大きな番号、右下に長い矢印と折り返した角。
+   読む扉の若葉の塗りはやめ、どちらも便箋の紙。読む扉は葉の帯と葉の矢印で区別する
+   ===================================================================== */
+.reader.page-top .top__doors .door { background-color: var(--shiro); border-color: var(--ink); padding: 18px 20px 50px 54px; outline: 0; }
+/* 矢印は下の段にあるので、補足の行は右端まで使える（390px で言葉の途中で折れない） */
+.reader.page-top .top__doors .door .door__meta, .reader.page-top .top__doors .door .door__sub { padding-right: 0; }
+.reader.page-top .top__doors .door--primary { background-color: var(--shiro); border-color: var(--ink); }
+.reader.page-top .top__doors .door .door__wrap { display: none; }
+/* 掛け紙の帯：前置きを縦に。読む＝葉、書く＝土 */
+.reader.page-top .top__doors .door .door__for {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  width: 30px;
+  padding: 18px 0 0;
+  margin: 0;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  background: var(--tsuchi);
+  color: var(--on-dark);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  line-height: 1;
+  box-shadow: inset -1px 0 0 var(--line-dark);
+  transition: background-color var(--dur-s) var(--ease-std);
+}
+.reader.page-top .top__doors .door--primary .door__for { background: var(--ha); color: var(--on-dark); }
+html[lang='en'] .reader.page-top .top__doors .door .door__for { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; }
+/* 大きな番号（飾り）：右上。読む＝葉、書く＝墨 */
+.reader.page-top .top__doors .door::after {
+  content: '01';
+  position: absolute;
+  top: 8px;
+  right: 14px;
+  z-index: -1;
+  font-family: var(--fraunces);
+  font-size: 64px;
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: color-mix(in srgb, var(--ha) 28%, transparent);
+  pointer-events: none;
+}
+.reader.page-top .top__doors .door:not(.door--primary)::after { content: '02'; color: color-mix(in srgb, var(--ink) 16%, transparent); }
+.reader.page-top .top__doors .door:hover::after, .reader.page-top .top__doors .door:active::after { color: color-mix(in srgb, var(--on-dark) 24%, transparent); }
+.reader.page-top .top__doors .door .door__title { padding-right: 48px; }
+/* 押す先：右下の長い矢印（丸はやめる）と、折り返した紙の角 */
+.reader.page-top .top__doors .door .door__go {
+  position: absolute;
+  top: auto;
+  right: 18px;
+  bottom: 14px;
+  width: auto;
+  height: auto;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--ink);
+}
+.reader.page-top .top__doors .door--primary .door__go { color: var(--ha-700); background: none; border: 0; }
+.reader.page-top .top__doors .door .door__go::before { content: ''; width: 40px; height: 1px; background: currentColor; transition: width var(--dur-s) var(--ease-std); }
+.reader.page-top .top__doors .door .door__go .icon { width: 22px; height: 22px; }
+.reader.page-top .top__doors .door .door__go::after {
+  content: '';
+  position: absolute;
+  right: -18px;
+  bottom: -14px;
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(135deg, var(--kinari-2) 0 50%, var(--kinari) 50% 100%);
+  pointer-events: none;
+}
+.reader.page-top .top__doors .door:hover .door__go, .reader.page-top .top__doors .door:active .door__go { color: var(--on-dark); background: none; border: 0; }
+@media (hover: hover) {
+  .reader.page-top .top__doors .door:hover .door__go::before { width: 64px; }
+  .reader.page-top .top__doors .door:hover .door__go .icon { transform: translateX(4px); }
+  .reader.page-top .top__doors .door--primary:hover .door__for { background: var(--ha-700); }
+  .reader.page-top .top__doors .door:not(.door--primary):hover .door__for { background: var(--ink); }
+}
+@media (min-width: 1024px) {
+  .reader.page-top .top__doors .door { padding: 30px 32px 72px 76px; }
+  .reader.page-top .top__doors .door .door__for { width: 44px; padding-top: 24px; font-size: 13px; }
+  html[lang='en'] .reader.page-top .top__doors .door .door__for { font-size: 12px; }
+  .reader.page-top .top__doors .door::after { top: 10px; right: 26px; font-size: 104px; }
+  .reader.page-top .top__doors .door .door__title { padding-right: 112px; }
+  .reader.page-top .top__doors .door .door__go { right: 30px; bottom: 26px; }
+  .reader.page-top .top__doors .door .door__go::before { width: 56px; }
+  .reader.page-top .top__doors .door .door__go .icon { width: 26px; height: 26px; }
+  .reader.page-top .top__doors .door .door__go::after { right: -30px; bottom: -26px; width: 26px; height: 26px; }
+  @media (hover: hover) { .reader.page-top .top__doors .door:hover .door__go::before { width: 88px; } }
+}
