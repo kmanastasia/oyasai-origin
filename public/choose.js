@@ -1,4 +1,4 @@
-import { api, h } from './common.js';
+import { api, h, motionProbe } from './common.js';
 import { checkTag, getLang, onLangChange, startReader, t, translationTag } from './reader.js';
 
 const root = document.getElementById('root');
@@ -59,7 +59,8 @@ function render() {
   root.replaceChildren(...head, letterCard(), ...letter.meta.slots.map(slot));
 }
 
-function showOpening() {
+// 動きを減らす設定・隠れたタブ・動きが止まっている環境では幕を出さない（一覧を隠さない）。
+function showOpening(motion) {
   const params = new URLSearchParams(location.search);
   let seen = false;
   try {
@@ -69,14 +70,27 @@ function showOpening() {
     seen = true;
   }
   if (seen && !params.has('opening')) return;
-  const overlay = h('div', { class: 'opening', onclick: () => overlay.remove() },
+  if (!motion) return;
+  let closed = false;
+  const close = () => {
+    if (closed) return;
+    closed = true;
+    removeEventListener('keydown', close);
+    overlay.classList.add('is-leaving');
+    setTimeout(() => overlay.remove(), 340);
+  };
+  const overlay = h('div', { class: 'opening', 'aria-hidden': 'true', onclick: close },
     h('p', { class: 'opening__core', text: t('core') }),
     h('p', { class: 'opening__sub', lang: getLang() === 'en' ? 'ja' : 'en', text: getLang() === 'en' ? '日本のお野菜を世界へ。' : 'Japanese vegetables, to the world.' }));
+  overlay.addEventListener('animationend', (event) => {
+    if (event.target === overlay) overlay.remove();
+  });
+  addEventListener('keydown', close, { once: true });
   document.body.append(overlay);
-  overlay.addEventListener('animationend', () => overlay.remove());
   setTimeout(() => overlay.remove(), 2700); // アニメーションが進まない環境でも手紙を隠したままにしない
 }
 
+const live = motionProbe(); // 読み込みを待つあいだに確かめておく
 await startReader({ route: 1 });
 onLangChange(render);
 try {
@@ -84,5 +98,6 @@ try {
 } catch {
   failed = true;
 }
+const motion = await live;
 render();
-showOpening();
+showOpening(motion);

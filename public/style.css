@@ -223,13 +223,16 @@ button, a.btn { font-family: inherit; }
   background: var(--tsuchi);
   color: var(--shiro);
   text-align: center;
-  animation: opening 2.5s ease-in forwards;
+  animation: opening 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
+
+.opening.is-leaving { animation: opening-out 320ms cubic-bezier(0.4, 0, 1, 1) forwards; }
 
 .opening__core { font-family: var(--mincho); font-size: 24px; letter-spacing: 0.08em; }
 .opening__sub { font-family: var(--fraunces); font-size: 15px; opacity: 0.8; }
 
-@keyframes opening { 0%, 72% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes opening { 0%, 64% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes opening-out { to { opacity: 0; } }
 
 .cover-actions { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
 .cover-hint { font-size: 14px; color: var(--haicha); }
@@ -518,7 +521,7 @@ body:has(.next-bite) .column { padding-bottom: calc(104px + env(safe-area-inset-
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-delay: 0ms !important; transition: none !important; }
-  .opening { animation-duration: 2.5s !important; animation-timing-function: steps(1, end) !important; }
+  .opening { display: none !important; } /* 動きを減らす設定では幕を出さない。一覧は最初から見える */
 }
 
 @media print {

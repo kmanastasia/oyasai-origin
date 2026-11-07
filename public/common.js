@@ -75,3 +75,28 @@ export function toolBands(extra) {
     extra ? h('div', { class: 'band band--sub', role: 'note', text: extra }) : null,
   ];
 }
+
+// 動きが本当に進む環境かを、見えない小さな印で一度だけ確かめる。
+// 動きを減らす設定・隠れたタブ・アニメーションが止められた環境では false。false のときは最初から全部を見せる。
+let probe = null;
+export function motionProbe() {
+  if (probe) return probe;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches || document.hidden || !Element.prototype.animate) {
+    probe = Promise.resolve(false);
+    return probe;
+  }
+  const dot = document.createElement('i');
+  dot.setAttribute('aria-hidden', 'true');
+  dot.style.cssText = 'position:fixed;left:0;top:0;width:1px;height:1px;opacity:0;pointer-events:none';
+  document.body.append(dot);
+  const run = dot.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(1px)' }], { duration: 2000 });
+  probe = new Promise((resolve) => {
+    setTimeout(() => {
+      const moved = (run.currentTime ?? 0) > 0;
+      run.cancel();
+      dot.remove();
+      resolve(moved && !document.hidden);
+    }, 90);
+  });
+  return probe;
+}
