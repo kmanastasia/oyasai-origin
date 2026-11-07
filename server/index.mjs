@@ -13,7 +13,7 @@ const MAX_BODY = 512 * 1024;
 if (process.argv.includes('--demo')) configure({ demo: true });
 
 const PAGES = { '/': 'index.html', '/keep': 'keep.html', '/seal': 'seal.html', '/choose': 'choose.html', '/letter': 'letter.html' };
-const TYPES = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.svg': 'image/svg+xml' };
+const TYPES = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.svg': 'image/svg+xml', '.jpg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp', '.avif': 'image/avif' };
 
 function sendJson(res, status, value) {
   res.writeHead(status, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' });
