@@ -109,3 +109,11 @@ export function icon(name) {
   svg.querySelector('use').setAttribute('href', `#i-${name}`);
   return svg;
 }
+
+// 動きを始めたあとで止められた（currentTime が進まない）ときは、すぐ最後の見た目にする。
+export function releaseIfStalled(els, finish) {
+  setTimeout(() => {
+    const run = els.flatMap((el) => el.getAnimations?.() ?? [])[0];
+    if (run && !(run.currentTime > 0)) finish();
+  }, 80);
+}

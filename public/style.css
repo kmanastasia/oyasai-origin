@@ -949,3 +949,6 @@ body:has(.next-bite) .column { padding-bottom: calc(120px + env(safe-area-inset-
   .next-bite { width: min(100% - 48px, var(--sheet-w)); bottom: 24px; height: 72px; padding: 0; border-radius: 4px; }
   .word { font-size: clamp(32px, 3vw, 44px); }
 }
+
+/* JP｜EN の前に言語のアイコン（飾り） */
+.lang .icon { width: 16px; height: 16px; margin-right: 2px; color: var(--shiro); opacity: 0.7; }

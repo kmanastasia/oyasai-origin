@@ -1,5 +1,5 @@
 // トップ：だれが来ても同じ入口。することで分けた「読む／書く」の2つの扉だけを置く。
-import { h, icon, motionProbe } from './common.js';
+import { h, icon, motionProbe, releaseIfStalled } from './common.js';
 import { getLang, onLangChange, startReader, t } from './reader.js';
 
 const root = document.getElementById('root');
@@ -71,6 +71,7 @@ function render() {
     const moving = [...root.querySelectorAll('.appear')];
     const finish = () => moving.forEach((el) => el.classList.remove('appear'));
     setTimeout(finish, ENTER_MS); // 動きが止まっても、見出しと扉を隠したままにしない
+    releaseIfStalled(moving, finish);
     document.addEventListener('visibilitychange', finish, { once: true });
   }
 }

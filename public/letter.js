@@ -1,4 +1,4 @@
-import { api, h, icon, motionProbe } from './common.js';
+import { api, h, icon, motionProbe, releaseIfStalled } from './common.js';
 import { checkTag, getLang, onLangChange, sealStamp, startReader, t, translationTag } from './reader.js';
 
 const root = document.getElementById('root');
@@ -318,7 +318,9 @@ const finishAppear = (els) => els.forEach((el) => el.classList.remove('appear'))
 
 function settleAppear() {
   const moving = [...root.querySelectorAll('.appear')];
-  if (moving.length > 0) setTimeout(() => finishAppear(moving), APPEAR_MS);
+  if (moving.length === 0) return;
+  setTimeout(() => finishAppear(moving), APPEAR_MS);
+  releaseIfStalled(moving, () => finishAppear(moving));
 }
 
 function renderNext() {

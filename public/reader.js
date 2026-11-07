@@ -1,5 +1,5 @@
 // 受け取る側（トップ・③④）の共通部分：注意帯・掛け紙の帯・JP｜EN・流れの表示。
-import { api, h, routeBar } from './common.js';
+import { api, h, icon, motionProbe, routeBar } from './common.js';
 
 const STORAGE_KEY = 'oyasai-lang';
 let dictionary = new Map();
@@ -44,10 +44,28 @@ function setLang(next) {
   history.replaceState(null, '', url);
   renderChrome();
   for (const listener of listeners) listener();
+  softenSwap();
+}
+
+// 切り替えた言葉だけが静かに入れ替わる。ラベル（架空・見本・仮・Translated by Claude・合成音声）を含むものは動かさず、すぐ出す。
+const SWAP_TEXT = '.top__core, .lead-line, .section-eyebrow, .door__for, .door__title, .door__sub, .card__veg, .en-main, .jp-sub, .quote, .item__title, .sheet__title, .closing__sub, .cover-hint, .choose__order';
+const LABEL_WORDS = /架空|見本|仮|合成音声|ictional|ample|ynthetic|Translated by Claude/; // 文の中にラベルの語があるものも動かさない
+const LABELS = '.band, .tag-note, .tag-line, .tr-tag, .voice-bar, .offer__done, .photo__cap';
+async function softenSwap() {
+  if (!(await motionProbe())) return;
+  const root = document.getElementById('root');
+  const moving = [...(root?.querySelectorAll(SWAP_TEXT) ?? [])].filter((el) => !el.matches(LABELS) && !el.querySelector(LABELS) && !el.closest(LABELS) && !LABEL_WORDS.test(el.textContent));
+  const runs = moving.map((el) => el.animate(
+    [{ opacity: 0, transform: 'translateY(4px)' }, { opacity: 1, transform: 'none' }],
+    { duration: 280, easing: 'cubic-bezier(0, 0, 0.2, 1)' }));
+  const finish = () => runs.forEach((run) => run.finish());
+  setTimeout(() => { if (runs.length && !(runs[0].currentTime > 0)) finish(); }, 80); // 動きが止められていたら、すぐ出す
+  setTimeout(finish, 600); // どんな環境でも、言葉を隠したままにしない
 }
 
 function renderChrome() {
   const root = document.getElementById('chrome');
+  const focused = document.activeElement?.closest?.('.lang__btn')?.getAttribute('lang');
   const toggle = (value, label) => h('button', {
     class: 'lang__btn',
     type: 'button',
@@ -60,8 +78,10 @@ function renderChrome() {
     h('div', { class: 'band', role: 'note', text: t('band.fiction') }),
     h('header', { class: 'kakegami' },
       h('a', { class: 'kakegami__name', href: '/', lang: 'en', text: 'OYASAI ORIGIN' }),
-      h('div', { class: 'lang', role: 'group', 'aria-label': 'JP / EN' }, toggle('ja', 'JP'), h('span', { class: 'lang__sep', 'aria-hidden': 'true', text: '｜' }), toggle('en', 'EN')))
+      h('div', { class: 'lang', role: 'group', 'aria-label': 'JP / EN' }, icon('languages'), toggle('ja', 'JP'), h('span', { class: 'lang__sep', 'aria-hidden': 'true', text: '｜' }), toggle('en', 'EN')))
   );
+  // 押した言語のボタンにフォーカスを戻す（キーボードで切り替えても、位置を見失わない）
+  if (focused) root.querySelector(`.lang__btn[lang="${focused}"]`)?.focus();
   renderRoute();
 }
 
