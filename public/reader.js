@@ -158,18 +158,24 @@ export function startReader({ route = 0 } = {}) {
 const LETTER_KEYS = /^(letter|bite|voice|close|visit|town|photo|route|band|verified|sns|check)/;
 export function warmFonts(letterData) {
   let done = false;
+  let loads = [];
   return () => {
-    if (done || !letterData) return;
+    if (done || !letterData) return loads;
     done = true;
     const items = [...(letterData.land ?? []), ...(letterData.chapters ?? []).flatMap((c) => c.items)];
     const quotes = items.map((i) => `${i.quote ?? ''}${i.reason_quote ?? ''}`).join('') + (letterData.teaser?.quote ?? '') + (letterData.meta?.vegetable?.ja ?? '') + '「」';
     const ui = [...dictionary.values()].filter((s) => LETTER_KEYS.test(s.key)).map((s) => (lang === 'en' ? s.en : s.ja)).join('')
       + items.map((i) => i.title_sys ?? '').join('') + (letterData.meta?.farmer?.ja ?? '') + (letterData.meta?.town?.ja ?? '');
     const unique = (text) => [...new Set(text)].join('');
-    const load = (face, text) => document.fonts?.load(face, unique(text)).catch(() => {});
-    load('500 16px "Shippori Mincho B1"', quotes + ui);
-    load('400 16px "Zen Kaku Gothic New"', ui + quotes);
-    load('500 16px "Zen Kaku Gothic New"', ui);
+    const load = (face, text) => document.fonts?.load(face, unique(text)).catch(() => {}) ?? Promise.resolve();
+    loads = [
+      load('500 16px "Shippori Mincho B1"', quotes + ui),
+      load('400 16px "Zen Kaku Gothic New"', ui + quotes),
+      load('500 16px "Zen Kaku Gothic New"', ui),
+      load('700 16px "Zen Kaku Gothic New"', ui),
+      load('400 16px "DM Mono"', ui),
+    ];
+    return loads;
   };
 }
 

@@ -1,5 +1,5 @@
 import { api, h, icon, labelText, motionProbe, releaseIfStalled } from './common.js';
-import { checkTag, beforeLangChange, cachedLetter, getLang, hasStrings, onLangChange, sealStamp, startReader, t, translationTag } from './reader.js';
+import { checkTag, beforeLangChange, cachedLetter, getLang, hasStrings, onLangChange, sealStamp, startReader, t, translationTag, warmFonts } from './reader.js';
 
 const root = document.getElementById('root');
 const voiceRoot = document.getElementById('voice');
@@ -12,7 +12,8 @@ const calm = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 let motionOk = true; // 動きが止まっている環境では false（読み込みのときに一度だけ確かめる）
 const noMotion = () => calm() || document.hidden || !motionOk;
 const APPEAR_MS = 1300; // 文字が現れ終わる時間より少し長く
-const SEAL_MS = 620; // 封が離れきってから便箋を出す（表紙の高さは、便箋が出るのと同じ時に一度だけ変わる）
+const SEAL_MS = 620; // 封が離れきる時間。ここで表紙を「開いたあと」の形に差し替える（見た目は動きの終わりと同じ）
+const SLIDE_MS = 140; // 封が持ち上がり始めてすぐ、便箋が表紙の下から滑り出す（封と便箋が重なって動く。間に空白の紙を見せない）
 
 let letter = null;
 let offer = null;
@@ -93,9 +94,9 @@ function keepInView(el) {
 // 便箋の頭を、掛け紙（と読み上げの表示）の 24px 下に
 function scrollToSection(el) {
   if (!el) return;
-  const to = docTop(el) - (visibleBand().top + 12);
-  if (noMotion()) scrollTo(0, Math.max(0, to));
-  else glide(to);
+  const to = () => docTop(el) - (visibleBand().top + 12);
+  if (noMotion()) scrollTo(0, Math.max(0, to()));
+  else glide(to); // 表紙がたたまれて行き先が動いても、毎回測り直す
 }
 
 function speak(index) {
@@ -373,8 +374,10 @@ function closingView() {
 
 /* ---- 進み方 ---- */
 
+let pendingRender = false; // 封がほどけている間に頼まれた描き直し。封が離れたあとで一度だけ行う
 function renderBody() {
-  if (!letter || (unsealing && root.querySelector('.stamp--open'))) return; // 描き直すと封の動きが最初に戻る
+  if (!letter) return;
+  if (root.querySelector('.sheet--cover.is-unsealing')) { pendingRender = true; return; } // 描き直すと封の動きが最初に戻る
   const sections = [coverView()];
   if (opened && !unsealing) {
     sections.push(landView(), ...chapters.slice(0, revealed).map(chapterView));
@@ -492,6 +495,45 @@ function showFirstSheets() {
   gliding = true; // 描き直しの間は寄せない。行き先はこの下で一度だけ決める
   renderBody();
   gliding = false;
+  goToFirstSheet();
+}
+
+// 封が持ち上がっている間に、便箋を表紙の下から滑り出させる（表紙は描き直さず、動きを続けたまま）
+function slideOutSheets() {
+  if (!unsealing) return;
+  unsealing = false;
+  entering = new Set(['land', 'bite-0']);
+  const sections = [landView(), ...chapters.slice(0, revealed).map(chapterView)].filter(Boolean);
+  entering = new Set();
+  // 同じ長さだけ上から滑り出す（便箋どうしは重ならない）。書き出しの便箋のほうが少し遅れて出る（先に出るひと口の便箋の下に潜らない）
+  sections.forEach((section, i) => { section.style.setProperty('--from', '-220px'); section.style.setProperty('--s', String(sections.length - 1 - i)); });
+  gliding = true;
+  root.append(...sections);
+  settleAppear();
+  markSpeaking();
+  renderNext();
+  renderIndex();
+  updateShiori();
+  gliding = false;
+  goToFirstSheet();
+}
+
+// 封が離れきったら、表紙だけをその場で「開いたあと」の形にする（たたむ動きの終わりと同じ見た目。便箋の動きは止めない）
+function settleCover() {
+  const cover = root.querySelector('.sheet--cover.is-unsealing');
+  if (!cover) return;
+  cover.classList.remove('is-unsealing');
+  cover.classList.add('is-opened');
+  cover.removeAttribute('style');
+  cover.querySelector('.cover-actions')?.remove();
+  const teaser = letter.teaser;
+  if (teaser && letter.land.some((item) => item.id === teaser.id)) cover.querySelector('.card__teaser')?.remove();
+  const stamp = cover.querySelector('.stamp');
+  if (stamp) { stamp.classList.remove('stamp--open'); stamp.classList.add('stamp--gone'); }
+  if (pendingRender) { pendingRender = false; renderBody(); }
+}
+
+function goToFirstSheet() {
   const target = letter.land.length ? root.querySelector('[data-section="land"]') : document.getElementById('bite-0');
   const spoken = speakingItem && root.querySelector(`[data-item-id="${speakingItem}"]`);
   if (spoken) keepInView(spoken); // 声で読むときは、読んでいる項目へ
@@ -503,7 +545,8 @@ function showFirstSheets() {
 // 送り終えたら、読み上げ中の項目が帯の中にあるかをもう一度確かめる
 function glide(to) {
   const from = scrollY;
-  const end = Math.max(0, Math.min(to, document.documentElement.scrollHeight - innerHeight));
+  const endNow = () => Math.max(0, Math.min(typeof to === 'function' ? to() : to, document.documentElement.scrollHeight - innerHeight));
+  let end = endNow();
   if (Math.abs(end - from) < 2) return;
   const run = ++glideRun;
   gliding = true;
@@ -513,12 +556,13 @@ function glide(to) {
     if (run !== glideRun) return;
     glideRun += 1;
     gliding = false;
-    scrollTo(0, end);
+    scrollTo(0, endNow());
     requestAnimationFrame(() => requestAnimationFrame(markSpeaking));
   };
   const step = (now) => {
     if (run !== glideRun) return;
     const p = Math.min(1, (now - start) / 480);
+    end = endNow();
     scrollTo(0, from + (end - from) * ease(p));
     if (p < 1) requestAnimationFrame(step);
     else land();
@@ -541,7 +585,8 @@ function openLetter(thenListen) {
   coverVars = measureCover();
   renderBody();
   if (thenListen && canSpeak) speak(0);
-  setTimeout(showFirstSheets, SEAL_MS);
+  setTimeout(slideOutSheets, SLIDE_MS);
+  setTimeout(settleCover, SEAL_MS);
 }
 
 // 封を開ける直前に、表紙・ボタンの段・一言の高さを測っておく。たたむ動きはこの高さから 0 へ（ボタンや言葉を透明にはしない）
@@ -636,7 +681,9 @@ const ready = startReader({ route: 2 });
 const early = cachedLetter();
 if (hasStrings() && early?.letter && early?.offer) {
   useLetter(early);
-  renderBody(); // ③から来たときは、表紙を読み込みを待たずに出す
+  // ③から来たときは、④の字の書体がそろうのを少しだけ（最長 0.5 秒）待ってから描く。移り変わりの途中で代わりの書体に揺れない
+  if (/\/choose/.test(document.referrer)) await Promise.race([Promise.all(warmFonts(letter)()), new Promise((r) => setTimeout(r, 500))]);
+  renderBody(); // 表紙を読み込みを待たずに出す
 }
 const [, data] = await Promise.all([ready, api('letter').catch(() => null)]);
 if (data?.letter) {

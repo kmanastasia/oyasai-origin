@@ -115,7 +115,8 @@ if (data) {
 render(); // 一覧とラベルは、動きの確かめを待たずにすぐ出す
 // ④の字は、手紙のカードに指やフォーカスが向いたときにだけ先に読む（③を開いただけでは読まない）
 const warm = warmFonts(letter);
-for (const type of ['pointerover', 'focusin', 'touchstart']) {
+for (const type of ['pointerover', 'focusin', 'touchstart', 'pointerdown']) {
   root.addEventListener(type, (event) => { if (event.target.closest?.('.card--letter')) warm(); }, { passive: true });
 }
+setTimeout(warm, 1200); // ③を眺めているあいだに、④の字を裏で読んでおく（③→④の移り変わりで字が揺れない）
 showOpening(await live);

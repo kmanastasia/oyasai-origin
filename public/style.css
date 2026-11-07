@@ -2457,3 +2457,30 @@ html[lang='ja'] .page-top .top__core .glyph { display: inline-block; letter-spac
   /* 読み上げ中は、目次の柱も読み上げの表示の下から始める */
   body:has(.voice-bar) .sheet-index:not(:empty) { top: calc(var(--chrome-h) + var(--voice-h, 53px) + 32px); }
 }
+
+/* =====================================================================
+   第6版 ③→④：カードが表紙になる（View Transitions。choose.html と letter.html の中だけで有効）
+   ふたの写真・その注記・朱の封・野菜の名が、③のカードから④の表紙へ形を変えながら移る。注記は写真と一緒に動く（隠れない）
+   ===================================================================== */
+.page-choose .card--letter .card__photo, .page-letter .cover-band { view-transition-name: vt-lid; }
+.page-choose .card--letter .card__cap, .page-letter .cover-lid__cap { view-transition-name: vt-cap; }
+.page-choose .card--letter .card__top .stamp, .page-letter .sheet--cover .card__top .stamp { view-transition-name: vt-seal; }
+.page-choose .card--letter .card__veg, .page-letter .sheet--cover .card__veg { view-transition-name: vt-name; }
+::view-transition-group(vt-lid), ::view-transition-group(vt-cap), ::view-transition-group(vt-seal), ::view-transition-group(vt-name) {
+  animation-duration: 520ms;
+  animation-timing-function: var(--ease-out);
+}
+/* 写真と封は古い絵を残したまま形だけ変わる（二重にぼやけない） */
+::view-transition-old(vt-lid), ::view-transition-old(vt-seal) { animation: none; opacity: 1; mix-blend-mode: normal; }
+::view-transition-new(vt-lid), ::view-transition-new(vt-seal) { animation: vt-in 520ms var(--ease-out) both; mix-blend-mode: normal; }
+@keyframes vt-in { from { opacity: 0; } 40% { opacity: 0; } to { opacity: 1; } }
+
+/* ---------- ④ 封を開ける：封と便箋が重なって動く。便箋は表紙の下から滑り出す（表紙の方が上に重なる） ---------- */
+.page-letter .sheet--cover { z-index: 3; }
+@media (prefers-reduced-motion: no-preference) {
+  .page-letter .sheet--enter { animation: sheet-out 720ms var(--ease-out) backwards; animation-delay: calc(var(--s, 0) * 90ms); }
+}
+@keyframes sheet-out { from { transform: translateY(var(--from, -32px)); } }
+/* いちばん下の便箋のずらした紙も影で描く（::after の下の紙は、滑り出す動きの間に便箋の上へ来てしまうため。表紙と同じ理由） */
+.page-letter .sheet:last-child::after { content: none; }
+.page-letter .sheet:not(.sheet--cover):last-child { box-shadow: 6px 6px 0 -1px var(--kinari-2), 6px 6px 0 0 var(--momi), 0 30px 60px -40px var(--shade); }
