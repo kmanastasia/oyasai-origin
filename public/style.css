@@ -4,45 +4,71 @@
 @font-face { font-family: 'Zen Kaku Gothic New fb'; src: local('HiraginoSans-W6'), local('Hiragino Sans W6'); font-weight: 700; size-adjust: 87%; unicode-range: U+0000-024F, U+2000-206F, U+2190-21FF; }
 
 :root {
-  /* ===== 色（2026-11-07 組み直し）：和紙・土・葉・墨。どの文字と地の組も WCAG AA（本文 4.5:1・大きな字と部品 3:1）を満たす ===== */
-  /* 紙 */
-  --kinari: #F1EBDF;   /* 地の和紙 */
-  --kinari-2: #E4DAC7; /* ずらした下の紙 */
-  --shiro: #FAF7F0;    /* 便箋・暗い面の上の字 */
-  --shiro-2: #FDFBF6;  /* 一筆箋の明るい紙 */
-  --paper: #FFFDF8;    /* 書き込む欄（①②）。真っ白にはしない */
+  /* ===== 色（第4版・2026-11-07 組み直し）：和紙・土・葉・人参・墨 =====
+     面は3つだけ：①和紙（読む便箋）②深い土（書き出し・結び・掛け紙）③葉（押すところ）。
+     野菜の色（--veg）は手紙ごとに差し替える1色。番号・罫・栞の先にだけ使い、ラベルの形（小さな塗りの札）には使わない。
+     決まった意味の色：朱 = 封だけ／注意黄 = 架空・見本・仮・合成音声の表示だけ。野菜の色とは ΔE76 で 25 以上離す。
+     コントラスト（WCAG 2.x・scratchpad の点検スクリプトで計算。本文 4.5:1・大きな字と部品 3:1）
+       ink/kinari 14.4  ink/shiro 16.5  ink/paper 17.5  ink/kinari-2 11.6
+       haicha/kinari 6.6  haicha/shiro 7.6  haicha/kinari-2 5.3
+       on-dark/tsuchi 17.5  on-dark/kogecha 14.6  on-dark-2/kogecha 9.2  on-dark-2/tsuchi 11.0  on-dark-2/tsuchi-2 9.9
+       moegi/tsuchi 11.7  moegi/kogecha 9.7（暗い面のフォーカス）
+       on-dark/ha 7.1  on-ha-2/ha 6.0  on-dark/ha-700 10.3  ha/kinari 6.2（部品）
+       ha-700/shiro 10.3  ha-700/kinari 8.9  ha-700/ha-050 9.5  ha-700/ha-100 8.4
+       ink/ha-050 15.4  ink/ha-100 13.5  ink/wakaba 13.3
+       veg/shiro 5.4  veg/kinari 4.7  ink/veg-100 13.5
+       ink/chui 11.1（表示ラベル）  chui/tsuchi 11.8  shiro/shu 5.2
+       ΔE76：veg-shu 25.8  veg-500-shu 28.7  veg-chui 56.1  shu-chui 75.5 */
+  /* 紙（3段。はっきり離す） */
+  --kinari: #EEE6D6;   /* 地の和紙 */
+  --shiro: #FAF6EE;    /* 便箋 */
+  --paper: #FFFDF8;    /* 書き込む欄・一筆箋。真っ白にはしない */
+  --kinari-2: #DCCFB6; /* ずらした下の紙・封筒の背（面ではなく縁） */
   /* 墨と土 */
-  --ink: #1C1915;      /* 本文（地の紙に 14.8:1） */
-  --haicha: #5C5244;   /* 添え書き（地の紙に 6.4:1・下の紙にも 5.5:1） */
-  --momi: #D2C4AA;     /* 細い罫（文字には使わない） */
-  --kogecha: #2E251F;  /* 掛け紙の帯（生成りの字に 14:1） */
-  --tsuchi: #181411;   /* いちばん深い土 */
-  --tsuchi-2: #29221C;
-  /* 葉 */
-  --ha: #3B6A2E;       /* 葉の緑：押すところ（生成りの字に 6.0:1） */
-  --ha-700: #2C5122;   /* 押したとき・指を載せたとき（8.5:1） */
-  --ha-100: #DCE6C8;
-  --ha-050: #EDF2E2;
-  --moegi: #B4CF6E;    /* 萌黄：暗い面の上の細い光（土の上に 10.5:1）。文字の地には使わない */
+  --ink: #1B1712;
+  --haicha-ink: #5A4D3E; /* 添え書き（明るい面） */
+  --haicha: var(--haicha-ink);
+  --momi: #CDBC9C;     /* 細い罫（文字には使わない） */
+  --kogecha: #2B2119;  /* 掛け紙の帯 */
+  --tsuchi: #15100C;   /* いちばん深い土：書き出し・結びの便箋 */
+  --tsuchi-2: #241B14; /* 土の上の一段明るい面 */
+  /* 葉：押すところ＝ha、文字の緑＝ha-700、暗い面の上の光＝moegi */
+  --ha: #2E5E26;
+  --ha-700: #1F4419;
+  --ha-300: #86A95C;   /* 暗い面の上で指を載せたときの色 */
+  --ha-100: #D8E5C1;
+  --ha-050: #EAF1DD;
+  --wakaba: #D3E6A4;   /* 若葉：大きな面だけ（読む扉・味ことばの札の縁） */
+  --moegi: #BBD672;    /* 萌黄：暗い面の上だけ */
+  /* 野菜の色（この手紙はにんじん）。手紙の根元で差し替えられる */
+  --veg: #A64A1A;      /* 文字にも使える濃さ */
+  --veg-500: #D8682B;  /* 大きな面・太い罫だけ（文字には使わない） */
+  --veg-100: #F5DCC6;
   /* 決まった意味の色：この2つはほかに使わない */
-  --shu: #D1432A;      /* 朱：封だけ */
-  --chui: #F7C843;     /* 注意黄：架空・見本・仮・合成音声の表示だけ（墨の字に 11:1） */
-  /* 暗い面の上の字と線（生成りの濃淡） */
+  --shu: #C42A30;      /* 朱：封だけ */
+  --chui: #F6C63F;     /* 注意黄：架空・見本・仮・合成音声の表示だけ */
+  /* 暗い面・葉の面の上の字と線 */
   --on-dark: var(--shiro);
-  --on-dark-2: #C9C2B6; /* 暗い面の上の控えめな字（掛け紙の上で 8.5:1） */
+  --on-dark-2: #CEC5B4;
+  --on-ha-2: #DCE7CF;
   --line-dark: color-mix(in srgb, var(--shiro) 28%, transparent);
-  --line-ink: color-mix(in srgb, var(--ink) 20%, transparent);
+  --line-ink: color-mix(in srgb, var(--ink) 22%, transparent);
   --shade: color-mix(in srgb, var(--tsuchi) 55%, transparent);
+  /* フォーカス：明るい面は濃い葉、暗い面は萌黄（どちらも 3:1 以上） */
+  --focus: var(--ha-700);
+  --focus-on-dark: var(--moegi);
   --mincho: 'Shippori Mincho B1', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
   --gothic: 'Zen Kaku Gothic New', 'Zen Kaku Gothic New fb', 'Hiragino Sans', 'Yu Gothic', sans-serif;
   --fraunces: 'Fraunces', Georgia, serif;
   --mono: 'DM Mono', ui-monospace, Menlo, monospace;
   --chrome-h: 68px;
-  /* 動きの決まりごと */
+  /* 動きの決まりごと：長さ4つ・緩急2つ */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-std: cubic-bezier(0.2, 0.7, 0.2, 1);
-  --dur-s: 180ms;
+  --dur-xs: 120ms;
+  --dur-s: 200ms;
   --dur-m: 400ms;
+  --dur-l: 640ms;
 }
 
 * { box-sizing: border-box; }
@@ -66,7 +92,7 @@ a { color: inherit; }
 
 button, a.btn { font-family: inherit; }
 
-:focus-visible { outline: 2px solid var(--ha); outline-offset: 2px; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 
 .mincho { font-family: var(--mincho); font-weight: 500; }
 .fraunces { font-family: var(--fraunces); }
@@ -173,7 +199,7 @@ button, a.btn { font-family: inherit; }
 }
 
 .stamp--big { width: 96px; height: 96px; font-size: 40px; }
-.stamp--press { animation: press 0.4s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.stamp--press { animation: press var(--dur-m) var(--ease-std); }
 .stamp--gone { opacity: 0; }
 
 @keyframes press { from { transform: rotate(var(--tilt, 0deg)) scale(1.4); } }
@@ -259,10 +285,10 @@ button, a.btn { font-family: inherit; }
   animation: opening 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-.opening.is-leaving { animation: opening-out 320ms cubic-bezier(0.4, 0, 1, 1) forwards; }
+.opening.is-leaving { animation: opening-out var(--dur-m) cubic-bezier(0.4, 0, 1, 1) forwards; }
 
 .opening__core { font-family: var(--mincho); font-size: 24px; letter-spacing: 0.08em; }
-.opening__sub { font-family: var(--fraunces); font-size: 15px; opacity: 0.8; }
+.opening__sub { font-family: var(--fraunces); font-size: 15px; color: var(--on-dark-2); }
 
 @keyframes opening { 0%, 64% { opacity: 1; } 100% { opacity: 0; } }
 @keyframes opening-out { to { opacity: 0; } }
@@ -285,7 +311,7 @@ body:has(.voice-bar) .sheet, body:has(.voice-bar) #closing { scroll-margin-top: 
 .sheet__note { font-size: 14px; color: var(--haicha); margin-top: 8px; }
 
 /* 現れ終わりの指定を持たない。動かない環境でも本文は元の見た目のまま読める */
-.appear { animation: appear 0.6s ease-out backwards; animation-delay: calc(var(--i, 0) * 0.12s); }
+.appear { animation: appear var(--dur-l) var(--ease-out) backwards; animation-delay: calc(var(--i, 0) * 0.12s); }
 
 /* 動きが止められていても最初の1枚で読めるよう、透明からは始めない */
 @keyframes appear { from { opacity: 0.4; transform: translateY(8px); } }
@@ -303,7 +329,7 @@ html[lang='en'] .sheet__title { font-family: var(--fraunces); font-weight: 600; 
   background: var(--ha-050);
   border-left: 3px solid var(--ha);
   opacity: 0;
-  transition: opacity 0.2s ease-out;
+  transition: opacity var(--dur-s) var(--ease-std);
   pointer-events: none;
 }
 .item.is-speaking::before { opacity: 1; }
@@ -406,7 +432,7 @@ html[lang='en'] .sheet__title { font-family: var(--fraunces); font-weight: 600; 
 
 /* ===== 残す側（道具の見た目。動きなし） ===== */
 .tool { background: var(--shiro); }
-.tool .stamp--press { animation-duration: 0.2s; }
+.tool .stamp--press { animation-duration: var(--dur-s); }
 
 .tool-column { max-width: 1120px; margin: 0 auto; padding: 24px 24px 64px; }
 .seal-column { max-width: 560px; margin: 0 auto; padding: 24px 20px 64px; display: flex; flex-direction: column; gap: 16px; font-size: 20px; }
@@ -539,7 +565,7 @@ html[lang='en'] .sheet__title { font-family: var(--fraunces); font-weight: 600; 
 
 /* 封のあとの橋：ここから先は読む方の画面 */
 .seal-bridge { padding: 12px 14px; border: 1px dashed var(--ink); font-size: 18px; text-align: center; }
-.btn__to { margin-left: 10px; font-family: var(--mono); font-size: 11px; opacity: 0.85; }
+.btn__to { margin-left: 10px; font-family: var(--mono); font-size: 11px; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-delay: 0ms !important; transition: none !important; }
@@ -594,9 +620,9 @@ html[lang='en'] .top .lead-line { line-height: 1.45; }
 }
 
 .door--primary { background: var(--ha); border-color: var(--ha); color: var(--shiro); }
-.door__for { font-size: 14px; font-weight: 500; opacity: 0.85; }
+.door__for { font-size: 14px; font-weight: 500; }
 .door__title { font-size: 20px; font-weight: 700; line-height: 1.5; word-break: auto-phrase; }
-.door__sub, .door__meta { font-size: 14px; opacity: 0.9; }
+.door__sub, .door__meta { font-size: 14px; }
 .door__for, .door__sub, .door__meta, .door__node { line-height: 1.5; }
 
 /* 道の印：丸 24px と名前を一組にし、組の途中では折らない。組の間に 20px の細い線 */
@@ -661,8 +687,8 @@ html[lang='en'] .door { padding: 18px 24px; gap: 4px; }
 }
 
 /* 暗い面（掛け紙・次のひと口へ）の上では、フォーカスの枠を生成りの色に */
-.kakegami :focus-visible { outline: 2px solid var(--shiro); outline-offset: -3px; }
-.next-bite:focus-visible { outline: 3px solid var(--shiro); outline-offset: -6px; }
+.kakegami :focus-visible { outline: 2px solid var(--focus-on-dark); outline-offset: -3px; }
+.next-bite:focus-visible { outline: 3px solid var(--focus-on-dark); outline-offset: -6px; }
 .kakegami__name { text-decoration: underline 1px var(--line-dark); text-underline-offset: 7px; }
 
 /* 出典は信頼の情報なので、ほかの小ラベルより一段読みやすく */
@@ -717,7 +743,7 @@ html[lang='ja'] .top .lead-line { padding-bottom: 14px; margin-bottom: 14px; bor
 }
 
 /* 現れる動き（トップは最初の1回だけ。80ms ずつ） */
-.page-top .appear { animation-duration: 600ms; animation-timing-function: var(--ease-out); animation-delay: calc(var(--i, 0) * 80ms); }
+.page-top .appear { animation-duration: var(--dur-l); animation-timing-function: var(--ease-out); animation-delay: calc(var(--i, 0) * 80ms); }
 
 /* ===== トップ（パソコン）：左に箱のふた（土の質感に縦組み）、右に扉 ===== */
 @media (min-width: 1024px) {
@@ -830,8 +856,8 @@ html[lang='ja'] .top .lead-line { padding-bottom: 14px; margin-bottom: 14px; bor
 .choose__order { font-size: 14px; color: var(--haicha); margin-top: -8px; }
 
 /* オープニングの文字は静かに上がる（動きがあるときだけ。文字は最初から見える位置にある） */
-.opening__core { animation: core-in 900ms var(--ease-out) backwards; }
-.opening__sub { animation: core-in 900ms var(--ease-out) 200ms backwards; }
+.opening__core { animation: core-in var(--dur-l) var(--ease-out) backwards; }
+.opening__sub { animation: core-in var(--dur-l) var(--ease-out) var(--dur-s) backwards; }
 @keyframes core-in { from { opacity: 0; transform: translateY(8px); } }
 
 /* パソコン：中央に少し広い1列 */
@@ -896,7 +922,7 @@ html[lang='ja'] .sheet__title { font-family: var(--gothic); font-size: 18px; fon
 .sheet--cover .card__top { justify-content: flex-end; margin-bottom: 4px; }
 
 /* 封がほどける：判子は少し持ち上がってから、傾きながら離れる（表紙とラベルは動かさない） */
-.stamp--open { animation: unseal 0.8s var(--ease-std) forwards; }
+.stamp--open { animation: unseal var(--dur-l) var(--ease-std) forwards; }
 @keyframes unseal {
   0% { transform: rotate(var(--tilt)) scale(1); }
   25% { transform: rotate(calc(var(--tilt) - 4deg)) scale(1.08); }
@@ -938,7 +964,7 @@ html[lang='ja'] .sheet__title { font-family: var(--gothic); font-size: 18px; fon
 }
 
 /* JP｜EN の前に言語のアイコン（飾り） */
-.lang .icon { width: 16px; height: 16px; margin-right: 2px; color: var(--shiro); opacity: 0.7; }
+.lang .icon { width: 16px; height: 16px; margin-right: 2px; color: var(--on-dark-2); }
 
 /* ===== ④の結び：一筆箋 ===== */
 .sheet--closing { padding-bottom: 40px; }
@@ -947,7 +973,7 @@ html[lang='en'] .closing__line { font-size: 22px; line-height: 1.5; }
 .closing__sub { margin-bottom: 28px; }
 
 /* 申込カード：売り場ではなく、一筆箋・納品書の形 */
-.offer { background: var(--shiro-2); border-top: 1px solid var(--momi); border-bottom: 1px solid var(--momi); padding: 20px 16px; margin-top: 4px; }
+.offer { background: var(--paper); border-top: 1px solid var(--momi); border-bottom: 1px solid var(--momi); padding: 20px 16px; margin-top: 4px; }
 .offer::before { content: ''; display: block; height: 1px; margin: -21px -16px 20px; background: var(--kogecha); }
 .offer__name:focus { outline: none; }
 .offer__name:focus-visible { outline: 2px solid var(--ha); outline-offset: 4px; }
@@ -955,7 +981,7 @@ html[lang='en'] .closing__line { font-size: 22px; line-height: 1.5; }
 .offer__share { font-weight: 500; color: var(--ha); }
 .bar__legend li { font-variant-numeric: tabular-nums; }
 @media (prefers-reduced-motion: no-preference) {
-  .offer--enter { animation: offer-in 420ms var(--ease-out) both; }
+  .offer--enter { animation: offer-in var(--dur-m) var(--ease-out) both; }
 }
 @keyframes offer-in { from { transform: translateY(10px); } }
 
@@ -995,7 +1021,7 @@ html[lang='en'] .closing__line { font-size: 22px; line-height: 1.5; }
 
 /* ===== ④ 読む間：次のひと口へ・栞・目次（2026-11-07 Karen 承認の上書き） ===== */
 /* 次のひと口へは 56px。便箋の下の余白・スクロールの止まる位置は、どれも「帯の高さ＋24px」でそろえる */
-:root { --next-h: 56px; --dur-l: 600ms; --wrap: 1104px; --edge: max(24px, calc(50% - var(--wrap) / 2)); }
+:root { --next-h: 56px; --wrap: 1104px; --edge: max(24px, calc(50% - var(--wrap) / 2)); }
 html { scroll-padding-bottom: calc(var(--next-h) + 24px + env(safe-area-inset-bottom)); }
 body:has(.next-bite) .column { padding-bottom: calc(var(--next-h) + 24px + env(safe-area-inset-bottom)); }
 .page-letter .sheet { scroll-margin-bottom: calc(var(--next-h) + 24px); }
@@ -1004,7 +1030,7 @@ body:has(.next-bite) .column { padding-bottom: calc(var(--next-h) + 24px + env(s
   height: calc(var(--next-h) + env(safe-area-inset-bottom));
   font-size: 17px;
   border-top: 1px solid var(--line-dark);
-  transition: transform 240ms var(--ease-std), background-color 120ms var(--ease-std);
+  transition: transform var(--dur-s) var(--ease-std), background-color var(--dur-xs) var(--ease-std);
 }
 /* 帯の上に紙のぼかし：便箋の字が帯の縁で急に切れない */
 .next-bite::before {
@@ -1182,7 +1208,7 @@ body:has(.next-bite) .column { padding-bottom: calc(var(--next-h) + 24px + env(s
 .page-choose .chrome, .page-letter .chrome { view-transition-name: vt-chrome; }
 ::view-transition-group(vt-chrome), ::view-transition-new(vt-chrome) { animation: none; }
 ::view-transition-old(vt-chrome), ::view-transition-old(root) { animation: none; opacity: 0; }
-::view-transition-new(root) { animation: vt-rise 380ms var(--ease-out) both; }
+::view-transition-new(root) { animation: vt-rise var(--dur-m) var(--ease-out) both; }
 @keyframes vt-rise { from { transform: translateY(8px); } }
 
 /* ③の最初の訪問：写真にかかった掛け紙（紙と帯）が横へ外れる。注記と文字にはかけない */
@@ -1192,7 +1218,7 @@ body:has(.next-bite) .column { padding-bottom: calc(var(--next-h) + 24px + env(s
   inset: 0;
   background: var(--kinari-2) url('/img/paper-grain.png') 0 0 / 192px;
   border-right: 1px solid var(--momi);
-  animation: unwrap 700ms var(--ease-std) 250ms forwards;
+  animation: unwrap var(--dur-l) var(--ease-std) 250ms forwards;
   pointer-events: none;
 }
 .unwrap::before { content: ''; position: absolute; top: 0; bottom: 0; left: 18%; width: 22px; background: var(--kogecha); }
@@ -1212,7 +1238,7 @@ body:has(.next-bite) .column { padding-bottom: calc(var(--next-h) + 24px + env(s
     background-size: 200% 200%;
     -webkit-background-clip: text;
     background-clip: text;
-    animation: ink-fill 1000ms var(--ease-out) both;
+    animation: ink-fill calc(var(--dur-l) * 1.5) var(--ease-out) both;
     animation-delay: calc(var(--i, 0) * 260ms);
   }
 }
@@ -1244,16 +1270,16 @@ body:has(.next-bite) .column { padding-bottom: calc(var(--next-h) + 24px + env(s
 @keyframes ink-fill-v { from { background-position: 0 100%; } to { background-position: 100% 0; } }
 
 /* ===== ④ 封を開ける：判子が離れ、帯がわずかに上がり、栞ひもが揺れる（重ねて動く）。ラベルは動かさない ===== */
-.stamp--open { animation-duration: 500ms; }
+.stamp--open { animation-duration: var(--dur-m); }
 @media (prefers-reduced-motion: no-preference) {
-  .sheet--cover.is-unsealing .cover-band { animation: band-lift 400ms var(--ease-std) 120ms both; }
-  .sheet--cover.is-unsealing .cover-ribbon { transform-origin: top center; animation: ribbon-swing 520ms var(--ease-std) 120ms both; }
+  .sheet--cover.is-unsealing .cover-band { animation: band-lift var(--dur-m) var(--ease-std) var(--dur-xs) both; }
+  .sheet--cover.is-unsealing .cover-ribbon { transform-origin: top center; animation: ribbon-swing var(--dur-m) var(--ease-std) var(--dur-xs) both; }
 }
 @keyframes band-lift { 50% { transform: translateY(-4px); } }
 @keyframes ribbon-swing { 40% { transform: rotate(-6deg); } 100% { transform: rotate(0deg); } }
 
 /* 読み上げの印：左の線が上から伸びる（下の色は静かに出る） */
-.item::after { content: ''; position: absolute; top: 0; bottom: 0; left: -12px; width: 3px; background: var(--ha); transform: scaleY(0); transform-origin: top; transition: transform 300ms var(--ease-out); pointer-events: none; z-index: 1; }
+.item::after { content: ''; position: absolute; top: 0; bottom: 0; left: -12px; width: 3px; background: var(--ha); transform: scaleY(0); transform-origin: top; transition: transform var(--dur-m) var(--ease-out); pointer-events: none; z-index: 1; }
 .item::before { border-left: 0; transition: opacity var(--dur-s) var(--ease-std); }
 .item.is-speaking::after { transform: scaleY(1); }
 .sheet__title + .item::after { top: -8px; }
@@ -1343,7 +1369,7 @@ body:has(.voice-bar) .page-letter .item { scroll-margin-top: calc(var(--chrome-h
   color: var(--ink);
   outline: 0;
   box-shadow: 0 1px 0 var(--momi), 0 22px 36px -28px var(--shade);
-  transition: transform var(--dur-s) var(--ease-std), color 240ms var(--ease-std), box-shadow var(--dur-m) var(--ease-std);
+  transition: transform var(--dur-s) var(--ease-std), color var(--dur-s) var(--ease-std), box-shadow var(--dur-m) var(--ease-std);
 }
 .page-top .top__doors .door--primary { padding-left: 44px; }
 .page-top .door:focus-visible { outline: 3px solid var(--ha); outline-offset: 3px; }
@@ -1369,7 +1395,7 @@ html[lang='en'] .page-top .door__title { font-family: var(--fraunces); font-weig
   margin-top: -24px;
   border: 1px solid currentColor;
   border-radius: 50%;
-  transition: background-color 240ms var(--ease-std), color 240ms var(--ease-std), border-color 240ms var(--ease-std);
+  transition: background-color var(--dur-s) var(--ease-std), color var(--dur-s) var(--ease-std), border-color var(--dur-s) var(--ease-std);
 }
 .door__go .icon { width: 20px; height: 20px; transition: transform var(--dur-s) var(--ease-std); }
 .door--primary .door__go { background: var(--ha); border-color: var(--ha); color: var(--on-dark); }
@@ -1382,7 +1408,7 @@ html[lang='en'] .page-top .door__title { font-family: var(--fraunces); font-weig
   z-index: -1;
   background: var(--kogecha);
   clip-path: inset(0 100% 0 0);
-  transition: clip-path 360ms var(--ease-out);
+  transition: clip-path var(--dur-m) var(--ease-out);
 }
 .page-top .door--primary::before { background: var(--ha); }
 .page-top .door:active::before { clip-path: inset(0 0 0 0); }
@@ -1431,7 +1457,7 @@ html[lang='en'] .page-top .door__title { font-family: var(--fraunces); font-weig
   .page-top .top__core.appear, .page-top .top__lid .lead-line.appear { --ink-c: var(--on-dark); }
 }
 @media (max-width: 1023px) and (prefers-reduced-motion: no-preference) {
-  .page-top .top__lid::after { animation: draw-line 900ms var(--ease-out) 120ms both; }
+  .page-top .top__lid::after { animation: draw-line var(--dur-l) var(--ease-out) var(--dur-xs) both; }
 }
 @keyframes draw-line { from { transform: scaleX(0); } }
 
@@ -1508,7 +1534,7 @@ html[lang='en'] .page-top .door__title { font-family: var(--fraunces); font-weig
 .page-letter .sheet:not(.sheet--cover) { box-shadow: 0 1px 0 var(--momi), 0 30px 60px -40px var(--shade); }
 
 /* 封を開けている間：ボタンの場所は残し、ボタンだけを消す（表紙は縮まない） */
-.cover-actions.is-leaving .btn { opacity: 0; pointer-events: none; transition: opacity 160ms var(--ease-std); }
+.cover-actions.is-leaving .btn { opacity: 0; pointer-events: none; transition: opacity var(--dur-s) var(--ease-std); }
 
 /* 便箋の見出し：本人の言葉と同じ明朝の系で、一段大きく静かに */
 html[lang='ja'] .page-letter .sheet__title { font-family: var(--mincho); font-weight: 500; font-size: 24px; letter-spacing: 0.14em; }
@@ -1555,3 +1581,45 @@ html[lang='ja'] .page-letter .sheet__title { font-family: var(--mincho); font-we
 @media (min-width: 1024px) {
   .page-choose .lead-line { font-size: clamp(28px, 2.4vw, 36px); letter-spacing: 0.08em; margin-bottom: 32px; }
 }
+
+/* =====================================================================
+   第4版（2026-11-07）：色の組み直しの当てはめ
+   ===================================================================== */
+
+/* 暗い面の上のフォーカスは萌黄（焦げ茶・土の上で 9.7〜11.7:1） */
+.chrome :focus-visible, .page-top .top__lid :focus-visible, .sheet--soil :focus-visible { outline: 2px solid var(--focus-on-dark); outline-offset: 3px; }
+.kakegami :focus-visible { outline-offset: -3px; }
+
+/* トップの扉：読む扉は若葉の面（墨の字 13.3:1）、書く扉は欄の紙。墨の枠線はやめ、紙の縁と影で分ける */
+.page-top .door { border-color: var(--momi); }
+.page-top .door .door__for, .page-top .door .door__meta { color: var(--haicha); }
+.reader.page-top .door--primary { background-color: var(--wakaba); border-color: color-mix(in srgb, var(--ha) 35%, var(--wakaba)); }
+.reader.page-top .door--primary .door__for, .reader.page-top .door--primary .door__meta { color: var(--ha-700); }
+.page-top .door:not(.door--primary) { background-color: var(--paper); }
+/* 指を載せたとき：面が満ちる色ごとに、控えめな字の色も決めておく（透明度で薄めない） */
+.page-top .door:active .door__for, .page-top .door:active .door__meta, .page-top .door:active .door__sub { color: var(--on-dark-2); }
+.page-top .door--primary:active .door__for, .page-top .door--primary:active .door__meta, .page-top .door--primary:active .door__sub { color: var(--on-ha-2); }
+@media (hover: hover) {
+  .page-top .door:hover .door__for, .page-top .door:hover .door__meta, .page-top .door:hover .door__sub { color: var(--on-dark-2); }
+  .page-top .door--primary:hover .door__for, .page-top .door--primary:hover .door__meta, .page-top .door--primary:hover .door__sub { color: var(--on-ha-2); }
+  .reader.page-top .door--primary:hover { border-color: var(--ha); }
+  .page-top .door:not(.door--primary):hover { border-color: var(--kogecha); }
+}
+
+/* 野菜の色：番号・名前の下の罫・栞の先・目次のいまの項目・③のカードに指を載せたとき */
+.page-letter .sheet__no { color: var(--veg); }
+.page-letter .sheet__no::after { background: var(--veg-500) !important; }
+.page-letter .sheet--cover .card__veg > .mincho { text-decoration: underline 4px var(--veg-500); text-underline-offset: 0.28em; text-decoration-skip-ink: none; }
+.cover-ribbon, .page-letter .cover-ribbon, .shiori { background: linear-gradient(to bottom, var(--ha-700) 0 72%, var(--veg-500) 72%) !important; }
+@media (min-width: 1200px) {
+  .sheet-index button.is-current { color: var(--veg); border-left-color: var(--veg-500); }
+}
+.page-choose .card--letter { transition: box-shadow var(--dur-m) var(--ease-std), transform var(--dur-m) var(--ease-std); border-top: 3px solid var(--veg-500); }
+@media (hover: hover) {
+  .page-choose .card--letter:hover { transform: translateY(-3px); box-shadow: 0 1px 0 var(--momi), 0 0 0 1px var(--veg-500), 0 48px 80px -44px var(--shade); }
+}
+@media (prefers-reduced-motion: reduce) { .page-choose .card--letter:hover { transform: none; } }
+
+/* 文字の緑（リンク・目次・押した印）は濃い葉。押すところの面は葉 */
+.reader .route__step.is-current, .steps__item.is-current { border-bottom-color: var(--ha); }
+.closing__back { color: var(--ha-700); text-underline-offset: 5px; }
