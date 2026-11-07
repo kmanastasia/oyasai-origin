@@ -4,28 +4,40 @@
 @font-face { font-family: 'Zen Kaku Gothic New fb'; src: local('HiraginoSans-W6'), local('Hiragino Sans W6'); font-weight: 700; size-adjust: 87%; unicode-range: U+0000-024F, U+2000-206F, U+2190-21FF; }
 
 :root {
-  --kinari: #EFE6D4;
-  --shiro: #F8F3E8;
-  --ink: #1A1612;
-  --haicha: #6E6354;
-  --momi: #CDBFA3;
-  --kogecha: #4A3426;
-  --ha: #4E6B2D;
-  --shu: #CC4128;
-  --chui: #E8B83A;
-  --tsuchi: #1B1612;
+  /* ===== 色（2026-11-07 組み直し）：和紙・土・葉・墨。どの文字と地の組も WCAG AA（本文 4.5:1・大きな字と部品 3:1）を満たす ===== */
+  /* 紙 */
+  --kinari: #F1EBDF;   /* 地の和紙 */
+  --kinari-2: #E4DAC7; /* ずらした下の紙 */
+  --shiro: #FAF7F0;    /* 便箋・暗い面の上の字 */
+  --shiro-2: #FDFBF6;  /* 一筆箋の明るい紙 */
+  --paper: #FFFDF8;    /* 書き込む欄（①②）。真っ白にはしない */
+  /* 墨と土 */
+  --ink: #1C1915;      /* 本文（地の紙に 14.8:1） */
+  --haicha: #5C5244;   /* 添え書き（地の紙に 6.4:1・下の紙にも 5.5:1） */
+  --momi: #D2C4AA;     /* 細い罫（文字には使わない） */
+  --kogecha: #2E251F;  /* 掛け紙の帯（生成りの字に 14:1） */
+  --tsuchi: #181411;   /* いちばん深い土 */
+  --tsuchi-2: #29221C;
+  /* 葉 */
+  --ha: #3B6A2E;       /* 葉の緑：押すところ（生成りの字に 6.0:1） */
+  --ha-700: #2C5122;   /* 押したとき・指を載せたとき（8.5:1） */
+  --ha-100: #DCE6C8;
+  --ha-050: #EDF2E2;
+  --moegi: #B4CF6E;    /* 萌黄：暗い面の上の細い光（土の上に 10.5:1）。文字の地には使わない */
+  /* 決まった意味の色：この2つはほかに使わない */
+  --shu: #D1432A;      /* 朱：封だけ */
+  --chui: #F7C843;     /* 注意黄：架空・見本・仮・合成音声の表示だけ（墨の字に 11:1） */
+  /* 暗い面の上の字と線（生成りの濃淡） */
+  --on-dark: var(--shiro);
+  --on-dark-2: #C9C2B6; /* 暗い面の上の控えめな字（掛け紙の上で 8.9:1） */
+  --line-dark: color-mix(in srgb, var(--shiro) 28%, transparent);
+  --line-ink: color-mix(in srgb, var(--ink) 20%, transparent);
+  --shade: color-mix(in srgb, var(--tsuchi) 55%, transparent);
   --mincho: 'Shippori Mincho B1', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
   --gothic: 'Zen Kaku Gothic New', 'Zen Kaku Gothic New fb', 'Hiragino Sans', 'Yu Gothic', sans-serif;
   --fraunces: 'Fraunces', Georgia, serif;
   --mono: 'DM Mono', ui-monospace, Menlo, monospace;
   --chrome-h: 68px;
-  /* 同じ色相の濃淡だけ（新しい色は足さない） */
-  --kinari-2: #E6DBC5;
-  --shiro-2: #FBF8F1;
-  --ha-700: #3E5724;
-  --ha-100: #E3E8D5;
-  --ha-050: #F0F2E8;
-  --tsuchi-2: #2A221B;
   /* 動きの決まりごと */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-std: cubic-bezier(0.2, 0.7, 0.2, 1);
@@ -74,7 +86,7 @@ button, a.btn { font-family: inherit; }
   text-align: center;
 }
 
-.band--sub { border-top: 1px solid rgba(26, 22, 18, 0.2); }
+.band--sub { border-top: 1px solid var(--line-ink); }
 
 .band--inline { line-height: 1.5; padding: 8px 24px; margin: -32px -24px 20px; text-align: left; }
 
@@ -102,7 +114,7 @@ button, a.btn { font-family: inherit; }
 }
 
 .lang { display: flex; align-items: center; }
-.lang__sep { opacity: 0.5; font-size: 12px; }
+.lang__sep { color: var(--on-dark-2); font-size: 12px; }
 
 .lang__btn {
   min-width: 44px;
@@ -114,11 +126,11 @@ button, a.btn { font-family: inherit; }
   font-family: var(--mono);
   font-size: 12px;
   letter-spacing: 0.08em;
-  opacity: 0.6;
+  color: var(--on-dark-2);
   cursor: pointer;
 }
 
-.lang__btn[aria-pressed='true'] { opacity: 1; text-decoration: underline; text-underline-offset: 4px; }
+.lang__btn[aria-pressed='true'] { color: var(--on-dark); text-decoration: underline; text-underline-offset: 4px; }
 
 /* ボタン */
 .btn {
@@ -336,7 +348,7 @@ html[lang='en'] .sheet__title { font-family: var(--fraunces); font-weight: 600; 
   gap: 8px;
   padding: 4px 8px 4px 16px;
   background: var(--chui);
-  border-top: 1px solid rgba(26, 22, 18, 0.2);
+  border-top: 1px solid var(--line-ink);
   font-size: 14px;
   font-weight: 500;
 }
@@ -412,7 +424,7 @@ html[lang='en'] .sheet__title { font-family: var(--fraunces); font-weight: 600; 
   padding: 12px;
   border: 1px solid var(--momi);
   border-radius: 4px;
-  background: #fff;
+  background: var(--paper);
   color: var(--ink);
   font: 16px/1.8 var(--gothic);
   resize: vertical;
@@ -420,7 +432,7 @@ html[lang='en'] .sheet__title { font-family: var(--fraunces); font-weight: 600; 
 
 .tool-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
 
-.error { margin-top: 16px; padding: 12px 16px; background: #fff; border: 2px solid var(--ink); }
+.error { margin-top: 16px; padding: 12px 16px; background: var(--paper); border: 2px solid var(--ink); }
 .error__what { font-weight: 700; }
 
 .notice { margin-bottom: 12px; padding: 8px 12px; background: var(--kinari); border-left: 3px solid var(--kogecha); font-size: 14px; }
@@ -443,7 +455,7 @@ html[lang='en'] .sheet__title { font-family: var(--fraunces); font-weight: 600; 
 .source mark { background: var(--ha-100); color: inherit; border-bottom: 2px solid var(--ha); padding: 0 1px; } /* 注意黄は架空・見本・仮だけ */
 
 .units { display: grid; gap: 12px; }
-.unit { background: #fff; border: 1px solid var(--momi); }
+.unit { background: var(--paper); border: 1px solid var(--momi); }
 .unit.is-active { border-color: var(--ink); }
 .unit--missing { border: 2px dashed var(--kogecha); }
 
@@ -470,12 +482,12 @@ html[lang='en'] .sheet__title { font-family: var(--fraunces); font-weight: 600; 
 .unit__reason-q { font-family: var(--mincho); }
 .unit__missing { flex-basis: 100%; margin-top: 4px; font-size: 14px; }
 
-.questions { margin-top: 24px; padding: 16px; border: 2px dashed var(--kogecha); background: #fff; }
+.questions { margin-top: 24px; padding: 16px; border: 2px dashed var(--kogecha); background: var(--paper); }
 .questions__head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .questions ol { list-style: decimal; padding-left: 24px; }
 
 .seal-count { font-size: 18px; color: var(--haicha); }
-.seal-card { padding: 20px; background: #fff; border: 1px solid var(--momi); }
+.seal-card { padding: 20px; background: var(--paper); border: 1px solid var(--momi); }
 .seal-label { font-size: 18px; font-weight: 500; color: var(--haicha); margin-bottom: 6px; }
 .seal-quote { font-family: var(--mincho); font-size: 22px; line-height: 1.7; margin-bottom: 20px; }
 .seal-quote--reason { font-size: 20px; padding-left: 12px; border-left: 3px solid var(--kogecha); }
@@ -488,7 +500,7 @@ html[lang='en'] .sheet__title { font-family: var(--fraunces); font-weight: 600; 
 .audience__btn {
   min-height: 72px;
   padding: 8px;
-  background: #fff;
+  background: var(--paper);
   border: 1px solid var(--momi);
   border-radius: 4px;
   color: var(--ink);
@@ -515,7 +527,7 @@ html[lang='en'] .sheet__title { font-family: var(--fraunces); font-weight: 600; 
 .together legend { grid-column: 1 / -1; padding: 0; margin-bottom: 6px; font-size: 18px; font-weight: 500; }
 .together__btn {
   min-height: 56px;
-  background: #fff;
+  background: var(--paper);
   border: 1px solid var(--momi);
   border-radius: 4px;
   color: var(--ink);
@@ -639,7 +651,7 @@ html[lang='en'] .door { padding: 18px 24px; gap: 4px; }
 .reader .btn:not(:disabled):active, .reader .door:active { transform: translateY(1px) scale(0.985); }
 .reader .btn--primary:not(:disabled):active, .reader .door--primary:active { background: var(--ha-700); border-color: var(--ha-700); }
 .reader .btn--ghost:not(:disabled):active { background: var(--ha-050); }
-.lang__btn:hover { opacity: 1; }
+.lang__btn:hover { color: var(--on-dark); }
 
 @media (hover: hover) {
   .reader .btn--primary:not(:disabled):hover, .reader .door--primary:hover { background: var(--ha-700); border-color: var(--ha-700); }
@@ -651,7 +663,7 @@ html[lang='en'] .door { padding: 18px 24px; gap: 4px; }
 /* 暗い面（掛け紙・次のひと口へ）の上では、フォーカスの枠を生成りの色に */
 .kakegami :focus-visible { outline: 2px solid var(--shiro); outline-offset: -3px; }
 .next-bite:focus-visible { outline: 3px solid var(--shiro); outline-offset: -6px; }
-.kakegami__name { text-decoration: underline 1px rgba(248, 243, 232, 0.28); text-underline-offset: 7px; }
+.kakegami__name { text-decoration: underline 1px var(--line-dark); text-underline-offset: 7px; }
 
 /* 出典は信頼の情報なので、ほかの小ラベルより一段読みやすく */
 .item__foot .mono { font-size: 13px; letter-spacing: 0.06em; color: var(--kogecha); }
@@ -696,8 +708,8 @@ html[lang='ja'] .top__core { font-size: clamp(32px, 8.6vw, 36px); line-height: 1
 html[lang='ja'] .top .lead-line { padding-bottom: 14px; margin-bottom: 14px; border-bottom: 1px solid var(--momi); }
 
 /* 読む扉：ベタの緑の内側 7px に、生成りの細い線（箱の内ぶた） */
-.door--primary { outline: 1px solid rgba(248, 243, 232, 0.42); outline-offset: -7px; }
-.door--primary .door__no { border-color: rgba(248, 243, 232, 0.8); }
+.door--primary { outline: 1px solid var(--line-dark); outline-offset: -7px; }
+.door--primary .door__no { border-color: var(--on-dark-2); }
 .door--primary:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 
 @media (hover: hover) {
@@ -733,8 +745,8 @@ html[lang='ja'] .top .lead-line { padding-bottom: 14px; margin-bottom: 14px; bor
     overflow: hidden;
   }
   /* 写真は土の色に沈める。上の文字の読みやすさを先に守る */
-  .top__lid::before { content: ''; position: absolute; inset: 0; z-index: -1; background: rgba(27, 22, 18, 0.5); }
-  .top__lid::after { content: ''; position: absolute; inset: 10px; z-index: -1; border: 1px solid rgba(248, 243, 232, 0.22); border-radius: 2px; pointer-events: none; }
+  .top__lid::before { content: ''; position: absolute; inset: 0; z-index: -1; background: var(--shade); }
+  .top__lid::after { content: ''; position: absolute; inset: 10px; z-index: -1; border: 1px solid var(--line-dark); border-radius: 2px; pointer-events: none; }
   .top__cap { display: block; }
   .top__body { display: block; align-self: center; padding: 8px 0; }
 
@@ -757,13 +769,13 @@ html[lang='ja'] .top .lead-line { padding-bottom: 14px; margin-bottom: 14px; bor
     padding: 0;
     padding-block-start: 22px; /* 見出しとのあいだに縦の細い罫 */
     border: 0;
-    border-block-start: 1px solid rgba(248, 243, 232, 0.4);
+    border-block-start: 1px solid var(--line-dark);
   }
 
   /* 英語：横組み Fraunces。ふたの下に寄せる */
   html[lang='en'] .top__lid { flex-direction: column; justify-content: flex-end; gap: 16px; }
   html[lang='en'] .top__core { font-family: var(--fraunces); font-weight: 400; font-size: clamp(48px, 3vw + 16px, 80px); line-height: 1.08; letter-spacing: -0.01em; margin: 0; }
-  html[lang='en'] .top .lead-line { font-family: var(--fraunces); font-size: 22px; line-height: 1.45; margin: 0; padding-top: 16px; border-top: 1px solid rgba(248, 243, 232, 0.4); }
+  html[lang='en'] .top .lead-line { font-family: var(--fraunces); font-size: 22px; line-height: 1.45; margin: 0; padding-top: 16px; border-top: 1px solid var(--line-dark); }
 
   .top .section-eyebrow { margin-bottom: 16px; }
   .top .door { padding: 28px 32px; }
@@ -903,7 +915,7 @@ html[lang='ja'] .sheet__title { font-family: var(--gothic); font-size: 18px; fon
   align-items: center;
   justify-content: center;
   gap: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  border-top: 1px solid var(--line-dark);
   font-family: var(--mincho);
   letter-spacing: 0.12em;
 }
@@ -991,7 +1003,7 @@ body:has(.next-bite) .column { padding-bottom: calc(var(--next-h) + 24px + env(s
 .next-bite {
   height: calc(var(--next-h) + env(safe-area-inset-bottom));
   font-size: 17px;
-  border-top: 1px solid rgba(248, 243, 232, 0.24);
+  border-top: 1px solid var(--line-dark);
   transition: transform 240ms var(--ease-std), background-color 120ms var(--ease-std);
 }
 /* 帯の上に紙のぼかし：便箋の字が帯の縁で急に切れない */
@@ -1002,15 +1014,15 @@ body:has(.next-bite) .column { padding-bottom: calc(var(--next-h) + 24px + env(s
   right: 0;
   bottom: 100%;
   height: 16px;
-  background: linear-gradient(rgba(239, 230, 212, 0), var(--kinari));
+  background: linear-gradient(color-mix(in srgb, var(--kinari) 0%, transparent), var(--kinari));
   pointer-events: none;
 }
 .next-bite.is-tucked { transform: translateX(-50%) translateY(calc(100% + 16px)); }
-.next-bite__count { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; opacity: 0.8; }
+.next-bite__count { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; }
 
 /* タブレット：便箋の幅より狭い、浮いた一筆箋の形 */
 @media (min-width: 768px) {
-  .next-bite { width: min(100% - 48px, 360px); bottom: 16px; height: var(--next-h); padding: 0 20px; border-radius: 6px; border-top: 0; outline: 1px solid rgba(248, 243, 232, 0.4); outline-offset: -5px; }
+  .next-bite { width: min(100% - 48px, 360px); bottom: 16px; height: var(--next-h); padding: 0 20px; border-radius: 6px; border-top: 0; outline: 1px solid var(--line-dark); outline-offset: -5px; }
   .next-bite::before { display: none; }
   body:has(.next-bite) .column { padding-bottom: calc(var(--next-h) + 48px); }
 }
@@ -1210,7 +1222,7 @@ body:has(.next-bite) .column { padding-bottom: calc(var(--next-h) + 24px + env(s
 .column.top { position: relative; }
 @media (max-width: 1023px) {
   .column.top { padding-top: 8px; }
-  .column.top::before { content: ''; display: block; height: 4px; margin: 0 0 12px; background: var(--kogecha); box-shadow: inset 0 -1px 0 rgba(248, 243, 232, 0.45); }
+  .column.top::before { content: ''; display: block; height: 4px; margin: 0 0 12px; background: var(--kogecha); box-shadow: inset 0 -1px 0 var(--line-dark); }
 }
 /* 読む扉は個包装：下にずらした紙を1枚重ねる。書く扉は1本の線だけ */
 .door--primary { box-shadow: 3px 3px 0 -1px var(--kinari-2), 3px 3px 0 0 var(--momi); }
