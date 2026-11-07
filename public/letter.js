@@ -27,6 +27,8 @@ let speechRun = 0; // 止めた読み上げの知らせを、次の読み上げ�
 let closingOpen = false;
 let actionDone = false;
 let justOpened = false; // 申込カードを今開いたときだけ、下から入る
+let gliding = false; // 手紙を送っている間は、読み上げの印で別の場所へ寄せない
+let glideRun = 0;
 
 const en = () => getLang() === 'en';
 const pair = (value) => (en() ? value.en : value.ja);
@@ -55,11 +57,28 @@ function markSpeaking() {
   for (const el of root.querySelectorAll('[data-item-id]')) {
     const on = el.dataset.itemId === speakingItem;
     el.classList.toggle('is-speaking', on);
-    if (!on) continue;
-    // 読んでいる項目が画面の外なら、真ん中まで寄せる
-    const box = el.getBoundingClientRect();
-    if (box.bottom < 120 || box.top > innerHeight - 120) el.scrollIntoView({ block: 'center', behavior: calm() ? 'auto' : 'smooth' });
+    if (on && !gliding) keepInView(el);
   }
+}
+
+// 本当に見えている帯：上は掛け紙と読み上げの表示の下、下は「次のひと口へ」の上
+function visibleBand() {
+  const chrome = document.getElementById('chrome')?.getBoundingClientRect().bottom ?? 0;
+  const voice = voiceRoot.firstElementChild ? voiceRoot.getBoundingClientRect().bottom : 0;
+  const bar = nextRoot.firstElementChild;
+  const barTop = bar && !bar.classList.contains('is-tucked') ? bar.getBoundingClientRect().top : innerHeight;
+  return { top: Math.max(chrome, voice) + 12, bottom: Math.min(innerHeight, barTop) - 12 };
+}
+
+// 読んでいる項目が帯の外なら、帯の真ん中（入りきらなければ頭）へ寄せる
+function keepInView(el) {
+  const box = el.getBoundingClientRect();
+  const band = visibleBand();
+  if (box.top >= band.top && box.bottom <= band.bottom) return;
+  const room = band.bottom - band.top;
+  const to = scrollY + box.top - band.top - Math.max(0, (room - box.height) / 2);
+  if (noMotion()) scrollTo(0, to);
+  else glide(to);
 }
 
 function speak(index) {
@@ -93,14 +112,18 @@ function speak(index) {
   renderBody();
 }
 
+// 読み上げの表示は掛け紙のすぐ下の段に入る（本文の上に重ねない）。出た分・消えた分だけ送って、読んでいる位置を動かさない
 function renderVoice() {
-  if (speaking === null) {
-    voiceRoot.replaceChildren();
-    return;
+  const before = voiceRoot.offsetHeight;
+  if (speaking === null) voiceRoot.replaceChildren();
+  else {
+    voiceRoot.replaceChildren(h('div', { class: 'voice-bar', role: 'status' },
+      h('span', { class: 'voice-bar__label', text: t('voice.label') }),
+      h('button', { class: 'voice-bar__stop', type: 'button', onclick: stopSpeech }, icon('stop'), h('span', { text: t('voice.stop') }))));
   }
-  voiceRoot.replaceChildren(h('div', { class: 'voice-bar', role: 'status' },
-    h('span', { class: 'voice-bar__label', text: t('voice.label') }),
-    h('button', { class: 'voice-bar__stop', type: 'button', onclick: stopSpeech }, icon('stop'), h('span', { text: t('voice.stop') }))));
+  const delta = voiceRoot.offsetHeight - before;
+  document.documentElement.style.setProperty('--voice-h', `${voiceRoot.offsetHeight}px`);
+  if (delta && scrollY > 0) scrollBy({ top: delta, behavior: 'instant' });
 }
 
 /* ---- 手紙の部品 ---- */
@@ -462,27 +485,43 @@ function next() {
 function showFirstSheets() {
   unsealing = false;
   if (!noMotion()) entering = new Set(['land', 'bite-0']);
+  gliding = true; // 描き直しの間は寄せない。行き先はこの下で一度だけ決める
   renderBody();
+  gliding = false;
   const target = letter.land.length ? root.querySelector('[data-section="land"]') : document.getElementById('bite-0');
-  if (noMotion()) target?.scrollIntoView({ behavior: 'auto', block: 'start' });
+  const spoken = speakingItem && root.querySelector(`[data-item-id="${speakingItem}"]`);
+  if (spoken) keepInView(spoken); // 声で読むときは、読んでいる項目へ
+  else if (noMotion()) target?.scrollIntoView({ behavior: 'auto', block: 'start' });
   else if (target) glide(target.getBoundingClientRect().top + scrollY - innerHeight * 0.4);
   announce(letter.land.length ? 'land' : 'bite-0');
 }
 
 // 便箋の見出しが画面の 4 割の高さに来るところまで、短く静かに送る（標準のなめらかスクロールより短い距離と時間）
+// 送り終えたら、読み上げ中の項目が帯の中にあるかをもう一度確かめる
 function glide(to) {
   const from = scrollY;
   const end = Math.max(0, Math.min(to, document.documentElement.scrollHeight - innerHeight));
   if (Math.abs(end - from) < 2) return;
+  const run = ++glideRun;
+  gliding = true;
   const start = performance.now();
   const ease = (x) => 1 - (1 - x) ** 3;
+  const land = () => {
+    if (run !== glideRun) return;
+    glideRun += 1;
+    gliding = false;
+    scrollTo(0, end);
+    requestAnimationFrame(() => requestAnimationFrame(markSpeaking));
+  };
   const step = (now) => {
+    if (run !== glideRun) return;
     const p = Math.min(1, (now - start) / 480);
     scrollTo(0, from + (end - from) * ease(p));
     if (p < 1) requestAnimationFrame(step);
+    else land();
   };
   requestAnimationFrame(step);
-  setTimeout(() => scrollTo(0, end), 700); // rAF が止まっていても、行き先には着く
+  setTimeout(land, 700); // rAF が止まっていても、行き先には着く
 }
 
 // 読み上げは押した瞬間に始める。遅らせるのはスクロールと文字だけ。

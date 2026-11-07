@@ -1623,3 +1623,9 @@ html[lang='ja'] .page-letter .sheet__title { font-family: var(--mincho); font-we
 /* 文字の緑（リンク・目次・押した印）は濃い葉。押すところの面は葉 */
 .reader .route__step.is-current, .steps__item.is-current { border-bottom-color: var(--ha); }
 .closing__back { color: var(--ha-700); text-underline-offset: 5px; }
+
+/* ---------- ④ 読み上げの表示：掛け紙のすぐ下の段に入る（本文の上に重ねない）。字の大きさ・色・位置は今までどおり ---------- */
+#voice { position: sticky; top: var(--chrome-h); height: auto; z-index: 25; }
+#voice .voice-bar { position: static; }
+html:has(.voice-bar) { scroll-padding-top: calc(var(--chrome-h) + var(--voice-h, 53px) + 16px); }
+body.page-letter:has(.voice-bar) .sheet, body.page-letter:has(.voice-bar) #closing, body.page-letter:has(.voice-bar) .item { scroll-margin-top: calc(var(--chrome-h) + var(--voice-h, 53px) + 16px); }
