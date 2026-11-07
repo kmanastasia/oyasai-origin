@@ -35,6 +35,8 @@
 
   { "key": "choose.heading", "ja": "届いている手紙", "en": "Letters for you", "en_reviewed_by": null },
   { "key": "choose.open", "ja": "この手紙を開く", "en": "Open this letter", "en_reviewed_by": null },
+  { "key": "choose.maker", "ja": "作り手", "en": "Maker", "en_reviewed_by": null },
+  { "key": "choose.order", "ja": "手紙が増えると、同じ作り手の下に新しい順に並びます", "en": "As more letters arrive, they line up under the same maker, newest first.", "en_reviewed_by": null },
   { "key": "choose.slot", "ja": "まだ封をしていない手紙", "en": "A letter not yet sealed", "en_reviewed_by": null },
   { "key": "choose.empty", "ja": "まだ封をした手紙はありません", "en": "No letters have been sealed yet", "en_reviewed_by": null },
   { "key": "choose.start", "ja": "作り手の方：①残す から始める", "en": "For makers: start at ① Keep (Japanese)", "en_reviewed_by": null },

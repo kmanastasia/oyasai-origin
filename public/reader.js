@@ -102,3 +102,12 @@ export function translationTag(translations) {
 export function checkTag() {
   return h('p', { class: 'tag-line tag-line--proxy' }, h('span', { text: t('check.done') }));
 }
+
+// 朱の封。SVG は HTML の <template> から複製する（h() では SVG を作れない）。「封」の字にはにじみをかけない。
+export function sealStamp(extra = '') {
+  const el = h('span', { class: `stamp${extra}`, 'aria-hidden': 'true' });
+  const template = document.getElementById('tpl-stamp');
+  if (template) el.append(template.content.firstElementChild.cloneNode(true));
+  else el.textContent = '封';
+  return el;
+}
