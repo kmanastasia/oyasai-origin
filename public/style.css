@@ -1817,3 +1817,5 @@ html .reader .sheet--soil .sheet__title { color: var(--on-dark); }
 /* 読み上げ中の印は野菜の淡い色（味ことばの若葉の札と見分ける）。墨の字 13.5:1 */
 .page-letter .sheet--bite .item::before { background: var(--veg-100); }
 .page-letter .sheet--bite .item::after { background: var(--veg); }
+/* 名前の下の野菜の色の罫と、その下の「（架空）」の行のあいだを空ける */
+.page-letter .sheet--cover .card__veg { margin-bottom: 14px; }
