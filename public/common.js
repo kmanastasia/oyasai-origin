@@ -65,7 +65,7 @@ export function routeBar({ who, steps, current, home }) {
 // 書く流れ（残す → 封をする）。日本語のみ。
 export const makerRoute = (current) => routeBar({
   who: '書く',
-  steps: [['残す', '/keep'], ['封をする', '/seal']],
+  steps: [['残す', '/keep'], ['手紙にする', '/keep']],
   current,
   home: '← トップ',
 });

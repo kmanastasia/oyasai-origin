@@ -41,22 +41,12 @@ function profileView() {
       row('farmer.season', pair(farmer.season))));
 }
 
-// 準備中の手紙：巻いた巻物の小さな札（まだひらけない）
-function comingView(entry) {
-  return h('article', { class: 'card card--coming' },
-    makimono('closed', ' maki--small'),
-    h('span', { class: 'card__coming-text' },
-      h('span', { class: 'mono', text: `${t('route.letter')} · ${entry.no}` }),
-      h('span', { text: t('farmer.coming') })));
-}
-
-// 手紙の札：巻いた巻物（QR でひらく）か、ひらける巻物。準備中の手紙はその下に小さく
+// 手紙の札：巻いた巻物（写真や QR でひらく）か、ひらける巻物。まだ無い手紙は出さない
 function letterView() {
-  const coming = (farmer.letters ?? []).filter((l) => l.status === 'coming');
   if (!farmer.letter || !letter || letter.meta.no !== farmer.letter) {
     return h('section', { class: 'letters' },
       h('h2', { class: 'section-eyebrow', text: t('farmer.letters') }),
-      coming.length ? coming.map(comingView) : h('p', { class: 'state', text: t('farmer.none') }));
+      h('p', { class: 'state', text: t('farmer.none') }));
   }
   const no = letter.meta.no;
   const unlocked = isUnlocked(no);
@@ -82,7 +72,7 @@ function letterView() {
             // 見本：QR を読み込んだことにする（鍵が無いときの代わり）
             h('button', { class: 'btn btn--ghost btn--tall', type: 'button', onclick: unlock, text: t('farmer.unlock') }),
           ])),
-    coming.map(comingView));
+    );
 }
 
 function unlock() {

@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { UserError } from '../lib/ingest.mjs';
-import { configure, createDraft, getDraft, getFarmers, identifyFarmer, getLetter, getOffer, getUiStrings, isDemo, readSampleTranscript, resetAll, sealLetter, unsealLetter } from './pipeline.mjs';
+import { configure, createDraft, editDraft, getDraft, getFarmers, identifyFarmer, getLetter, getOffer, getUiStrings, isDemo, readSampleTranscript, resetAll, sealLetter, unsealLetter } from './pipeline.mjs';
 
 const publicDir = fileURLToPath(new URL('../public/', import.meta.url));
 const PORT = Number(process.env.PORT ?? 3000);
@@ -42,6 +42,11 @@ const ROUTES = {
   'POST /api/draft': async (req) => {
     const { transcript, meta } = await readBody(req);
     return { draft: await createDraft(transcript, meta) };
+  },
+  // 下書きの項目を直す（タグ・見出し・引用。引用は原文にある言葉だけ）
+  'POST /api/draft/edit': async (req) => {
+    const { edits } = await readBody(req);
+    return editDraft(edits);
   },
   'POST /api/seal': async (req) => {
     const { decisions, checked_with_farmer: checkedWithFarmer } = await readBody(req);

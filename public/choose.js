@@ -60,12 +60,13 @@ function letterState(farmer) {
 }
 
 function letterMark(farmer, state) {
-  const count = letterCount(farmer);
+  // ひらける手紙が無い農家には印を出さない（読む人にとって要らない話なので）
+  if (state === 'none' || state === 'coming') return null;
+  const count = (farmer.letters ?? []).filter((l) => l.status === 'sealed').length;
   return h('span', { class: `letter-mark letter-mark--${state}` },
     makimono(state === 'opened' ? 'open' : 'closed', ` maki--tiny maki--${state}`),
     h('span', { class: 'letter-mark__n mincho', 'aria-hidden': 'true', text: String(count) }),
-    h('span', { class: 'visually-hidden', text: t(`farmers.state.${state}`, { n: count }) }),
-    state === 'coming' ? h('span', { class: 'maker__coming', text: t('farmers.coming') }) : null);
+    h('span', { class: 'visually-hidden', text: t(`farmers.state.${state}`, { n: count }) }));
 }
 
 // 印の読み方（一覧の上に一度だけ）
@@ -84,7 +85,7 @@ function farmerCard(farmer) {
         h('span', { class: 'mono maker__no', text: farmer.no }),
         h('span', { class: 'maker__farm mincho', text: pair(farmer.farm) }),
         h('span', { class: 'maker__line', text: `${pair(farmer.region)}｜${farmer.items.map(pair).join('・')}｜${pair(farmer.season)}` }),
-        h('span', { class: 'maker__row' }, letterMark(farmer, state))),
+        letterMark(farmer, state) ? h('span', { class: 'maker__row' }, letterMark(farmer, state)) : null),
       // お店・SNS の印：押せない・リンクなし（行き先が決まるまで「準備中」）
       h('span', { class: 'maker__links', title: t('farmers.links') },
         h('span', { class: 'maker__link-mark' }, icon('shop')),

@@ -104,6 +104,34 @@ export async function createDraft(text, meta) {
 
 export const getDraft = () => readJsonIfExists(`${runtimeDir}draft.json`);
 
+// 下書きの項目を直す：分類（タグ）・見出し・引用。引用は原文の中の連続した文字列だけ受け付け、原文にない言葉は元のまま戻す。
+const CATEGORIES = new Set(['craft', 'judgment', 'land', 'person']);
+const shortText = (value, max) => (typeof value === 'string' ? value.trim().slice(0, max) : '');
+export async function editDraft(edits) {
+  const draft = await getDraft();
+  if (!draft) throw new UserError('直す下書きがありません。', '文字起こしを貼って「手紙の下書きにする」を押してから、もう一度直してください。');
+  const byId = new Map((Array.isArray(edits) ? edits : []).filter((e) => e && typeof e.id === 'string').map((e) => [e.id, e]));
+  const proposed = draft.entries.map((entry) => {
+    const edit = byId.get(entry.id);
+    if (!edit) return entry;
+    return {
+      ...entry,
+      category: CATEGORIES.has(edit.category) ? edit.category : entry.category,
+      title_sys: shortText(edit.title_sys, 40) || entry.title_sys,
+      quote: shortText(edit.quote, 200) || entry.quote,
+    };
+  });
+  const checked = verifyArchive({ entries: proposed, next_questions: draft.next_questions }, draft.paragraphs);
+  const rejectedIds = new Set(checked.dropped.map((d) => d.id));
+  const entries = proposed.map((entry) => (rejectedIds.has(entry.id) ? draft.entries.find((o) => o.id === entry.id) : entry));
+  const next = { ...draft, entries, edited: true };
+  await saveRuntime('draft.json', next);
+  return {
+    draft: next,
+    rejected: checked.dropped.map((d) => ({ id: d.id, reason: '原文にない言葉です。一字も変えずに、原文の中の続いた言葉を選んでください。' })),
+  };
+}
+
 async function withReplayFallback(label, live, replay) {
   try {
     return await live();

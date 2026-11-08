@@ -3006,3 +3006,32 @@ html[lang='en'] .reader.page-top .top__doors .door .door__for { font-size: 11px;
 .page-top .top__how-icon { flex: none; display: inline-flex; width: 36px; height: 36px; align-items: center; justify-content: center; border-radius: 50%; border: 1.5px solid var(--ink); }
 .page-top .top__how-icon svg { width: 18px; height: 18px; }
 .page-top .top__how-text { margin: 0; }
+
+/* ---------- 書く側：聞き取りの音声の置き場（中身は読まない・送らない） ---------- */
+.audio { display: flex; align-items: center; gap: 14px; padding: 16px 18px; margin: 0 0 18px; border: 1.5px dashed color-mix(in srgb, var(--ink) 45%, var(--momi)); border-radius: 8px; background: var(--paper); cursor: pointer; transition: border-color 160ms var(--ease-std), background 160ms var(--ease-std); }
+.audio:hover, .audio.is-over { border-color: var(--ink); background: var(--shiro); }
+.audio.has-file { border-style: solid; }
+.audio__input { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; }
+.audio:focus-within { outline: 2px solid var(--ink); outline-offset: 3px; }
+.audio__icon { flex: none; display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; border-radius: 50%; border: 1.5px solid var(--ink); color: var(--ink); }
+.audio__icon svg { width: 18px; height: 18px; }
+.audio__text { display: flex; flex-direction: column; gap: 2px; }
+.audio__title { font-weight: 700; color: var(--ink); }
+.audio__sub { font-size: 13px; color: var(--haicha); }
+/* ---------- 書く側：項目の直し ---------- */
+.unit__tools { display: flex; gap: 14px; padding: 0 16px 12px; }
+.unit__tool { background: none; border: 0; padding: 0; font: inherit; font-size: 13px; color: var(--haicha); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.unit__tool:hover { color: var(--ink); }
+.unit.is-removed .unit__body { opacity: 0.45; }
+.unit__edit { display: grid; gap: 12px; padding: 14px 16px 16px; border-top: 1px dashed var(--momi); background: var(--paper); }
+.unit__edit-quote { font-family: var(--mincho); font-size: 16px; line-height: 1.7; resize: vertical; }
+.unit__edit-hint { margin: 0; font-size: 13px; color: var(--haicha); }
+.unit__edit-hint.is-ok { color: var(--ha-700); }
+.unit__edit-hint.is-bad { color: var(--shu); }
+.tool-actions--tight { margin-top: 4px; }
+/* ---------- 書く側：送ったあと ---------- */
+.sent { text-align: center; padding: 24px 0 8px; }
+.sent .maki--seal { display: block; }
+.sent__title { margin-top: 8px; }
+.sent__sub { margin: 8px auto 0; max-width: 32em; }
+.tool-actions--center { justify-content: center; }
