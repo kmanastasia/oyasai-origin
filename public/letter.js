@@ -1,5 +1,5 @@
 import { api, h, icon, labelText, makimono, motionProbe, releaseIfStalled } from './common.js';
-import { checkTag, beforeLangChange, cachedLetter, getLang, hasStrings, isUnlocked, markOpened, onLangChange, sealStamp, startReader, t, translationTag, unlockLetter } from './reader.js';
+import { checkTag, beforeLangChange, cachedLetter, getLang, hasStrings, isUnlocked, markOpened, onLangChange, startReader, t, translationTag, unlockLetter } from './reader.js';
 
 const root = document.getElementById('root');
 const voiceRoot = document.getElementById('voice');
@@ -317,14 +317,13 @@ function originCard() {
       }));
 }
 
-// 結びの組み：帯 → 畑より → 一行と朱の封（見せ場） → 添えの文と受け取るボタン。パソコンでは左に一行、右にそのほか
+// 結びの組み：帯 → 畑より → 一行（見せ場。「封」の印は置かない） → 添えの文と受け取るボタン。パソコンでは左に一行、右にそのほか
 function closingJp() {
   return [
     h('p', { class: 'band band--inline', role: 'note' }, labelText(t('close.jp.band'))),
     h('p', { class: 'sheet__no closing__eyebrow', text: t('close.jp.eyebrow') }),
     h('div', { class: 'closing__sign' },
-      h('p', { class: `closing__line mincho${appear('closing')}`, text: t('close.jp.line', { farmer: letter.meta.farmer.ja }) }),
-      sealStamp(` stamp--sign${entering.has('closing') ? ' stamp--press' : ''}`)),
+      h('p', { class: `closing__line mincho${appear('closing')}`, text: t('close.jp.line', { farmer: letter.meta.farmer.ja }) })),
     h('div', { class: 'closing__meta' },
       h('p', { class: 'closing__sub', text: t('close.jp.sub', { item: letter.meta.vegetable.ja }) }),
       closingOpen
