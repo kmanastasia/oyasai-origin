@@ -86,13 +86,12 @@ export function toolBands() {
   ];
 }
 
-// 巻物：封をした手紙の印。HTML の <template id="tpl-maki"> から複製する（h() では SVG を作れない）。
-// state は 'closed'（巻いて朱の紐で結んである）か 'open'（ひらいてある）
+// 巻物：封をした手紙の印（Karen の挿絵・一部 AI ツール使用、CREDITS.md）。
+// state は 'closed'（巻いて朱の紐で結んである）か 'open'（ひらいてある）。2枚の絵を重ね、状態で見せる方を替える（ほどける動きは重ね合わせ）
 export function makimono(state = 'closed', extra = '') {
-  const el = h('span', { class: `maki maki--${state}${extra}`, 'aria-hidden': 'true' });
-  const template = document.getElementById('tpl-maki');
-  if (template) el.append(template.content.firstElementChild.cloneNode(true));
-  return el;
+  return h('span', { class: `maki maki--${state}${extra}`, 'aria-hidden': 'true' },
+    h('img', { class: 'maki__img maki__img--closed', src: '/img/maki-closed.jpg', alt: '', width: '530', height: '760', decoding: 'async' }),
+    h('img', { class: 'maki__img maki__img--open', src: '/img/maki-open.jpg', alt: '', width: '900', height: '605', decoding: 'async' }));
 }
 
 // 農園の印（仮）：屋号のように、農園名の頭の一字を丸の中に。色は季節で変える。本物の印に差し替えるまでの仮

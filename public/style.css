@@ -2723,52 +2723,31 @@ html[lang='en'] .reader.page-top .top__doors .door .door__for { font-size: 11px;
 /* ---------- 掛け紙の帯だけ（注意帯はもう無い） ---------- */
 :root { --chrome-h: 40px; }
 
-/* ---------- 巻物（SVG）：巻いてある＝封をした手紙。ひらいてある＝読める／読んだ手紙 ----------
-   巻いた形は横に寝かせた筒（朱の紐で結ぶ）。ひらくと、筒が上に細く残り、紙が下に下がる（掛け軸のように） */
-.maki { display: inline-block; width: 200px; aspect-ratio: 200 / 72; line-height: 0; }
-.maki__svg { display: block; width: 100%; height: 100%; overflow: visible; }
-.maki__paper rect { fill: var(--shiro); stroke: var(--ink); stroke-width: 1.5; }
-.maki__lines line { stroke: var(--momi); stroke-width: 2.2; stroke-linecap: round; }
-.maki__axis { fill: var(--tsuchi); }
-.maki__roll-paper { fill: var(--kinari); stroke: var(--ink); stroke-width: 1.5; }
-.maki__roll-end { fill: var(--shiro); stroke: var(--ink); stroke-width: 1.2; }
-.maki__cord rect, .maki__cord circle { fill: var(--shu); }
-.maki__cord path { stroke: var(--shu); }
-.maki__paper { transform-origin: 100px 18px; transition: transform var(--dur-l) var(--ease-out); }
-.maki__roll { transform-origin: 100px 6px; transition: transform var(--dur-l) var(--ease-out); }
-.maki__axis--bottom { transition: transform var(--dur-l) var(--ease-out); }
-.maki__cord { transition: opacity var(--dur-s) var(--ease-std); }
-/* 巻いてある：紙は筒の中（高さ 0）。下の軸は筒の後ろ */
-.maki--closed .maki__paper { transform: scaleY(0); }
-.maki--closed .maki__axis--bottom { transform: translateY(-40px); }
-/* ひらいてある：筒は上に細く、紙が下まで。紐はない */
-.maki--open .maki__roll { transform: scaleY(0.42); }
-.maki--open .maki__paper { transform: none; }
-.maki--open .maki__axis--bottom { transform: none; }
-.maki--open .maki__cord { opacity: 0; }
-/* ほどける途中：紐が先に外れ、紙が下へ伸びる（動きを減らす設定では一気にひらいた形） */
-.maki--unrolling .maki__cord { opacity: 0; }
-.maki--unrolling .maki__roll { transform: scaleY(0.42); transition-duration: 620ms; }
-.maki--unrolling .maki__paper { transform: none; transition-duration: 620ms; transition-delay: 80ms; }
-.maki--unrolling .maki__axis--bottom { transform: none; transition-duration: 620ms; transition-delay: 80ms; }
-/* 封をした直後（②）：ひらいた形から巻かれていく */
-.maki--rolling .maki__paper { animation: maki-roll 900ms var(--ease-std) both; }
-.maki--rolling .maki__roll { animation: maki-roll-up 900ms var(--ease-std) both; }
-.maki--rolling .maki__axis--bottom { animation: maki-axis-up 900ms var(--ease-std) both; }
-.maki--rolling .maki__cord { animation: maki-cord 300ms var(--ease-std) 800ms both; }
-@keyframes maki-roll { from { transform: none; } to { transform: scaleY(0); } }
-@keyframes maki-roll-up { from { transform: scaleY(0.42); } to { transform: none; } }
-@keyframes maki-axis-up { from { transform: none; } to { transform: translateY(-40px); } }
-@keyframes maki-cord { from { opacity: 0; } to { opacity: 1; } }
-@media (prefers-reduced-motion: reduce) {
-  .maki__paper, .maki__roll, .maki__axis--bottom, .maki__cord { transition: none !important; animation: none !important; }
-}
+/* ---------- 巻物（挿絵）：巻いてある＝封をした手紙。ひらいてある＝読める／読んだ手紙 ----------
+   白い地の絵なので multiply で紙に載せる（白は消える）。暗い面の上では、生成りの札を敷く（.maki--on-dark） */
+.maki { position: relative; display: inline-block; width: 200px; aspect-ratio: 900 / 605; line-height: 0; }
+.maki__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; transition: opacity 520ms var(--ease-out), transform 620ms var(--ease-out); }
+.maki__img--closed { transform-origin: 50% 50%; }
+.maki--closed .maki__img--open { opacity: 0; transform: scaleX(0.92); }
+.maki--open .maki__img--closed { opacity: 0; transform: rotate(-8deg) scale(0.9); }
+.maki--unrolling .maki__img--closed { opacity: 0; transform: rotate(-8deg) scale(0.9); }
+.maki--unrolling .maki__img--open { opacity: 1; transform: none; transition-delay: 120ms; }
+.maki--rolling .maki__img--open { animation: maki-fade-out 700ms var(--ease-std) both; }
+.maki--rolling .maki__img--closed { animation: maki-fade-in 700ms var(--ease-std) 300ms both; }
+@keyframes maki-fade-out { from { opacity: 1; transform: none; } to { opacity: 0; transform: scaleX(0.92); } }
+@keyframes maki-fade-in { from { opacity: 0; transform: rotate(-8deg) scale(0.9); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .maki__img { transition: none !important; animation: none !important; } }
+.maki--on-dark { background: var(--kinari); border-radius: 6px; padding: 6px; box-shadow: 0 10px 24px -14px var(--shade); }
+.maki--on-dark .maki__img { position: static; display: block; }
+.maki--on-dark .maki__img--open, .maki--on-dark.maki--open .maki__img--closed { display: none; }
+.maki--on-dark.maki--open .maki__img--open { display: block; opacity: 1; transform: none; }
 .maki--small { width: 60px; }
+.maki--tiny { width: 48px; }
 .maki--card { width: min(100%, 300px); }
 .maki--seal { width: min(100%, 340px); margin: 0 auto 20px; }
 
 /* ---------- トップ：土のふたの縁に巻物（封の代わり） ---------- */
-.page-top .top__maki { position: absolute; z-index: 3; width: 150px; filter: drop-shadow(0 10px 14px var(--shade)); }
+.page-top .top__maki { position: absolute; z-index: 3; width: 150px; aspect-ratio: auto; filter: none; }
 .page-top .top__hero { position: relative; }
 @media (max-width: 1023px) {
   .page-top .top__maki { left: 16px; bottom: 28px; width: 132px; }
@@ -2915,7 +2894,7 @@ html[lang='en'] .reader.page-top .top__doors .door .door__for { font-size: 11px;
   .page-letter .cover-lid .maki--cover { width: min(100%, 420px); }
 }
 /* 作り手 ↔ 手紙 の移り変わり：巻物と野菜の名だけがつながる（写真と注記はもう無い） */
-.page-farmer .card--letter .card__lid .maki, .page-letter .sheet--cover .cover-lid .maki { view-transition-name: vt-seal; }
+.page-farmer .card--letter .card__lid, .page-letter .sheet--cover .cover-lid { view-transition-name: vt-seal; }
 .page-farmer .card--letter .card__veg, .page-letter .sheet--cover .card__veg { view-transition-name: vt-name; }
 .page-farmer .chrome { view-transition-name: vt-chrome; }
 
@@ -2972,3 +2951,18 @@ html[lang='en'] .reader.page-top .top__doors .door .door__for { font-size: 11px;
 .profile__head { display: flex; align-items: center; gap: 16px; margin-bottom: 18px; }
 .profile__head .profile__no { margin-bottom: 6px; }
 .profile__head .profile__name { margin-bottom: 0; }
+
+/* ---------- 一覧の絞り込み（都道府県・品目）と、準備中の手紙 ---------- */
+.filters { display: grid; gap: 10px; margin: 0 0 18px; }
+.filter { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px 12px; align-items: start; }
+.filter__label { padding-top: 9px; font-size: 11px; }
+.filter__chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { min-height: 34px; padding: 4px 12px; border: 1px solid var(--momi); border-radius: 999px; background: var(--paper); color: var(--ink); font: inherit; font-size: 13px; cursor: pointer; transition: background var(--dur-s) var(--ease-std), border-color var(--dur-s) var(--ease-std); }
+.chip.is-on { background: var(--ink); border-color: var(--ink); color: var(--shiro); }
+.chip:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+@media (hover: hover) { .chip:not(.is-on):hover { border-color: var(--ink); } }
+.makers:focus { outline: none; }
+.maker__coming { font-size: 12px; color: var(--haicha); }
+.maker__state--coming { border-color: var(--haicha); color: var(--haicha); }
+.card--coming { display: flex; align-items: center; gap: 14px; padding: 14px 20px; margin-top: 12px; background: var(--kinari); border: 1px dashed var(--momi); }
+.card__coming-text { display: flex; flex-direction: column; gap: 2px; font-size: 14px; color: var(--haicha); }

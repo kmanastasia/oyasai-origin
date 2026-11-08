@@ -54,7 +54,7 @@ function render() {
       h('div', { class: `top__lid${enter()}` },
         coreHeading(),
         h('p', { class: `lead-line${enter()}`, style: '--i:1', text: t('subtitle') })),
-      makimono('closed', ` top__maki${enter()}`)),
+      makimono('closed', ` top__maki maki--on-dark${enter()}`)),
     // 右：扉と足もと
     h('div', { class: 'top__body' },
       h('div', { class: 'top__doors' },
