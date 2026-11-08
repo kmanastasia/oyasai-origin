@@ -12,7 +12,7 @@ const slice = (from, to) => source.slice(source.indexOf(`function ${from}(`), so
 
 test('EN の結びに「運営者が間に入る」の1行がある（EN のみ・未確認）', () => {
   const entry = strings.get('visit.operator');
-  assert.equal(entry.en, 'The operator arranges the visit with the maker.');
+  assert.equal(entry.en, 'The operator arranges the visit with the farmer.');
   assert.equal(entry.ja, '');
   assert.equal(entry.en_reviewed_by, null);
   assert.match(slice('closingEn', 'closingView'), /t\('visit\.operator'\)/);

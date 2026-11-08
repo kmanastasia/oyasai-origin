@@ -11,7 +11,7 @@ const reader = read('public/reader.js');
 const helper = reader.slice(reader.indexOf('export function checkTag('));
 
 const CHECK = {
-  'check.done': ['作り手の確認：済（運営者が代理・口頭）', "Maker's check: done (by the operator, verbally)"],
+  'check.done': ['農家の確認：済（運営者が代理・口頭）', "Farmer's check: done (by the operator, verbally)"],
 };
 
 test('確認のタグの文言は JP/EN の両方があり、英語は未確認のまま', () => {

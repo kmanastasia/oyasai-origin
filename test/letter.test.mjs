@@ -45,14 +45,14 @@ test('話し手の名前がなければ、次にすることを添えて止め�
 });
 
 test('一字でも違う引用は落とす', () => {
-  const tampered = { ...archive.entries[2], id: 'x', quote: '葉の先が丸まったら、水をとめる' };
+  const tampered = { ...archive.entries[2], id: 'x', quote: '葉の先が丸まってきたら、水やりをとめます' };
   const result = verifyArchive({ entries: [tampered], next_questions: [] }, paragraphs);
   assert.equal(result.entries.length, 0);
   assert.equal(result.dropped.length, 1);
 });
 
 test('補われた理由は落とす', () => {
-  const tampered = { ...archive.entries[2], id: 'x', reason_quote: '根が腐るから', reason_source_ref: 'p.02' };
+  const tampered = { ...archive.entries[2], id: 'x', reason_quote: '根が腐るから', reason_source_ref: 'p.03' };
   assert.equal(verifyArchive({ entries: [tampered], next_questions: [] }, paragraphs).entries.length, 0);
 });
 
@@ -64,8 +64,8 @@ test('別の段落を指す引用は落とす', () => {
 test('残すだけの項目は受け取る側のデータに出ない', () => {
   const sealed = sealArchive(draft, allYes({ 'e-02': 'archive_only' }));
   const output = JSON.stringify(buildPublicLetter(sealed, assignment, translations, meta));
-  assert.ok(!output.includes('ばあちゃん'));
-  assert.ok(!output.includes('old woman'));
+  assert.ok(!output.includes('親から引き継いで'));
+  assert.ok(!output.includes('from my parents'));
   assert.ok(!output.includes('"e-02"'));
 });
 
@@ -124,7 +124,7 @@ test('読み上げから外す項目は id で指定でき、原文は変わら�
   const letter = buildPublicLetter(sealed, assignment, translations, meta);
   const shown = letter.chapters.flatMap((c) => c.items).find((i) => i.id === 'e-03');
   assert.equal(shown.skip_speech, true);
-  assert.equal(shown.quote, '葉の先が丸まったら、水を止める');
+  assert.equal(shown.quote, '葉の先が丸まってきたら、水やりを止めます');
 });
 
 test('Claude が使えないときの割り当てでも全項目が便箋に載る', () => {

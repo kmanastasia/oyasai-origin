@@ -2,8 +2,8 @@
   "card_teaser_entry_id": "e-01",
   "land_entry_ids": ["e-01"],
   "chapters": [
-    { "kind": "raw", "entry_ids": ["e-06", "e-07", "e-03"] },
-    { "kind": "cooked", "entry_ids": ["e-08", "e-09", "e-04"] },
-    { "kind": "recommend", "entry_ids": ["e-05", "e-02"] }
+    { "kind": "raw", "entry_ids": ["e-08", "e-09", "e-04", "e-03"] },
+    { "kind": "cooked", "entry_ids": ["e-10", "e-11", "e-12", "e-07"] },
+    { "kind": "recommend", "entry_ids": ["e-05", "e-06", "e-02", "e-13", "e-14"] }
   ]
 }

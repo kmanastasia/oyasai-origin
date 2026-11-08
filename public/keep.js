@@ -16,7 +16,7 @@ let meta = { farm: '', item: '', season: '' }; // 書式：送りもと（何農
 const steps = () => {
   const current = draft ? 2 : 1;
   return h('ol', { class: 'steps' },
-    ['預かる', '下書きを見る', '作り手に見せる'].map((label, i) =>
+    ['預かる', '下書きを見る', '農家に見せる'].map((label, i) =>
       h('li', { class: i + 1 === current ? 'steps__item is-current' : 'steps__item', 'aria-current': i + 1 === current ? 'step' : null, text: label })));
 };
 
@@ -29,7 +29,7 @@ function markQuote(text, quote) {
 function sourcePane() {
   const active = draft.entries.find((e) => e.id === activeId);
   return h('aside', { class: 'source' },
-    h('h2', { class: 'tool-h2', text: '作り手の発言（原文）' }),
+    h('h2', { class: 'tool-h2', text: '農家の発言（原文）' }),
     draft.paragraphs.map((p) => h('p', { class: 'source__p', id: p.id },
       h('span', { class: 'mono source__id', text: p.id }),
       h('span', {}, ...(active?.source_ref === p.id ? markQuote(p.text, active.quote) : [p.text])))));
@@ -101,7 +101,7 @@ function resultView() {
       h('div', { class: 'units' }, draft.entries.map(entryCard))),
     questionSheet(),
     h('div', { class: 'tool-actions' },
-      h('a', { class: 'btn btn--primary', href: '/seal', text: '作り手に見せる →' }),
+      h('a', { class: 'btn btn--primary', href: '/seal', text: '農家に見せる →' }),
       h('button', {
         class: 'btn btn--ghost',
         type: 'button',

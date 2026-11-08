@@ -1,17 +1,22 @@
 {
   "entries": [
-    { "id": "e-01", "category": "land", "title_sys": "朝の霧と晴れ間", "quote": "朝は霧が下りてきて、昼まで晴れん", "source_ref": "p.01", "reason_quote": null, "reason_source_ref": null, "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": [] },
-    { "id": "e-02", "category": "person", "title_sys": "種の残し方を教わった人", "quote": "隣のばあちゃんに、種の残し方を教わった", "source_ref": "p.01", "reason_quote": null, "reason_source_ref": null, "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": [] },
-    { "id": "e-03", "category": "judgment", "title_sys": "水を止める目印", "quote": "葉の先が丸まったら、水を止める", "source_ref": "p.02", "reason_quote": null, "reason_source_ref": null, "missing_reason": true, "next_question_id": "q-01", "certainty": "stated", "tags": [] },
-    { "id": "e-04", "category": "craft", "title_sys": "種を落とす間隔", "quote": "種は指二本ぶん、間を空けて落とす", "source_ref": "p.02", "reason_quote": null, "reason_source_ref": null, "missing_reason": true, "next_question_id": "q-02", "certainty": "stated", "tags": [] },
-    { "id": "e-05", "category": "judgment", "title_sys": "抜く時期を決めるもの", "quote": "霜が降りるまで抜かん", "source_ref": "p.02", "reason_quote": "霜に当てると、甘かなる", "reason_source_ref": "p.02", "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": [] },
-    { "id": "e-06", "category": "craft", "title_sys": "生で食べるとき", "quote": "生なら、皮ごとかじる", "source_ref": "p.03", "reason_quote": null, "reason_source_ref": null, "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": ["食べ方"] },
-    { "id": "e-07", "category": "craft", "title_sys": "生の味ことば", "quote": "しゃっきりしとる", "source_ref": "p.03", "reason_quote": null, "reason_source_ref": null, "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": ["味ことば"] },
-    { "id": "e-08", "category": "craft", "title_sys": "火を通すとき", "quote": "火を通すなら、弱い火でゆっくり", "source_ref": "p.03", "reason_quote": null, "reason_source_ref": null, "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": ["食べ方"] },
-    { "id": "e-09", "category": "craft", "title_sys": "火を通したあとの味ことば", "quote": "あまか", "source_ref": "p.03", "reason_quote": null, "reason_source_ref": null, "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": ["味ことば"] }
+    { "id": "e-01", "category": "land", "title_sys": "朝の霧と晴れ間", "quote": "朝は霧が下りて、昼ごろまで晴れません", "source_ref": "p.01", "reason_quote": null, "reason_source_ref": null, "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": [] },
+    { "id": "e-02", "category": "person", "title_sys": "親から引き継いだ畑", "quote": "畑は親から引き継いで二十年になります", "source_ref": "p.01", "reason_quote": null, "reason_source_ref": null, "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": [] },
+    { "id": "e-03", "category": "judgment", "title_sys": "水やりを止める目印", "quote": "葉の先が丸まってきたら、水やりを止めます", "source_ref": "p.03", "reason_quote": null, "reason_source_ref": null, "missing_reason": true, "next_question_id": "q-01", "certainty": "stated", "tags": [] },
+    { "id": "e-04", "category": "craft", "title_sys": "種を落とす間隔", "quote": "種は指二本ぶん、間を空けて落とします", "source_ref": "p.02", "reason_quote": null, "reason_source_ref": null, "missing_reason": true, "next_question_id": "q-02", "certainty": "stated", "tags": [] },
+    { "id": "e-05", "category": "judgment", "title_sys": "抜く時期を決めるもの", "quote": "霜が降りるまで抜きません", "source_ref": "p.03", "reason_quote": "霜に当たると、にんじんの中のでんぷんが糖に変わって、ぐっと甘くなるからです", "reason_source_ref": "p.03", "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": [] },
+    { "id": "e-06", "category": "craft", "title_sys": "土を休ませる", "quote": "収穫のあとは、すぐに次を植えずに、ひと冬、土を休ませます", "source_ref": "p.02", "reason_quote": "土を急がせないことです", "reason_source_ref": "p.02", "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": [] },
+    { "id": "e-07", "category": "craft", "title_sys": "肥料", "quote": "肥料は堆肥だけで、化学肥料は使いません", "source_ref": "p.02", "reason_quote": null, "reason_source_ref": null, "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": [] },
+    { "id": "e-08", "category": "craft", "title_sys": "生で食べるとき", "quote": "まずは生で、皮ごとかじってみてください", "source_ref": "p.04", "reason_quote": null, "reason_source_ref": null, "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": ["食べ方"] },
+    { "id": "e-09", "category": "craft", "title_sys": "生の味ことば", "quote": "ぽりぽりしていて、香りがいいです", "source_ref": "p.04", "reason_quote": null, "reason_source_ref": null, "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": ["味ことば"] },
+    { "id": "e-10", "category": "craft", "title_sys": "火を通すとき", "quote": "火を通すなら、弱火でゆっくり", "source_ref": "p.04", "reason_quote": null, "reason_source_ref": null, "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": ["食べ方"] },
+    { "id": "e-11", "category": "craft", "title_sys": "焼くとき", "quote": "オリーブオイルと塩だけで焼くと、とろりとして、甘みが一番よく出ます", "source_ref": "p.04", "reason_quote": null, "reason_source_ref": null, "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": ["食べ方"] },
+    { "id": "e-12", "category": "craft", "title_sys": "葉の食べ方", "quote": "葉も捨てないで、刻んでかき揚げにするとおいしいですよ", "source_ref": "p.04", "reason_quote": null, "reason_source_ref": null, "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": ["食べ方"] },
+    { "id": "e-13", "category": "person", "title_sys": "食べる人への想い", "quote": "遠くの国で、このにんじんを食べてくれている人がいると思うと、それだけで畑に出る力になります", "source_ref": "p.05", "reason_quote": null, "reason_source_ref": null, "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": [] },
+    { "id": "e-14", "category": "person", "title_sys": "手紙を受け取る人へ", "quote": "ひと口かじったときに、この山の朝の霧と、冬の寒さを、少しでも感じてもらえたらうれしいです", "source_ref": "p.05", "reason_quote": null, "reason_source_ref": null, "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": [] }
   ],
   "next_questions": [
-    { "id": "q-01", "text": "葉の先が丸まったら水を止めるのは、どうしてですか？", "about_entry_id": "e-03" },
+    { "id": "q-01", "text": "葉の先が丸まってきたら水やりを止めるのは、どうしてですか？", "about_entry_id": "e-03" },
     { "id": "q-02", "text": "指二本ぶん、という間は、どうやって決めましたか？", "about_entry_id": "e-04" }
   ]
 }

@@ -20,7 +20,7 @@ let demo = false;
 // 本人が横で一緒に見ているか。既定は「いいえ」。封の結果に checked_with_farmer として残る。
 let checkedWithFarmer = false;
 
-const farmerName = () => draft.paragraphs[0]?.speaker ?? '作り手';
+const farmerName = () => draft.paragraphs[0]?.speaker ?? '農家';
 
 function decide(entry, reply) {
   const previous = decisions.get(entry.id);

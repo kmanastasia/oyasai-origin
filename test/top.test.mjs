@@ -8,7 +8,7 @@ const project = fileURLToPath(new URL('..', import.meta.url));
 const read = (path) => readFileSync(`${project}${path}`, 'utf8');
 const strings = new Map(JSON.parse(read('data/ui_strings.json')).map((s) => [s.key, s]));
 
-test('トップの扉は 読む→作り手の一覧、書く→残す。番号の丸と「どちらにしますか」は無い', () => {
+test('トップの扉は 読む→農家の一覧、書く→残す。番号の丸と「どちらにしますか」は無い', () => {
   const source = read('public/index.js');
   assert.match(source, /key: 'read', href: '\/choose'/);
   assert.match(source, /key: 'write', href: '\/keep'/);
@@ -45,10 +45,10 @@ test('流れの表示は「読む」「書く」', () => {
   assert.match(read('public/common.js'), new RegExp(`who: '${strings.get('route.write').ja}'`));
 });
 
-test('QR の文は、お野菜の QR からその作り手の手紙がひらく', () => {
+test('写真の文は、お野菜の写真からその農家さんからの手紙がひらく', () => {
   const qr = strings.get('top.qr');
-  assert.match(qr.ja, /QR を読み込むと、その作り手の手紙がひらきます/);
-  assert.match(qr.en, /QR code/);
+  assert.match(qr.ja, /お野菜の写真を読み込むと、その農家さんからの手紙がひらきます/);
+  assert.match(qr.en, /photo/);
   // 手紙は QR を読み込んだ印（?qr=番号 か 見本のボタン）が無いとひらかない
   assert.match(read('public/letter.js'), /isUnlocked\(letter\.meta\.no\)/);
   assert.match(read('public/letter.js'), /get\('qr'\)/);
