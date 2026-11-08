@@ -2988,3 +2988,15 @@ html[lang='en'] .reader.page-top .top__doors .door .door__for { font-size: 11px;
 .top__sns-link { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--momi); transition: text-decoration-color 160ms var(--ease-std), color 160ms var(--ease-std); }
 .top__sns-link:hover, .top__sns-link:focus-visible { color: var(--accent, var(--ink)); text-decoration-color: currentColor; }
 .top__sns-link + .top__sns-link::before { content: '·'; margin-right: 8px; color: var(--momi); }
+
+/* ---------- 一覧の手紙の印：3段階の巻物＋通数。白黒＝まだ受け取っていない／色＝受け取った／ひらいた＝読んだ ---------- */
+.letter-mark { display: inline-flex; align-items: center; gap: 8px; }
+.letter-mark .maki--tiny { width: 44px; }
+.maki--locked .maki__img, .maki--coming .maki__img, .maki--none .maki__img { filter: grayscale(1) contrast(0.85) opacity(0.5); }
+.maki--none .maki__img { opacity: 0.3; }
+.letter-mark__n { font-size: 20px; line-height: 1; color: var(--ink); min-width: 1ch; }
+.letter-mark--locked .letter-mark__n, .letter-mark--coming .letter-mark__n { color: var(--haicha); }
+.letter-mark--none .letter-mark__n { color: var(--momi); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 10px 0 2px; font-size: 12px; color: var(--haicha); }
+.legend__item { display: inline-flex; align-items: center; gap: 6px; }
+.legend .maki--tiny { width: 30px; }

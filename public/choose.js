@@ -1,6 +1,6 @@
 // 作り手の一覧：10軒を名刺のように並べる。都道府県と品目で絞り込める。手紙がある作り手は巻物の印、ひらいた手紙はひらいた巻物。
 import { api, farmMark, h, icon, makimono } from './common.js';
-import { getLang, hasStrings, onLangChange, openedLetters, startReader, t } from './reader.js';
+import { getLang, hasStrings, isUnlocked, onLangChange, openedLetters, startReader, t } from './reader.js';
 import { scanView } from './scan.js';
 
 const root = document.getElementById('root');
@@ -52,10 +52,31 @@ function filtersView() {
     chipRow('item', t('farmers.filter.item'), items, item));
 }
 
-function farmerCard(farmer) {
-  const opened = hasOpened(farmer);
+// 手紙の印：巻いた白黒＝手紙はあるがまだ受け取っていない／巻いた色つき＝受け取った（まだひらいていない）／ひらいた＝ひらいた。横に通数
+function letterState(farmer) {
+  if (!farmer.letter) return letterCount(farmer) > 0 ? 'coming' : 'none';
+  if (hasOpened(farmer)) return 'opened';
+  return isUnlocked(farmer.letter) ? 'unlocked' : 'locked';
+}
+
+function letterMark(farmer, state) {
   const count = letterCount(farmer);
-  const state = farmer.letter ? (opened ? 'opened' : 'sealed') : count > 0 ? 'coming' : 'none';
+  return h('span', { class: `letter-mark letter-mark--${state}` },
+    makimono(state === 'opened' ? 'open' : 'closed', ` maki--tiny maki--${state}`),
+    h('span', { class: 'letter-mark__n mincho', 'aria-hidden': 'true', text: String(count) }),
+    h('span', { class: 'visually-hidden', text: t(`farmers.state.${state}`, { n: count }) }),
+    state === 'coming' ? h('span', { class: 'maker__coming', text: t('farmers.coming') }) : null);
+}
+
+// 印の読み方（一覧の上に一度だけ）
+function legendView() {
+  const item = (state, img) => h('span', { class: 'legend__item' },
+    makimono(img, ` maki--tiny maki--${state}`), h('span', { class: 'legend__text', text: t(`farmers.legend.${state}`) }));
+  return h('p', { class: 'legend', 'aria-hidden': 'true' }, item('locked', 'closed'), item('unlocked', 'closed'), item('opened', 'open'));
+}
+
+function farmerCard(farmer) {
+  const state = letterState(farmer);
   return h('li', { class: `maker maker--${state}` },
     h('a', { class: 'maker__link', href: `/farmer?id=${encodeURIComponent(farmer.id)}` },
       h('span', { class: 'maker__mark' }, farmMark(farmer)),
@@ -63,10 +84,7 @@ function farmerCard(farmer) {
         h('span', { class: 'mono maker__no', text: farmer.no }),
         h('span', { class: 'maker__farm mincho', text: pair(farmer.farm) }),
         h('span', { class: 'maker__line', text: `${pair(farmer.region)}｜${farmer.items.map(pair).join('・')}｜${pair(farmer.season)}` }),
-        h('span', { class: 'maker__row' },
-          h('span', { class: `maker__state maker__state--${state}`, text: count > 0 ? t('farmers.letters', { n: count }) : t('farmers.none') }),
-          state === 'coming' ? h('span', { class: 'maker__coming', text: t('farmers.coming') }) : null,
-          farmer.letter ? makimono(opened ? 'open' : 'closed', ' maki--tiny') : null)),
+        h('span', { class: 'maker__row' }, letterMark(farmer, state))),
       // お店・SNS の印：押せない・リンクなし（行き先が決まるまで「準備中」）
       h('span', { class: 'maker__links', title: t('farmers.links') },
         h('span', { class: 'maker__link-mark' }, icon('shop')),
@@ -94,6 +112,7 @@ function render() {
       total ? h('p', { class: 'makers__count mono', text: t('farmers.count', { n: opened, total }) }) : null),
     h('div', { class: 'scan-box' }, scanView(), h('p', { class: 'scan__hint', text: t('scan.hint') })),
     farmers.length ? filtersView() : null,
+    farmers.length ? legendView() : null,
     h('ol', { class: 'makers', tabindex: '-1', 'aria-live': 'polite' }, shown.map(farmerCard)),
     farmers.length && !shown.length ? h('p', { class: 'state', text: t('farmers.noMatch') }) : null].filter(Boolean));
 }
