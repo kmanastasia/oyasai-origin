@@ -2944,3 +2944,15 @@ html[lang='en'] .reader.page-top .top__doors .door .door__for { font-size: 11px;
 .page-farmer .card--letter .scan { margin-top: 14px; }
 .page-farmer .card--letter .scan + .btn { margin-top: 10px; }
 @media (min-width: 768px) { .scan-box { display: grid; grid-template-columns: max-content minmax(0, 1fr); align-items: start; gap: 4px 20px; } .scan-box .scan__hint { margin-top: 14px; } }
+
+/* 作り手のカード：右上に お店・SNS の印（押せない・薄い色）。見本の写真のボタンと絵 */
+.maker__link { position: relative; }
+.maker__links { position: absolute; top: 10px; right: 14px; display: inline-flex; gap: 8px; color: var(--haicha); }
+.maker__link-mark { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border: 1px solid var(--momi); border-radius: 50%; }
+.maker__link-mark .icon { width: 12px; height: 12px; }
+.maker__go { align-self: end; }
+.scan__buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+.scan__buttons .scan__btn { flex: 1 1 220px; }
+.scan__sample { min-height: 52px; }
+.scan__preview:empty { display: none; }
+.scan__img { display: block; width: min(100%, 320px); height: auto; border: 1px solid var(--momi); border-radius: 4px; margin-top: 4px; }

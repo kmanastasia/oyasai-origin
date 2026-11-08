@@ -20,6 +20,11 @@ function farmerCard(farmer) {
         h('span', { class: 'maker__farm mincho', text: pair(farmer.farm) }),
         h('span', { class: 'maker__line', text: `${pair(farmer.region)}｜${farmer.items.map(pair).join('・')}｜${pair(farmer.season)}` }),
         h('span', { class: `maker__state maker__state--${state}`, text: t(`farmers.${state}`) })),
+      // お店・SNS の印：押せない・リンクなし（行き先が決まるまで「準備中」）
+      h('span', { class: 'maker__links', title: t('farmers.links') },
+        h('span', { class: 'maker__link-mark' }, icon('shop')),
+        h('span', { class: 'maker__link-mark' }, icon('at')),
+        h('span', { class: 'visually-hidden', text: t('farmers.links') })),
       h('span', { class: 'maker__go', 'aria-hidden': 'true' }, icon('arrow'))));
 }
 

@@ -66,8 +66,8 @@ const ROUTES = {
   'GET /api/farmers': async () => ({ farmers: await getFarmers() }),
   // お野菜の写真から作り手を決める（画像は base64。写真はサーバーに残さない）
   'POST /api/identify': async (req) => {
-    const { image, media_type: mediaType } = await readBody(req, MAX_IMAGE_BODY);
-    return identifyFarmer(image, mediaType);
+    const { image, media_type: mediaType, sample } = await readBody(req, MAX_IMAGE_BODY);
+    return identifyFarmer(image, mediaType, sample === true);
   },
 };
 

@@ -183,9 +183,15 @@ export const getFarmers = async () => (await readJson(`${dataDir}farmers.json`))
 
 // お野菜の写真 → 作り手。demo と鍵なしでは読まず、次にすることを添えて止める。
 const IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
-export async function identifyFarmer(image, mediaType) {
+export async function identifyFarmer(image, mediaType, sample = false) {
   if (typeof image !== 'string' || !image || !IMAGE_TYPES.has(mediaType)) {
     throw new UserError('写真を受け取れませんでした。', 'JPEG か PNG の写真を選び直してください。');
+  }
+  const farmers = await getFarmers();
+  // 見本の写真（画面が描いた「みなみ農園・にんじん」の札）は、鍵がなくても最初の作り手につなぐ。鍵があれば Claude が本当に読む
+  if (sample === true && (demo || !process.env.ANTHROPIC_API_KEY)) {
+    const farmer = farmers[0];
+    return { farmer, read: { farm_text: farmer.farm.ja, name_text: null, item_text: farmer.items[0].ja, confidence: 'high' }, sample: true };
   }
   if (demo || !process.env.ANTHROPIC_API_KEY) {
     throw new UserError(
@@ -193,7 +199,6 @@ export async function identifyFarmer(image, mediaType) {
       demo ? '作り手のページの「QR を読み込む（見本）」でひらけます。' : '.env に ANTHROPIC_API_KEY を入れて npm run dev を起動し直すか、作り手のページの「QR を読み込む（見本）」でひらけます。'
     );
   }
-  const farmers = await getFarmers();
   let read;
   try {
     read = await runIdentify({ data: image, mediaType }, farmers);

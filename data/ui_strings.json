@@ -28,6 +28,9 @@
   { "key": "seal.done.view", "ja": "できあがりを見る", "en": "", "en_reviewed_by": null },
 
   { "key": "scan.button", "ja": "お野菜の写真を読み込む", "en": "Read a photo of the vegetable", "en_reviewed_by": null },
+  { "key": "scan.sample", "ja": "見本の写真で試す", "en": "Try with a sample photo", "en_reviewed_by": null },
+  { "key": "scan.sampleAlt", "ja": "見本の写真：みなみ農園・にんじん の札", "en": "Sample photo: a tag reading Minami Farm, carrot", "en_reviewed_by": null },
+  { "key": "farmers.links", "ja": "お店・SNS（準備中）", "en": "Shop · social (coming soon)", "en_reviewed_by": null },
   { "key": "scan.hint", "ja": "袋や札の農家名・品目が写るように撮ると、その作り手の手紙がひらきます。", "en": "Photograph the bag or tag so the farm name and produce are visible, and that maker's letter opens.", "en_reviewed_by": null },
   { "key": "scan.reading", "ja": "写真を読んでいます…", "en": "Reading the photo…", "en_reviewed_by": null },
   { "key": "scan.fail", "ja": "農家名と品目が読めませんでした。ラベルが見えるように、もう一度撮ってください。", "en": "Could not read the farm name or produce. Try again with the label in view.", "en_reviewed_by": null },
