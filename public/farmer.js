@@ -1,5 +1,6 @@
 // 作り手のページ：農園・土地・品目・季節と、畑からのお手紙。手紙はお野菜の QR を読み込むとひらく。
 import { api, h, icon, makimono, motionProbe } from './common.js';
+import { scanView } from './scan.js';
 import { checkTag, cacheLetter, cachedLetter, getLang, hasStrings, isUnlocked, onLangChange, openedLetters, startReader, t, translationTag, unlockLetter, warmFonts } from './reader.js';
 
 const root = document.getElementById('root');
@@ -63,7 +64,9 @@ function letterView() {
           ? h('a', { class: 'btn btn--primary btn--tall', href: `/letter?no=${encodeURIComponent(no)}` }, h('span', { text: t('farmer.open') }), icon('arrow'))
           : [
             h('p', { class: 'card__locked', text: t('farmer.letter.locked') }),
-            // 見本：QR を読み込んだことにする。明日の読み取り（QR・写真）はこの unlock につなぐ
+            // 写真を読む（Claude）。読めたらこの作り手の手紙がひらく
+            scanView({ onFound: (found) => { if (found.id === farmer.id) render(); else location.assign(`/farmer?id=${encodeURIComponent(found.id)}`); } }),
+            // 見本：QR を読み込んだことにする（鍵が無いときの代わり）
             h('button', { class: 'btn btn--ghost btn--tall', type: 'button', onclick: unlock, text: t('farmer.unlock') }),
           ])));
 }

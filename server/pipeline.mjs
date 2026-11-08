@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { UserError, parseTranscript, transcriptHash } from '../lib/ingest.mjs';
 import { verifyArchive } from '../lib/verbatim.mjs';
 import { assignByRule, buildPublicLetter, isOutward, matchTranslations, sealArchive, withSource } from '../lib/letter.mjs';
-import { NoApiKeyError, runAssignment, runFarmArchive, runTranslation } from './claude.mjs';
+import { NoApiKeyError, runAssignment, runFarmArchive, runIdentify, runTranslation } from './claude.mjs';
 
 const dataDir = fileURLToPath(new URL('../data/', import.meta.url));
 let runtimeDir = `${dataDir}runtime/`;
@@ -180,3 +180,27 @@ export const getLetter = () => readJsonIfExists(`${runtimeDir}public_letter.json
 export const getOffer = () => readJson(`${dataDir}offer.json`);
 export const getUiStrings = () => readJson(`${dataDir}ui_strings.json`);
 export const getFarmers = async () => (await readJson(`${dataDir}farmers.json`)).farmers;
+
+// お野菜の写真 → 作り手。demo と鍵なしでは読まず、次にすることを添えて止める。
+const IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
+export async function identifyFarmer(image, mediaType) {
+  if (typeof image !== 'string' || !image || !IMAGE_TYPES.has(mediaType)) {
+    throw new UserError('写真を受け取れませんでした。', 'JPEG か PNG の写真を選び直してください。');
+  }
+  if (demo || !process.env.ANTHROPIC_API_KEY) {
+    throw new UserError(
+      demo ? 'npm run demo では写真を読みません。' : '写真を読むには API キーが必要です。',
+      demo ? '作り手のページの「QR を読み込む（見本）」でひらけます。' : '.env に ANTHROPIC_API_KEY を入れて npm run dev を起動し直すか、作り手のページの「QR を読み込む（見本）」でひらけます。'
+    );
+  }
+  const farmers = await getFarmers();
+  let read;
+  try {
+    read = await runIdentify({ data: image, mediaType }, farmers);
+  } catch (error) {
+    console.error(`[identify] ${error.message}`);
+    throw new UserError('写真を読めませんでした（Claude との通信に失敗）。', '少し待ってもう一度選ぶか、作り手のページの「QR を読み込む（見本）」でひらけます。');
+  }
+  const farmer = farmers.find((f) => f.id === read.farmer_id) ?? null; // 一覧にない id は使わない
+  return { farmer, read: { farm_text: read.farm_text, name_text: read.name_text, item_text: read.item_text, confidence: read.confidence } };
+}

@@ -77,6 +77,21 @@ export function runAssignment(entries) {
   });
 }
 
+// お野菜の写真から、どの作り手の手紙をひらくかを決める。読むのは写真の文字だけ（本文は書かせない）。
+export function runIdentify({ data, mediaType }, farmers) {
+  const list = farmers.map(({ id, farm, name, items, region }) => ({ id, farm: farm.ja, name: name.ja, items: items.map((i) => i.ja), region: region.ja }));
+  return callStructured({
+    skill: 'read-label',
+    schema: 'identify',
+    effort: 'medium',
+    maxTokens: 2000,
+    user: [
+      { type: 'image', source: { type: 'base64', media_type: mediaType, data } },
+      { type: 'text', text: `この写真の文字を読んで、次の作り手の一覧から id を1つ選んでください。\n\n${JSON.stringify(list, null, 2)}` },
+    ],
+  });
+}
+
 export function runTranslation(entries) {
   const list = entries.map(({ id, title_sys, quote, reason_quote, tags }) => ({ id, title_sys, quote, reason_quote, tags }));
   return callStructured({

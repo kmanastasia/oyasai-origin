@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["farmer_id", "farm_text", "name_text", "item_text", "confidence"],
+  "properties": {
+    "farmer_id": { "type": ["string", "null"], "description": "渡された作り手の一覧のうち、写真の文字と一致する作り手の id。言えなければ null" },
+    "farm_text": { "type": ["string", "null"], "description": "写真から読めた農園名（そのまま）。読めなければ null" },
+    "name_text": { "type": ["string", "null"], "description": "写真から読めた作り手の名前（そのまま）。読めなければ null" },
+    "item_text": { "type": ["string", "null"], "description": "写真から読めた品目（そのまま）。読めなければ null" },
+    "confidence": { "type": "string", "enum": ["high", "low"], "description": "農園名か名前が一致したら high。品目だけなら low" }
+  }
+}

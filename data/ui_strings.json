@@ -27,6 +27,12 @@
   { "key": "seal.bridge", "ja": "ここから先は、読む方の画面です", "en": "", "en_reviewed_by": null },
   { "key": "seal.done.view", "ja": "できあがりを見る", "en": "", "en_reviewed_by": null },
 
+  { "key": "scan.button", "ja": "お野菜の写真を読み込む", "en": "Read a photo of the vegetable", "en_reviewed_by": null },
+  { "key": "scan.hint", "ja": "袋や札の農家名・品目が写るように撮ると、その作り手の手紙がひらきます。", "en": "Photograph the bag or tag so the farm name and produce are visible, and that maker's letter opens.", "en_reviewed_by": null },
+  { "key": "scan.reading", "ja": "写真を読んでいます…", "en": "Reading the photo…", "en_reviewed_by": null },
+  { "key": "scan.fail", "ja": "農家名と品目が読めませんでした。ラベルが見えるように、もう一度撮ってください。", "en": "Could not read the farm name or produce. Try again with the label in view.", "en_reviewed_by": null },
+  { "key": "scan.noletter", "ja": "{farm} の手紙は、まだ届いていません。", "en": "No letter from {farm} has arrived yet.", "en_reviewed_by": null },
+  { "key": "scan.found", "ja": "{farm}（{item}）の手紙がひらきます。", "en": "Opening the letter from {farm} ({item}).", "en_reviewed_by": null },
   { "key": "farmers.heading", "ja": "作り手をえらぶ", "en": "Choose a maker", "en_reviewed_by": null },
   { "key": "farmers.lead", "ja": "お野菜の QR を読み込むと、その作り手の手紙がひらきます。", "en": "Scan the QR code on the vegetable to open that maker's letter.", "en_reviewed_by": null },
   { "key": "farmers.count", "ja": "ひらいた手紙 {n}／{total}", "en": "Letters opened {n} of {total}", "en_reviewed_by": null },

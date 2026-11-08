@@ -1,6 +1,7 @@
 // 作り手の一覧：10軒を名刺のように並べる。手紙がある作り手は巻物の印、ひらいた手紙はひらいた巻物。
 import { api, h, icon, makimono } from './common.js';
 import { getLang, hasStrings, onLangChange, openedLetters, startReader, t } from './reader.js';
+import { scanView } from './scan.js';
 
 const root = document.getElementById('root');
 let farmers = [];
@@ -38,6 +39,7 @@ function render() {
     h('div', { class: 'makers__head' },
       h('p', { class: 'makers__lead', text: t('farmers.lead') }),
       total ? h('p', { class: 'makers__count mono', text: t('farmers.count', { n: opened, total }) }) : null),
+    h('div', { class: 'scan-box' }, scanView(), h('p', { class: 'scan__hint', text: t('scan.hint') })),
     h('ol', { class: 'makers' }, farmers.map(farmerCard)));
 }
 

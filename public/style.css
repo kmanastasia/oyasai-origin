@@ -2929,3 +2929,18 @@ html[lang='en'] .reader.page-top .top__doors .door .door__for { font-size: 11px;
 @media (min-width: 768px) { .fields { grid-template-columns: 2fr 1fr 1fr; } }
 /* 扉の古い飾り（長い線・折り返した紙の角・薄い数字）は出さない。矢印の丸だけ */
 .reader.page-top .top__doors .door .door__go::before, .reader.page-top .top__doors .door .door__go::after { content: none; }
+
+/* ---------- お野菜の写真を読む：選ぶ欄は見せず、ボタンと結果の行だけ ---------- */
+.scan { display: flex; flex-direction: column; gap: 8px; }
+.scan__input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.scan__btn { width: 100%; min-height: 52px; justify-content: center; }
+.scan__status { font-size: 14px; line-height: 1.6; color: var(--haicha); min-height: 0; }
+.scan__status:empty { display: none; }
+.scan__status.is-ok { color: var(--ha-700); }
+.scan__status.is-fail { color: var(--veg); }
+.scan__next { color: var(--haicha); }
+.scan-box { margin: 0 0 20px; padding: 16px; border: 1px dashed color-mix(in srgb, var(--ink) 40%, var(--momi)); border-radius: 6px; background: var(--paper); }
+.scan__hint { margin-top: 8px; font-size: 13px; line-height: 1.6; color: var(--haicha); }
+.page-farmer .card--letter .scan { margin-top: 14px; }
+.page-farmer .card--letter .scan + .btn { margin-top: 10px; }
+@media (min-width: 768px) { .scan-box { display: grid; grid-template-columns: max-content minmax(0, 1fr); align-items: start; gap: 4px 20px; } .scan-box .scan__hint { margin-top: 14px; } }
