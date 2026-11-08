@@ -1,5 +1,5 @@
 // 作り手のページ：農園・土地・品目・季節と、畑からのお手紙。手紙はお野菜の QR を読み込むとひらく。
-import { api, h, icon, makimono, motionProbe } from './common.js';
+import { api, farmMark, h, icon, makimono, motionProbe } from './common.js';
 import { scanView } from './scan.js';
 import { checkTag, cacheLetter, cachedLetter, getLang, hasStrings, isUnlocked, onLangChange, openedLetters, startReader, t, translationTag, unlockLetter, warmFonts } from './reader.js';
 
@@ -29,8 +29,11 @@ function profileView() {
     h('dt', { class: 'mono', text: t(key) }),
     h('dd', { text: value }));
   return h('section', { class: 'profile' },
-    h('p', { class: 'mono profile__no', text: farmer.no }),
-    h('h1', { class: 'profile__name mincho', text: pair(farmer.name) }),
+    h('div', { class: 'profile__head' },
+      farmMark(farmer, ' farm-mark--big'),
+      h('div', {},
+        h('p', { class: 'mono profile__no', text: farmer.no }),
+        h('h1', { class: 'profile__name mincho', text: pair(farmer.name) }))),
     h('dl', { class: 'profile__rows' },
       row('farmer.farm', pair(farmer.farm)),
       row('farmer.region', pair(farmer.region)),

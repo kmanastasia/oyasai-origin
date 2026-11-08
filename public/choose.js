@@ -1,5 +1,5 @@
 // 作り手の一覧：10軒を名刺のように並べる。手紙がある作り手は巻物の印、ひらいた手紙はひらいた巻物。
-import { api, h, icon, makimono } from './common.js';
+import { api, farmMark, h, icon, makimono } from './common.js';
 import { getLang, hasStrings, onLangChange, openedLetters, startReader, t } from './reader.js';
 import { scanView } from './scan.js';
 
@@ -14,12 +14,14 @@ function farmerCard(farmer) {
   const state = !farmer.letter ? 'none' : opened ? 'opened' : 'sealed';
   return h('li', { class: `maker maker--${state}` },
     h('a', { class: 'maker__link', href: `/farmer?id=${encodeURIComponent(farmer.id)}` },
-      h('span', { class: 'maker__mark' }, farmer.letter ? makimono(opened ? 'open' : 'closed', ' maki--small') : h('span', { class: 'maker__dash', 'aria-hidden': 'true' })),
+      h('span', { class: 'maker__mark' }, farmMark(farmer)),
       h('span', { class: 'maker__text' },
         h('span', { class: 'mono maker__no', text: farmer.no }),
         h('span', { class: 'maker__farm mincho', text: pair(farmer.farm) }),
         h('span', { class: 'maker__line', text: `${pair(farmer.region)}｜${farmer.items.map(pair).join('・')}｜${pair(farmer.season)}` }),
-        h('span', { class: `maker__state maker__state--${state}`, text: t(`farmers.${state}`) })),
+        h('span', { class: 'maker__row' },
+          h('span', { class: `maker__state maker__state--${state}`, text: t(`farmers.${state}`) }),
+          farmer.letter ? makimono(opened ? 'open' : 'closed', ' maki--tiny') : null)),
       // お店・SNS の印：押せない・リンクなし（行き先が決まるまで「準備中」）
       h('span', { class: 'maker__links', title: t('farmers.links') },
         h('span', { class: 'maker__link-mark' }, icon('shop')),

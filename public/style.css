@@ -2956,3 +2956,19 @@ html[lang='en'] .reader.page-top .top__doors .door .door__for { font-size: 11px;
 .scan__sample { min-height: 52px; }
 .scan__preview:empty { display: none; }
 .scan__img { display: block; width: min(100%, 320px); height: auto; border: 1px solid var(--momi); border-radius: 4px; margin-top: 4px; }
+
+/* ---------- 農園の印（仮）：屋号のように頭の一字を丸に。季節の色（春＝若葉・夏＝葉・秋＝人参・冬＝土） ---------- */
+.farm-mark { display: inline-flex; align-items: center; justify-content: center; width: 56px; height: 56px; border-radius: 50%; border: 1.5px solid var(--ink); background: var(--paper); color: var(--ink); flex: none; }
+.farm-mark__char { font-size: 26px; line-height: 1; letter-spacing: 0; }
+.farm-mark--haru { background: var(--wakaba); border-color: var(--ha-700); color: var(--ha-700); }
+.farm-mark--natsu { background: var(--ha); border-color: var(--ha); color: var(--shiro); }
+.farm-mark--aki { background: var(--veg); border-color: var(--veg); color: var(--shiro); }
+.farm-mark--fuyu { background: var(--tsuchi); border-color: var(--tsuchi); color: var(--shiro); }
+.farm-mark--big { width: 72px; height: 72px; }
+.farm-mark--big .farm-mark__char { font-size: 34px; }
+.maker__row { display: inline-flex; align-items: center; gap: 10px; margin-top: 4px; }
+.maker__row .maker__state { margin-top: 0; }
+.maki--tiny { width: 44px; }
+.profile__head { display: flex; align-items: center; gap: 16px; margin-bottom: 18px; }
+.profile__head .profile__no { margin-bottom: 6px; }
+.profile__head .profile__name { margin-bottom: 0; }

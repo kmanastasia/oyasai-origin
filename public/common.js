@@ -95,6 +95,14 @@ export function makimono(state = 'closed', extra = '') {
   return el;
 }
 
+// 農園の印（仮）：屋号のように、農園名の頭の一字を丸の中に。色は季節で変える。本物の印に差し替えるまでの仮
+const SEASON_CLASS = { '春': 'haru', '夏': 'natsu', '秋': 'aki', '冬': 'fuyu' };
+export function farmMark(farmer, extra = '') {
+  const name = farmer.farm.ja.replace(/（仮）/g, '').trim();
+  return h('span', { class: `farm-mark farm-mark--${SEASON_CLASS[farmer.season.ja] ?? 'fuyu'}${extra}`, 'aria-hidden': 'true' },
+    h('span', { class: 'farm-mark__char mincho', lang: 'ja', text: [...name][0] ?? '' }));
+}
+
 // 動きが本当に進む環境かを、見えない小さな印で一度だけ確かめる。
 // 動きを減らす設定・隠れたタブ・アニメーションが止められた環境では false。false のときは最初から全部を見せる。
 let probe = null;
