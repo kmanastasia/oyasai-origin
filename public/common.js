@@ -98,7 +98,13 @@ export function makimono(state = 'closed', extra = '') {
 const SEASON_CLASS = { '春': 'haru', '夏': 'natsu', '秋': 'aki', '冬': 'fuyu' };
 export function farmMark(farmer, extra = '') {
   const name = farmer.farm.ja.replace(/（仮）/g, '').trim();
-  return h('span', { class: `farm-mark farm-mark--${SEASON_CLASS[farmer.season.ja] ?? 'fuyu'}${extra}`, 'aria-hidden': 'true' },
+  const season = SEASON_CLASS[farmer.season.ja] ?? 'fuyu';
+  // 顔の絵がある農園はその絵を丸く、無い農園は頭の一字を季節の色で
+  if (farmer.portrait) {
+    return h('span', { class: `farm-mark farm-mark--${season} farm-mark--face${extra}`, 'aria-hidden': 'true' },
+      h('img', { class: 'farm-mark__img', src: farmer.portrait, alt: '', width: '240', height: '240', decoding: 'async' }));
+  }
+  return h('span', { class: `farm-mark farm-mark--${season}${extra}`, 'aria-hidden': 'true' },
     h('span', { class: 'farm-mark__char mincho', lang: 'ja', text: [...name][0] ?? '' }));
 }
 
