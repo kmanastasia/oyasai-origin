@@ -103,7 +103,7 @@
 
   { "key": "bite.eat", "ja": "食べ方", "en": "How to eat it", "en_reviewed_by": null },
   { "key": "bite.wish", "ja": "想い", "en": "From the farmer", "en_reviewed_by": null },
-  { "key": "bite.grow", "ja": "育て方・こだわり", "en": "How it is grown", "en_reviewed_by": null },
+  { "key": "bite.grow", "ja": "農法・育て方", "en": "How it is grown", "en_reviewed_by": null },
 
   { "key": "voice.play", "ja": "声で読む（合成音声）", "en": "Read aloud (synthetic voice)", "en_reviewed_by": null },
   { "key": "voice.stop", "ja": "読み上げを止める", "en": "Stop reading", "en_reviewed_by": null },
