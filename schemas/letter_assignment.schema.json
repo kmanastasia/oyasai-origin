@@ -12,7 +12,7 @@
         "additionalProperties": false,
         "required": ["kind", "entry_ids"],
         "properties": {
-          "kind": { "type": "string", "enum": ["raw", "cooked", "recommend"], "description": "便箋：生・火を通して・作り手のおすすめ" },
+          "kind": { "type": "string", "enum": ["eat", "wish", "grow"], "description": "便箋：食べ方・想い・育て方とこだわり" },
           "entry_ids": { "type": "array", "items": { "type": "string" } }
         }
       }

@@ -84,11 +84,11 @@ function farmerCard(farmer) {
       h('span', { class: 'maker__text' },
         h('span', { class: 'mono maker__no', text: farmer.no }),
         h('span', { class: 'maker__farm mincho', text: pair(farmer.farm) }),
-        h('span', { class: 'maker__line', text: `${pair(farmer.region)}｜${farmer.items.map(pair).join('・')}｜${pair(farmer.season)}` }),
-        letterMark(farmer, state) ? h('span', { class: 'maker__row' }, letterMark(farmer, state)) : null),
-      // お店・SNS の印：押せない・リンクなし（行き先が決まるまで「準備中」）
-      h('span', { class: 'maker__links', title: t('farmers.links') },
-        h('span', { class: 'maker__link-mark' }, icon('shop')),
+        h('span', { class: 'maker__line', text: `${pair(farmer.region)}｜${farmer.items.map(pair).join('・')}｜${pair(farmer.season)}` })),
+      // 右上：手紙の印（受け取った／まだ）と、お店・SNS の印（押せない・リンクなし）
+      h('span', { class: 'maker__links' },
+        letterMark(farmer, state),
+        h('span', { class: 'maker__link-mark', title: t('farmers.links') }, icon('shop')),
         h('span', { class: 'maker__link-mark' }, icon('at')),
         h('span', { class: 'visually-hidden', text: t('farmers.links') })),
       h('span', { class: 'maker__go', 'aria-hidden': 'true' }, icon('arrow'))));

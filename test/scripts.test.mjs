@@ -122,7 +122,7 @@ test('generate --keep-reviewed は原文が同じ確認済みの英訳を残し�
   assert.equal(kept.reviewed_by, 'karen');
   assert.ok(!asked.includes('e-02'));
   assert.equal(result.find((t) => t.ref_id === 'e-03').text, 'NEW');
-  assert.equal(result.find((t) => t.ref_id === 'e-03').source_quote, '葉の先が丸まってきたら、水やりを止めます');
+  assert.equal(result.find((t) => t.ref_id === 'e-03').source_quote, '火を通すなら、弱火でゆっくり');
   assert.equal(result.find((t) => t.ref_id === 'e-03').reviewed_by, null);
   files.forEach((file, i) => writeFileSync(join(copy, file), saved[i]));
 });

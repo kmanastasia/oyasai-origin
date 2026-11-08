@@ -36,7 +36,7 @@
   { "key": "scan.fail", "ja": "農家名と品目が読めませんでした。ラベルが見えるように、もう一度撮ってください。", "en": "Could not read the farm name or produce. Try again with the label in view.", "en_reviewed_by": null },
   { "key": "scan.noletter", "ja": "{farm} の手紙は、まだ届いていません。", "en": "No letter from {farm} has arrived yet.", "en_reviewed_by": null },
   { "key": "scan.found", "ja": "{farm}（{item}）の手紙がひらきます。", "en": "Opening the letter from {farm} ({item}).", "en_reviewed_by": null },
-  { "key": "farmers.heading", "ja": "農家をえらぶ", "en": "Choose a farmer", "en_reviewed_by": null },
+  { "key": "farmers.heading", "ja": "農家一覧", "en": "Farmers", "en_reviewed_by": null },
   { "key": "farmers.lead", "ja": "お野菜の写真を読み込むと、その農家さんからの手紙がひらきます。", "en": "Read a photo of the vegetable to open the letter from that farmer.", "en_reviewed_by": null },
   { "key": "farmers.count", "ja": "ひらいた手紙 {n}／{total}", "en": "Letters opened {n} of {total}", "en_reviewed_by": null },
   { "key": "farmers.filter.pref", "ja": "都道府県", "en": "Prefecture", "en_reviewed_by": null },
@@ -81,7 +81,7 @@
 
   { "key": "letter.locked", "ja": "この手紙は、お野菜の写真を読み込むとひらきます。", "en": "This letter opens when you read a photo of the vegetable.", "en_reviewed_by": null },
   { "key": "letter.lockedBack", "ja": "農家のページへ", "en": "To the farmer's page", "en_reviewed_by": null },
-  { "key": "letter.open", "ja": "巻物をひらく", "en": "Unroll the letter", "en_reviewed_by": null },
+  { "key": "letter.open", "ja": "手紙をひらく", "en": "Open the letter", "en_reviewed_by": null },
   { "key": "letter.hint", "ja": "手元にお野菜があれば、一口ずつどうぞ。なくても読めます。", "en": "If you have the vegetable at hand, one bite at a time. You can read without it, too.", "en_reviewed_by": null },
   { "key": "letter.next", "ja": "次のひと口へ", "en": "Next bite", "en_reviewed_by": null },
   { "key": "letter.nextCount", "ja": "つぎは {n}／{total}", "en": "{n} of {total}", "en_reviewed_by": null },
@@ -101,9 +101,9 @@
   { "key": "letter.index.closing", "ja": "結び", "en": "Closing", "en_reviewed_by": null },
   { "key": "letter.backToList", "ja": "農家の一覧へ", "en": "Back to the farmers", "en_reviewed_by": null },
 
-  { "key": "bite.raw", "ja": "生で", "en": "Raw", "en_reviewed_by": null },
-  { "key": "bite.cooked", "ja": "火を通して", "en": "Cooked", "en_reviewed_by": null },
-  { "key": "bite.recommend", "ja": "農家のおすすめ", "en": "The farmer's way", "en_reviewed_by": null },
+  { "key": "bite.eat", "ja": "食べ方", "en": "How to eat it", "en_reviewed_by": null },
+  { "key": "bite.wish", "ja": "想い", "en": "From the farmer", "en_reviewed_by": null },
+  { "key": "bite.grow", "ja": "育て方・こだわり", "en": "How it is grown", "en_reviewed_by": null },
 
   { "key": "voice.play", "ja": "声で読む（合成音声）", "en": "Read aloud (synthetic voice)", "en_reviewed_by": null },
   { "key": "voice.stop", "ja": "読み上げを止める", "en": "Stop reading", "en_reviewed_by": null },

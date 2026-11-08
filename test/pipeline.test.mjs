@@ -112,7 +112,7 @@ test('鍵があっても、原文が同じ訳は取り直さず、id が変わ�
 
 test('原文が違う項目だけ訳を頼み、頼んだ訳は封をし直しても取り直さない', async () => {
   configure({ runtimeDir });
-  const changed = { ...archive.entries[2], id: 'live-new', quote: '葉の先が丸まってきたら' };
+  const changed = { ...archive.entries[2], id: 'live-new', quote: '弱火でゆっくり' };
   liveArchive = { entries: [archive.entries[0], changed], next_questions: [] };
   liveTranslations = (list) => ({ translations: list.map((x) => ({ ref_id: x.id, text: `LIVE ${x.quote}`, reason_text: null, title_text: 't', untranslated: [] })) });
   const draft = await createDraft(transcript);
@@ -121,7 +121,7 @@ test('原文が違う項目だけ訳を頼み、頼んだ訳は封をし直し�
   const asked = requests.find((body) => body.output_config.format.schema.properties.translations);
   assert.ok(!asked.messages[0].content.includes(archive.entries[0].quote));
   const first = await getLetter();
-  assert.equal(first.translations['live-new'].text, 'LIVE 葉の先が丸まってきたら');
+  assert.equal(first.translations['live-new'].text, 'LIVE 弱火でゆっくり');
   assert.equal(first.translations['e-01'].text, json('translations.en.json').translations[0].text);
 
   await unsealLetter();
@@ -134,7 +134,7 @@ test('原文が違う項目だけ訳を頼み、頼んだ訳は封をし直し�
 
 test('訳の通信が落ちても、保存してある訳で封をする。原文が違う項目には英語を出さない', async () => {
   configure({ runtimeDir });
-  liveArchive = { entries: [archive.entries[0], { ...archive.entries[2], id: 'live-new', quote: '葉の先が丸まってきたら' }], next_questions: [] };
+  liveArchive = { entries: [archive.entries[0], { ...archive.entries[2], id: 'live-new', quote: '弱火でゆっくり' }], next_questions: [] };
   liveTranslations = () => {
     throw new Error('down');
   };

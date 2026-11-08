@@ -3035,3 +3035,8 @@ html[lang='en'] .reader.page-top .top__doors .door .door__for { font-size: 11px;
 .sent__title { margin-top: 8px; }
 .sent__sub { margin: 8px auto 0; max-width: 32em; }
 .tool-actions--center { justify-content: center; }
+
+/* 一覧：手紙の印はカードの右上、お店・SNS の印の左に */
+.maker__links .letter-mark { margin-right: 6px; }
+.maker__links .letter-mark .maki--tiny { width: 36px; }
+.maker__links .letter-mark__n { font-size: 16px; }
