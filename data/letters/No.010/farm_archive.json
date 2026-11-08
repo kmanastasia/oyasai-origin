@@ -1,0 +1,21 @@
+{
+  "entries": [
+    { "id": "e-01", "category": "land", "title_sys": "住宅地のとなりの畑", "quote": "東京の西のはずれで、住宅地のすぐ隣に畑があります", "source_ref": "p.01", "reason_quote": null, "reason_source_ref": null, "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": [] },
+    { "id": "e-02", "category": "person", "title_sys": "三代目", "quote": "親の代からきゅうり一筋で、私で三代目です", "source_ref": "p.01", "reason_quote": null, "reason_source_ref": null, "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": [] },
+    { "id": "e-03", "category": "judgment", "title_sys": "朝五時の収穫", "quote": "朝は五時に畑に出て、車の音が増える前に収穫を終えます", "source_ref": "p.01", "reason_quote": null, "reason_source_ref": null, "missing_reason": true, "next_question_id": "q-01", "certainty": "stated", "tags": [] },
+    { "id": "e-04", "category": "craft", "title_sys": "水やりの時間", "quote": "朝と夕方、土の表面が乾く前に水をやります", "source_ref": "p.02", "reason_quote": "きゅうりは九割が水なので", "reason_source_ref": "p.02", "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": [] },
+    { "id": "e-05", "category": "craft", "title_sys": "葉を落とす", "quote": "葉が混みすぎたら下の葉を落として、風を通します", "source_ref": "p.02", "reason_quote": null, "reason_source_ref": null, "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": [] },
+    { "id": "e-06", "category": "judgment", "title_sys": "採る長さ", "quote": "長さが二十センチになったら、その朝のうちに採ります", "source_ref": "p.03", "reason_quote": "半日おくと太りすぎて、種が大きくなるからです", "reason_source_ref": "p.03", "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": [] },
+    { "id": "e-07", "category": "craft", "title_sys": "はさみで採る", "quote": "採るときは必ずはさみで、へたを少し残します", "source_ref": "p.03", "reason_quote": null, "reason_source_ref": null, "missing_reason": true, "next_question_id": "q-02", "certainty": "stated", "tags": [] },
+    { "id": "e-08", "category": "craft", "title_sys": "丸ごと一本", "quote": "まずは丸ごと一本、塩だけでかじってください", "source_ref": "p.04", "reason_quote": null, "reason_source_ref": null, "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": ["食べ方"] },
+    { "id": "e-09", "category": "craft", "title_sys": "生の味ことば", "quote": "ぱりっとして、青い香りがします", "source_ref": "p.04", "reason_quote": null, "reason_source_ref": null, "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": ["味ことば"] },
+    { "id": "e-10", "category": "craft", "title_sys": "たたいて割る", "quote": "切るなら、たたいて割ると味がよくしみます", "source_ref": "p.04", "reason_quote": null, "reason_source_ref": null, "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": ["食べ方"] },
+    { "id": "e-11", "category": "craft", "title_sys": "うちの定番", "quote": "ごま油と塩とにんにくで和えるのが、うちの定番です", "source_ref": "p.04", "reason_quote": null, "reason_source_ref": null, "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": ["食べ方"] },
+    { "id": "e-12", "category": "person", "title_sys": "採ったその日", "quote": "採ったその日のきゅうりは、においからちがいます", "source_ref": "p.05", "reason_quote": null, "reason_source_ref": null, "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": [] },
+    { "id": "e-13", "category": "person", "title_sys": "手紙を受け取る人へ", "quote": "朝五時の畑の空気を、ひと口でも思い出してもらえたらうれしいです", "source_ref": "p.05", "reason_quote": null, "reason_source_ref": null, "missing_reason": false, "next_question_id": null, "certainty": "stated", "tags": [] }
+  ],
+  "next_questions": [
+    { "id": "q-01", "text": "車の音が増える前に収穫を終えるのは、どうしてですか？", "about_entry_id": "e-03" },
+    { "id": "q-02", "text": "へたを少し残すのは、どうしてですか？", "about_entry_id": "e-07" }
+  ]
+}

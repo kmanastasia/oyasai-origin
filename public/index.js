@@ -71,12 +71,14 @@ function render() {
         makimono('closed', ' maki--on-dark'))),
     // 右：扉と足もと
     h('div', { class: 'top__body' },
+      // 使い方（大事な説明なので扉の上に）。印は Karen の絵ができたら差し替える
+      h('p', { class: `top__how${enter()}`, style: '--i:1' },
+        h('span', { class: 'top__how-icon', 'aria-hidden': 'true' }, icon('camera')),
+        h('span', { class: 'top__how-text', text: t('top.qr') })),
       h('div', { class: 'top__doors' },
         door({ key: 'read', href: '/choose', img: '/img/oyasai-tabi.jpg', alt: '', no: '01', order: '--i:2' }),
         door({ key: 'write', href: '/keep', img: '/img/nouka.jpg', alt: '', no: '02', order: '--i:3', meta: 'top.write.meta' })),
-      h('div', { class: 'top__foot' },
-        h('p', { class: 'card__small top__qr', text: t('top.qr') }),
-        snsView())));
+      h('div', { class: 'top__foot' }, snsView())));
   if (motion && !entered) {
     entered = true;
     const moving = [...root.querySelectorAll('.appear')];

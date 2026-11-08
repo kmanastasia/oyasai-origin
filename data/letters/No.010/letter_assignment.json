@@ -1,0 +1,9 @@
+{
+  "card_teaser_entry_id": "e-01",
+  "land_entry_ids": ["e-01"],
+  "chapters": [
+    { "kind": "raw", "entry_ids": ["e-08", "e-09", "e-10", "e-06"] },
+    { "kind": "cooked", "entry_ids": ["e-11", "e-04", "e-05"] },
+    { "kind": "recommend", "entry_ids": ["e-07", "e-03", "e-02", "e-12", "e-13"] }
+  ]
+}

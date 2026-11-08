@@ -61,7 +61,10 @@ const ROUTES = {
     await resetAll();
     return { reset: true };
   },
-  'GET /api/letter': async () => ({ letter: await getLetter(), offer: await getOffer() }),
+  'GET /api/letter': async (req) => {
+    const no = new URL(req.url, 'http://localhost').searchParams.get('no');
+    return { letter: await getLetter(no), offer: await getOffer() };
+  },
   'GET /api/ui-strings': async () => ({ strings: await getUiStrings() }),
   'GET /api/farmers': async () => ({ farmers: await getFarmers() }),
   // お野菜の写真から作り手を決める（画像は base64。写真はサーバーに残さない）

@@ -107,10 +107,12 @@ const live = motionProbe();
 const ready = startReader({ route: 1 });
 const early = cachedLetter();
 if (hasStrings() && early?.letter) ({ letter } = early);
-const [, farmersData, letterData] = await Promise.all([ready, api('farmers').catch(() => null), api('letter').catch(() => null)]);
+const [, farmersData] = await Promise.all([ready, api('farmers').catch(() => null)]);
 onLangChange(render);
 if (farmersData) farmer = farmersData.farmers.find((f) => f.id === id) ?? null;
 else failed = true;
+// この農家の手紙を番号で読む（手紙が無い農家は読まない）
+const letterData = farmer?.letter ? await api(`letter?no=${encodeURIComponent(farmer.letter)}`).catch(() => null) : null;
 if (letterData?.letter) {
   ({ letter } = letterData);
   cacheLetter(letterData);

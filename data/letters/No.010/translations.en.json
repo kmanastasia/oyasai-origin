@@ -1,0 +1,21 @@
+{
+  "archive_version": 1,
+  "lang": "en",
+  "translated_by": "claude",
+  "is_translation": true,
+  "translations": [
+    { "ref_type": "entry", "ref_id": "e-01", "source_quote": "東京の西のはずれで、住宅地のすぐ隣に畑があります", "source_reason_quote": null, "text": "On the western edge of Tokyo, the field sits right next to a residential neighborhood.", "reason_text": null, "title_text": "A field beside the houses", "untranslated": [], "reviewed_by": null },
+    { "ref_type": "entry", "ref_id": "e-02", "source_quote": "親の代からきゅうり一筋で、私で三代目です", "source_reason_quote": null, "text": "Since my parents' generation it has been cucumbers and nothing else; I am the third generation.", "reason_text": null, "title_text": "Third generation", "untranslated": [], "reviewed_by": null },
+    { "ref_type": "entry", "ref_id": "e-03", "source_quote": "朝は五時に畑に出て、車の音が増える前に収穫を終えます", "source_reason_quote": null, "text": "I go out to the field at five in the morning and finish harvesting before the traffic picks up.", "reason_text": null, "title_text": "Harvest at five in the morning", "untranslated": [], "reviewed_by": null },
+    { "ref_type": "entry", "ref_id": "e-04", "source_quote": "朝と夕方、土の表面が乾く前に水をやります", "source_reason_quote": "きゅうりは九割が水なので", "text": "Morning and evening, I water before the surface of the soil dries out.", "reason_text": "Because a cucumber is nine-tenths water.", "title_text": "When to water", "untranslated": [], "reviewed_by": null },
+    { "ref_type": "entry", "ref_id": "e-05", "source_quote": "葉が混みすぎたら下の葉を落として、風を通します", "source_reason_quote": null, "text": "When the leaves get too crowded, I take off the lower ones to let the wind through.", "reason_text": null, "title_text": "Thinning the leaves", "untranslated": [], "reviewed_by": null },
+    { "ref_type": "entry", "ref_id": "e-06", "source_quote": "長さが二十センチになったら、その朝のうちに採ります", "source_reason_quote": "半日おくと太りすぎて、種が大きくなるからです", "text": "Once they reach twenty centimeters, I pick them that same morning.", "reason_text": "Left half a day longer, they grow too thick and the seeds get big.", "title_text": "The length to pick at", "untranslated": [], "reviewed_by": null },
+    { "ref_type": "entry", "ref_id": "e-07", "source_quote": "採るときは必ずはさみで、へたを少し残します", "source_reason_quote": null, "text": "I always pick with scissors, leaving a little of the stem.", "reason_text": null, "title_text": "Picking with scissors", "untranslated": [], "reviewed_by": null },
+    { "ref_type": "entry", "ref_id": "e-08", "source_quote": "まずは丸ごと一本、塩だけでかじってください", "source_reason_quote": null, "text": "First, bite into a whole one with nothing but salt.", "reason_text": null, "title_text": "A whole one, first", "untranslated": [], "reviewed_by": null },
+    { "ref_type": "entry", "ref_id": "e-09", "source_quote": "ぱりっとして、青い香りがします", "source_reason_quote": null, "text": "", "reason_text": null, "title_text": "A taste word, raw", "untranslated": [{ "ja": "ぱりっ", "romaji": "pari'", "gloss_ja": "≈ 歯切れよく割れる音", "gloss_en": "≈ a crisp snap" }], "reviewed_by": null },
+    { "ref_type": "entry", "ref_id": "e-10", "source_quote": "切るなら、たたいて割ると味がよくしみます", "source_reason_quote": null, "text": "If you cut it, smash it and break it apart instead; the flavor soaks in better.", "reason_text": null, "title_text": "Smash, don't slice", "untranslated": [], "reviewed_by": null },
+    { "ref_type": "entry", "ref_id": "e-11", "source_quote": "ごま油と塩とにんにくで和えるのが、うちの定番です", "source_reason_quote": null, "text": "Tossed with sesame oil, salt and garlic: that is the standard at our house.", "reason_text": null, "title_text": "The house standard", "untranslated": [], "reviewed_by": null },
+    { "ref_type": "entry", "ref_id": "e-12", "source_quote": "採ったその日のきゅうりは、においからちがいます", "source_reason_quote": null, "text": "A cucumber picked that same day is different from the smell onward.", "reason_text": null, "title_text": "Picked the same day", "untranslated": [], "reviewed_by": null },
+    { "ref_type": "entry", "ref_id": "e-13", "source_quote": "朝五時の畑の空気を、ひと口でも思い出してもらえたらうれしいです", "source_reason_quote": null, "text": "I would be glad if even one bite brought back the air of the field at five in the morning.", "reason_text": null, "title_text": "To the one who receives this letter", "untranslated": [], "reviewed_by": null }
+  ]
+}

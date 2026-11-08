@@ -1,0 +1,13 @@
+{
+  "no": "No.010",
+  "farmer_id": "f10",
+  "vegetable": { "ja": "きゅうり", "en": "Cucumber" },
+  "farmer": { "ja": "はたけみち", "en": "Hatakemichi", "name_ja": "はたけみち" },
+  "farm": { "ja": "はたけみち農園（仮）", "en": "Hatakemichi Farm (provisional)" },
+  "town": { "ja": "東京の西の町（仮）", "en": "A town in western Tokyo (provisional)" },
+  "season": { "ja": "夏", "en": "Summer" },
+  "is_fictional": true,
+  "is_sample": true,
+  "place_is_fictional": true,
+  "slots": []
+}

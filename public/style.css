@@ -3000,3 +3000,9 @@ html[lang='en'] .reader.page-top .top__doors .door .door__for { font-size: 11px;
 .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 10px 0 2px; font-size: 12px; color: var(--haicha); }
 .legend__item { display: inline-flex; align-items: center; gap: 6px; }
 .legend .maki--tiny { width: 30px; }
+
+/* ---------- トップ：使い方の一文（扉の上）。印は差し替え前提 ---------- */
+.page-top .top__how { display: flex; align-items: flex-start; gap: 12px; margin: 0 0 18px; padding: 14px 16px; border: 1px solid color-mix(in srgb, var(--ink) 40%, var(--momi)); border-radius: 6px; background: var(--paper); font-size: 15px; line-height: 1.7; color: var(--ink); }
+.page-top .top__how-icon { flex: none; display: inline-flex; width: 36px; height: 36px; align-items: center; justify-content: center; border-radius: 50%; border: 1.5px solid var(--ink); }
+.page-top .top__how-icon svg { width: 18px; height: 18px; }
+.page-top .top__how-text { margin: 0; }

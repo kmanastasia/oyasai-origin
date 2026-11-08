@@ -176,19 +176,56 @@ export async function resetAll() {
   await rm(runtimeDir, { recursive: true, force: true });
 }
 
-export const getLetter = () => readJsonIfExists(`${runtimeDir}public_letter.json`);
+// 手紙は番号で選ぶ。番号が無いか、実行中の手紙（書く側で封をしたもの）と同じ番号ならそれを返す。
+// ほかの番号は data/letters/<番号>/ に同梱した手紙（文字起こし・分類・割り当て・英訳・表紙）から組み立てる。
+const lettersDir = `${dataDir}letters/`;
+const BUNDLED_SEALED_AT = '2026-11-08T00:00:00.000Z';
+
+// 番号ごとの手紙の置き場。見本の No.001 は data/ 直下（書く側の見本と同じ文字起こし・保存データ）を使う
+async function bundlePaths(no) {
+  const dir = `${lettersDir}${no}/`;
+  if (await readJsonIfExists(`${dir}meta.json`)) {
+    return { transcript: `${dir}transcript.md`, archive: `${dir}farm_archive.json`, assignment: `${dir}letter_assignment.json`, translations: `${dir}translations.en.json`, meta: `${dir}meta.json` };
+  }
+  const sampleMeta = await readJson(`${dataDir}letter_meta.json`);
+  if (sampleMeta.no !== no) return null;
+  return { transcript: `${dataDir}transcript.md`, archive: `${dataDir}replay/farm_archive.json`, assignment: `${dataDir}replay/letter_assignment.json`, translations: `${dataDir}translations.en.json`, meta: `${dataDir}letter_meta.json` };
+}
+
+async function bundledLetter(no) {
+  if (!/^No\.\d{3}$/.test(no)) return null;
+  const paths = await bundlePaths(no);
+  if (!paths) return null;
+  const paragraphs = parseTranscript(await readFile(paths.transcript, 'utf8'));
+  const checked = verifyArchive(await readJson(paths.archive), paragraphs);
+  const { skip_speech_ids: skipSpeechIds } = await readJson(`${dataDir}speech.json`);
+  const decisions = checked.entries.map((e) => ({ id: e.id, reply: 'yes' }));
+  const published = sealArchive({ ...checked, paragraphs }, decisions, BUNDLED_SEALED_AT, 1, skipSpeechIds, false);
+  const assignment = await readJson(paths.assignment);
+  const translations = await readJson(paths.translations);
+  const meta = await readJson(paths.meta);
+  return buildPublicLetter(published, assignment, { archive_version: 1, translations: translations.translations }, meta);
+}
+
+export async function getLetter(no = null) {
+  const runtime = await readJsonIfExists(`${runtimeDir}public_letter.json`);
+  if (!no) return runtime;
+  // 書く側で封をした手紙が同じ番号なら、それを優先する。無ければ同梱の手紙（見本の No.001 も）
+  if (runtime?.meta?.no === no) return runtime;
+  return bundledLetter(no);
+}
 export const getOffer = () => readJson(`${dataDir}offer.json`);
 export const getUiStrings = () => readJson(`${dataDir}ui_strings.json`);
 export const getFarmers = async () => (await readJson(`${dataDir}farmers.json`)).farmers;
 
-// お野菜の写真 → 作り手。demo と鍵なしでは読まず、次にすることを添えて止める。
+// お野菜の写真 → 農家。demo と鍵なしでは読まず、次にすることを添えて止める。
 const IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
 export async function identifyFarmer(image, mediaType, sample = false) {
   if (typeof image !== 'string' || !image || !IMAGE_TYPES.has(mediaType)) {
     throw new UserError('写真を受け取れませんでした。', 'JPEG か PNG の写真を選び直してください。');
   }
   const farmers = await getFarmers();
-  // 見本の写真（画面が描いた「みなみ農園・にんじん」の札）は、鍵がなくても最初の作り手につなぐ。鍵があれば Claude が本当に読む
+  // 見本の写真（画面が描いた「みなみ農園・にんじん」の札）は、鍵がなくても最初の農家につなぐ。鍵があれば Claude が本当に読む
   if (sample === true && (demo || !process.env.ANTHROPIC_API_KEY)) {
     const farmer = farmers[0];
     return { farmer, read: { farm_text: farmer.farm.ja, name_text: null, item_text: farmer.items[0].ja, confidence: 'high' }, sample: true };
@@ -196,7 +233,7 @@ export async function identifyFarmer(image, mediaType, sample = false) {
   if (demo || !process.env.ANTHROPIC_API_KEY) {
     throw new UserError(
       demo ? 'npm run demo では写真を読みません。' : '写真を読むには API キーが必要です。',
-      demo ? '作り手のページの「QR を読み込む（見本）」でひらけます。' : '.env に ANTHROPIC_API_KEY を入れて npm run dev を起動し直すか、作り手のページの「QR を読み込む（見本）」でひらけます。'
+      demo ? '農家のページの「QR を読み込む（見本）」でひらけます。' : '.env に ANTHROPIC_API_KEY を入れて npm run dev を起動し直すか、農家のページの「QR を読み込む（見本）」でひらけます。'
     );
   }
   let read;
@@ -204,7 +241,7 @@ export async function identifyFarmer(image, mediaType, sample = false) {
     read = await runIdentify({ data: image, mediaType }, farmers);
   } catch (error) {
     console.error(`[identify] ${error.message}`);
-    throw new UserError('写真を読めませんでした（Claude との通信に失敗）。', '少し待ってもう一度選ぶか、作り手のページの「QR を読み込む（見本）」でひらけます。');
+    throw new UserError('写真を読めませんでした（Claude との通信に失敗）。', '少し待ってもう一度選ぶか、農家のページの「QR を読み込む（見本）」でひらけます。');
   }
   const farmer = farmers.find((f) => f.id === read.farmer_id) ?? null; // 一覧にない id は使わない
   return { farmer, read: { farm_text: read.farm_text, name_text: read.name_text, item_text: read.item_text, confidence: read.confidence } };

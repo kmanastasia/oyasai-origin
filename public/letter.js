@@ -291,7 +291,7 @@ function originCard() {
   const total = offer.breakdown.reduce((sum, part) => sum + part.yen, 0);
   return h('div', { class: `offer${enterOffer()}` },
     h('h3', { class: 'offer__name', tabindex: '-1', text: t('close.jp.product') }),
-    h('p', { class: 'offer__contents', text: t('close.jp.contents', { no: letter.meta.no }) }),
+    h('p', { class: 'offer__contents', text: t('close.jp.contents', { no: letter.meta.no, item: letter.meta.vegetable.ja }) }),
     h('p', { class: 'offer__price', text: offer.price_display }),
     h('p', { class: 'offer__share', text: offer.farmer_share_display }),
     h('h4', { class: 'offer__flow', text: t('close.jp.flow') }),
@@ -326,10 +326,10 @@ function closingJp() {
       h('p', { class: `closing__line mincho${appear('closing')}`, text: t('close.jp.line', { farmer: letter.meta.farmer.ja }) }),
       sealStamp(` stamp--sign${entering.has('closing') ? ' stamp--press' : ''}`)),
     h('div', { class: 'closing__meta' },
-      h('p', { class: 'closing__sub', text: t('close.jp.sub') }),
+      h('p', { class: 'closing__sub', text: t('close.jp.sub', { item: letter.meta.vegetable.ja }) }),
       closingOpen
         ? originCard()
-        : h('button', { class: 'btn btn--primary', type: 'button', onclick: openOffer, text: t('close.jp.button') }),
+        : h('button', { class: 'btn btn--primary', type: 'button', onclick: openOffer, text: t('close.jp.button', { item: letter.meta.vegetable.ja }) }),
       h('p', { class: 'closing__keep', text: t('close.jp.keep') })),
   ];
 }
@@ -693,12 +693,16 @@ if (qrNo) unlockLetter(qrNo);
 // 最初の描画は動きの確かめを待たない。答えは「巻物をひらく」を押すころには出ている。
 motionProbe().then((ok) => { motionOk = ok; });
 const ready = startReader({ route: 2 });
-const early = cachedLetter();
+// 読む手紙の番号（/letter?no=番号 か ?qr=番号）。無ければ書く側で封をした手紙
+const wantNo = new URLSearchParams(location.search).get('no') ?? qrNo;
+const letterPath = wantNo ? `letter?no=${encodeURIComponent(wantNo)}` : 'letter';
+const cached = cachedLetter();
+const early = !wantNo || cached?.letter?.meta?.no === wantNo ? cached : null;
 if (hasStrings() && early?.letter && early?.offer) {
   useLetter(early);
   renderBody(); // ③から来たときは、表紙を読み込みを待たずに出す（最初の描画の前には何も待たない。待つと空の便箋で移り変わりが始まる）
 }
-const [, data] = await Promise.all([ready, api('letter').catch(() => null)]);
+const [, data] = await Promise.all([ready, api(letterPath).catch(() => null)]);
 if (data?.letter) {
   const changed = JSON.stringify(data) !== JSON.stringify(early);
   useLetter(data);

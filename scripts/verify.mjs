@@ -116,6 +116,43 @@ for (const s of readJson('data/ui_strings.json')) {
 }
 report('英語訳の漏れ', enProblems, `${enProblems.length}件`);
 
+// 4b. 番号ごとの手紙（data/letters/<番号>/）も同じ物差しで確かめる：一字一句一致・英訳の漏れ・archive_only の流出・（仮）
+const lettersRoot = join(root, 'data/letters');
+const bundled = existsSync(lettersRoot) ? readdirSync(lettersRoot).filter((name) => /^No\.\d{3}$/.test(name)).sort() : [];
+const bundleProblems = [];
+for (const no of bundled) {
+  const dir = `data/letters/${no}`;
+  const bParagraphs = parseTranscript(read(`${dir}/transcript.md`));
+  const bArchive = readJson(`${dir}/farm_archive.json`);
+  const bChecked = verifyArchive(bArchive, bParagraphs);
+  for (const d of bChecked.dropped) bundleProblems.push(`${no} ${d.id}：${d.reason}。${dir}/farm_archive.json を原文に合わせてください。`);
+  const bMeta = readJson(`${dir}/meta.json`);
+  if (bMeta.no !== no) bundleProblems.push(`${no} の meta.json の no が ${bMeta.no} です。`);
+  if (!bMeta.farm?.ja?.includes('（仮）')) bundleProblems.push(`${no} の農園名に（仮）がありません。`);
+  const bTranslations = readJson(`${dir}/translations.en.json`);
+  const bTranslated = new Map(bTranslations.translations.map((t) => [t.ref_id, t]));
+  for (const entry of bChecked.entries) {
+    const t = bTranslated.get(entry.id);
+    if (!t) { bundleProblems.push(`${no} ${entry.id} の英語訳がありません。`); continue; }
+    if (t.source_quote !== entry.quote || (t.source_reason_quote ?? null) !== entry.reason_quote) bundleProblems.push(`${no} ${entry.id} の英語訳が指す原文が項目と一致しません。`);
+    if (entry.tags.includes('味ことば') ? t.text !== '' || t.untranslated.length === 0 : !t.text) bundleProblems.push(`${no} ${entry.id} の英語訳が空か、味ことばの扱いが違います。`);
+    if (entry.reason_quote && !t.reason_text) bundleProblems.push(`${no} ${entry.id} の理由の英語訳がありません。`);
+    if (!entry.reason_quote && t.reason_text) bundleProblems.push(`${no} ${entry.id} は原文に理由がないのに英語に理由があります。`);
+  }
+  const bAssignment = readJson(`${dir}/letter_assignment.json`);
+  const ids = new Set(bChecked.entries.map((e) => e.id));
+  for (const id of [bAssignment.card_teaser_entry_id, ...bAssignment.land_entry_ids, ...bAssignment.chapters.flatMap((c) => c.entry_ids)]) {
+    if (!ids.has(id)) bundleProblems.push(`${no} の割り当てに無い項目 ${id} があります。`);
+  }
+  const bDraft = { ...bChecked, paragraphs: bParagraphs };
+  for (const target of bChecked.entries) {
+    const decisions = bChecked.entries.map((e) => ({ id: e.id, reply: e.id === target.id ? 'archive_only' : 'yes' }));
+    const output = JSON.stringify(buildPublicLetter(sealArchive(bDraft, decisions, '2000-01-01T00:00:00.000Z'), bAssignment, { archive_version: 1, translations: bTranslations.translations }, bMeta));
+    if (output.includes(target.quote) || output.includes(`"${target.id}"`)) bundleProblems.push(`${no} ${target.id} を残すだけにしても受け取る側に出ます。`);
+  }
+}
+report(`番号ごとの手紙（${bundled.join('・') || 'なし'}）`, bundleProblems, `${bundled.length}通`);
+
 // 読み上げから外す項目の id は、実在するものだけ
 const skipIds = readJson('data/speech.json').skip_speech_ids;
 const unknownSkips = skipIds.filter((id) => !archive.entries.some((e) => e.id === id));
