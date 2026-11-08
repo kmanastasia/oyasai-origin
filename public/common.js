@@ -90,8 +90,8 @@ export function toolBands() {
 // state は 'closed'（巻いて朱の紐で結んである）か 'open'（ひらいてある）。2枚の絵を重ね、状態で見せる方を替える（ほどける動きは重ね合わせ）
 export function makimono(state = 'closed', extra = '') {
   return h('span', { class: `maki maki--${state}${extra}`, 'aria-hidden': 'true' },
-    h('img', { class: 'maki__img maki__img--closed', src: '/img/maki-closed.jpg', alt: '', width: '530', height: '760', decoding: 'async' }),
-    h('img', { class: 'maki__img maki__img--open', src: '/img/maki-open.jpg', alt: '', width: '900', height: '605', decoding: 'async' }));
+    h('img', { class: 'maki__img maki__img--closed', src: '/img/maki-closed.jpg', alt: '', width: '400', height: '545', decoding: 'async' }),
+    h('img', { class: 'maki__img maki__img--open', src: '/img/maki-open.jpg', alt: '', width: '650', height: '440', decoding: 'async' }));
 }
 
 // 農園の印（仮）：屋号のように、農園名の頭の一字を丸の中に。色は季節で変える。本物の印に差し替えるまでの仮
