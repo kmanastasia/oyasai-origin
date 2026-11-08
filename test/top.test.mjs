@@ -22,7 +22,7 @@ test('トップの扉は 読む→農家の一覧、書く→残す。番号の�
     }
   }
   assert.equal(strings.get('top.read.title').ja, '畑からのお手紙を読む');
-  assert.equal(strings.get('top.write.title').ja, '畑からのお手紙を書く');
+  assert.equal(strings.get('top.write.title').ja, '畑からお手紙を書く');
   assert.equal(strings.get('subtitle').ja, '畑からのお手紙');
   assert.ok(!strings.has('top.ask'));
   assert.ok(!strings.has('band.fiction'));
@@ -55,15 +55,15 @@ test('写真の文は、お野菜の写真からその農家さんからの手�
   assert.match(read('public/farmer.js'), /unlockLetter\(/);
 });
 
-test('トップの足もとの SNS は押せない文字と「準備中」だけで、リンクも URL もない', () => {
-  const source = read('public/index.js');
-  const sns = source.slice(source.indexOf('function snsView('), source.indexOf('function render('));
+test('トップの足もとの SNS は Instagram と TikTok の2つのリンクだけ（外部リンクはここ1か所）。新しいタブでひらく', () => {
+  const source = readFileSync(`${project}public/index.js`, 'utf8');
+  const sns = source.slice(source.indexOf('const SNS_LINKS'), source.indexOf('// 見出し'));
   assert.match(sns, /t\('top\.sns'\)/);
-  assert.match(sns, /t\('sns\.pending'\)/);
-  assert.doesNotMatch(sns, /h\('a'|href/);
-  assert.doesNotMatch(source, /https?:/);
-  assert.equal(strings.get('sns.pending').ja, '準備中');
-  assert.doesNotMatch(JSON.stringify([strings.get('top.sns'), strings.get('sns.pending')]), /https?:/);
+  assert.match(sns, /https:\/\/www\.instagram\.com\/oyasai_tabi\//);
+  assert.match(sns, /https:\/\/www\.tiktok\.com\/@oyasai_tabi/);
+  assert.equal((sns.match(/https?:\/\//g) ?? []).length, 2);
+  assert.match(sns, /target: '_blank', rel: 'noopener noreferrer'/);
+  assert.doesNotMatch(sns, /sns\.pending/);
 });
 
 // 390×844 の調整（T5）：詰めたのは余白と行の高さだけ。仕様で決まった値はそのまま。

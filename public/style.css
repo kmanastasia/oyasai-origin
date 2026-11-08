@@ -2746,19 +2746,33 @@ html[lang='en'] .reader.page-top .top__doors .door .door__for { font-size: 11px;
 .maki--card { width: min(100%, 300px); }
 .maki--seal { width: min(100%, 340px); margin: 0 auto 20px; }
 
-/* ---------- トップ：土のふたの縁に巻物（封の代わり） ---------- */
-.page-top .top__maki { position: absolute; z-index: 3; width: 150px; aspect-ratio: auto; filter: none; }
+/* ---------- トップ：土のふたの縁に巻物（封の代わり）。押すとひらき、ホバーで少し傾く ---------- */
+.page-top .top__maki { position: absolute; z-index: 3; --w: 150px; width: var(--w); aspect-ratio: 400 / 545; padding: 0; border: 0; background: none; cursor: pointer; filter: none; transition: width 620ms var(--ease-out); -webkit-tap-highlight-color: transparent; }
+.page-top .top__maki:focus-visible { outline: 2px solid var(--on-dark, #fff); outline-offset: 6px; border-radius: 4px; }
+.page-top .top__maki .maki { display: block; width: 100%; height: 100%; aspect-ratio: auto; filter: none; }
+.page-top .top__maki .maki__img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 12px 14px rgba(0, 0, 0, 0.35)); }
+.page-top .top__maki .maki__img--closed { opacity: 1; transform: none; transform-origin: 50% 60%; }
+.page-top .top__maki .maki__img--open { opacity: 0; transform: scaleX(0.22) rotate(-4deg); transform-origin: 50% 50%; }
+/* ホバー／キーボードで少し向きが変わる */
+.page-top .top__maki:hover .maki__img--closed, .page-top .top__maki:focus-visible .maki__img--closed { transform: rotate(-9deg) translateY(-6px); }
+/* 押すとひらく：箱が横長に広がり、巻いた形が巻き取られて、ひらいた形が左右に伸びる */
+.page-top .top__maki.is-open { width: calc(var(--w) * 1.9); aspect-ratio: 650 / 440; }
+.page-top .top__maki.is-open .maki__img--closed { opacity: 0; transform: rotate(18deg) scale(0.7); }
+.page-top .top__maki.is-open .maki__img--open { opacity: 1; transform: none; transition-delay: 140ms; }
+.page-top .top__maki.is-open:hover .maki__img--open, .page-top .top__maki.is-open:focus-visible .maki__img--open { transform: rotate(2deg) translateY(-4px); }
 .page-top .top__hero { position: relative; }
 @media (max-width: 1023px) {
-  .page-top .top__maki { left: 16px; bottom: 28px; width: 132px; }
-  html[lang='en'] .page-top .top__maki { left: auto; right: 20px; top: 20px; bottom: auto; width: 110px; }
+  .page-top .top__maki { left: 16px; bottom: 28px; --w: 132px; }
+  html[lang='en'] .page-top .top__maki { left: auto; right: 20px; top: 20px; bottom: auto; --w: 110px; }
 }
 @media (min-width: 1024px) {
-  .page-top .top__maki { right: -70px; top: 38%; width: 190px; }
+  .page-top .top__maki { right: -70px; top: 38%; --w: 190px; }
+  .page-top .top__maki.is-open { right: -40px; }
 }
 @media (prefers-reduced-motion: no-preference) {
   .page-top .top__maki.appear { animation: maki-settle 620ms var(--ease-out) 1100ms both; }
 }
+@media (prefers-reduced-motion: reduce) { .page-top .top__maki { transition: none; } }
 @keyframes maki-settle { from { opacity: 0.4; transform: translateY(10px) rotate(-3deg); } to { opacity: 1; transform: none; } }
 
 /* ---------- トップの扉：絵と言葉。「どちらにしますか」は出さない ---------- */
@@ -2966,3 +2980,8 @@ html[lang='en'] .reader.page-top .top__doors .door .door__for { font-size: 11px;
 .maker__state--coming { border-color: var(--haicha); color: var(--haicha); }
 .card--coming { display: flex; align-items: center; gap: 14px; padding: 14px 20px; margin-top: 12px; background: var(--kinari); border: 1px dashed var(--momi); }
 .card__coming-text { display: flex; flex-direction: column; gap: 2px; font-size: 14px; color: var(--haicha); }
+
+/* ---------- トップの足もと：おやさい旅の SNS リンク（Instagram・TikTok）。外部リンクはここだけ ---------- */
+.top__sns-link { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--momi); transition: text-decoration-color 160ms var(--ease-std), color 160ms var(--ease-std); }
+.top__sns-link:hover, .top__sns-link:focus-visible { color: var(--accent, var(--ink)); text-decoration-color: currentColor; }
+.top__sns-link + .top__sns-link::before { content: '·'; margin-right: 8px; color: var(--momi); }

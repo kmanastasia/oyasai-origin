@@ -20,11 +20,15 @@ function door({ key, href, img, alt, no, order, meta }) {
       h('span', { class: 'door__go', 'aria-hidden': 'true' }, icon('arrow'))));
 }
 
-// おやさい旅の SNS は行き先が決まるまで、押せない文字と「準備中」だけ。リンクにしない。
+// おやさい旅の SNS：Instagram と TikTok へのリンク。外部リンクはこの1か所だけ（2026-11-07 Karen 決定）。新しいタブでひらく
+const SNS_LINKS = [
+  ['Instagram', 'https://www.instagram.com/oyasai_tabi/'],
+  ['TikTok', 'https://www.tiktok.com/@oyasai_tabi'],
+];
 function snsView() {
   return h('p', { class: 'top__sns' },
     h('span', { class: 'top__sns-text', text: t('top.sns') }),
-    h('span', { class: 'tag-status', text: t('sns.pending') }));
+    SNS_LINKS.map(([label, href]) => h('a', { class: 'top__sns-link', href, target: '_blank', rel: 'noopener noreferrer', text: label })));
 }
 
 // 見出し：日本語は「日本のお野菜を／世界へ。」で意図して改行する（文字は辞書のまま）。
@@ -45,6 +49,14 @@ function glyphs(part) {
 
 const enter = () => (motion && !entered ? ' appear' : '');
 
+// トップの巻物：ひらく／巻き戻す（見た目だけ。手紙の中身はひらかない）
+function toggleMaki(event) {
+  const button = event.currentTarget;
+  const open = !button.classList.contains('is-open');
+  button.classList.toggle('is-open', open);
+  button.setAttribute('aria-pressed', String(open));
+}
+
 function render() {
   document.title = 'OYASAI ORIGIN';
   glyphNo = 0;
@@ -54,7 +66,9 @@ function render() {
       h('div', { class: `top__lid${enter()}` },
         coreHeading(),
         h('p', { class: `lead-line${enter()}`, style: '--i:1', text: t('subtitle') })),
-      makimono('closed', ` top__maki maki--on-dark${enter()}`)),
+      // 巻物は押すとひらき（もう一度押すと巻き戻る）、ホバーで少し傾く。行き先は変えない
+      h('button', { class: `top__maki${enter()}`, type: 'button', 'aria-label': t('letter.open'), 'aria-pressed': 'false', onclick: toggleMaki },
+        makimono('closed', ' maki--on-dark'))),
     // 右：扉と足もと
     h('div', { class: 'top__body' },
       h('div', { class: 'top__doors' },

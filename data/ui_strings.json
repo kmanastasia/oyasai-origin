@@ -3,8 +3,8 @@
   { "key": "subtitle", "ja": "畑からのお手紙", "en": "A letter from the field", "en_reviewed_by": null },
 
   { "key": "top.read.title", "ja": "畑からのお手紙を読む", "en": "Read a letter from the field", "en_reviewed_by": null },
-  { "key": "top.read.sub", "ja": "農家をえらんで、手紙をひらく", "en": "Choose a farmer and open their letter", "en_reviewed_by": null },
-  { "key": "top.write.title", "ja": "畑からのお手紙を書く", "en": "Write a letter from the field", "en_reviewed_by": null },
+  { "key": "top.read.sub", "ja": "お野菜を買って、農家さんからの手紙を受け取る", "en": "Buy the vegetable, and receive a letter from the farmer", "en_reviewed_by": null },
+  { "key": "top.write.title", "ja": "畑からお手紙を書く", "en": "Write a letter from the field", "en_reviewed_by": null },
   { "key": "top.write.sub", "ja": "農家の話を、手紙にして封をする", "en": "Turn a farmer's story into a sealed letter", "en_reviewed_by": null },
   { "key": "top.write.meta", "ja": "日本語のみ", "en": "Japanese only", "en_reviewed_by": null },
   { "key": "top.qr", "ja": "お野菜の写真を読み込むと、その農家さんからの手紙がひらきます。", "en": "Read a photo of the vegetable, and the letter from that farmer opens.", "en_reviewed_by": null },

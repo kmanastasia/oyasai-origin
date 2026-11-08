@@ -173,6 +173,7 @@ const FORBIDDEN = [
   [/new Audio\(|\.mp3|\.wav|elevenlabs|cartesia/i, '音声ファイル・外部の音声サービス'],
   [/<a [^>]*href=["']https?:/i, '外部リンク'],
 ];
+const SNS_ALLOWED = new Set(['https://www.instagram.com/oyasai_tabi/', 'https://www.tiktok.com/@oyasai_tabi']);
 const codeProblems = [];
 for (const file of [...walk('public'), ...walk('server'), ...walk('lib')]) {
   const source = read(file);
@@ -184,6 +185,8 @@ for (const file of [...walk('public'), ...walk('server'), ...walk('lib')]) {
   }
   for (const match of source.matchAll(/https?:\/\/[^\s'"`)<>]+/g)) {
     const url = match[0];
+    // おやさい旅の SNS（Instagram・TikTok）だけは、トップの1か所に限って許す（2026-11-07 Karen 決定）
+    if (file === 'public/index.js' && SNS_ALLOWED.has(url)) continue;
     if (!/^https?:\/\/(localhost|fonts\.googleapis\.com|fonts\.gstatic\.com)/.test(url)) {
       codeProblems.push(`${file} に許可していない外部の宛先があります：${url}`);
     }
